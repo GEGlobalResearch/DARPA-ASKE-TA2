@@ -1,5 +1,7 @@
  uri "http://aske.ge.com/metamodel" alias metamodel.
  
+ CDBN is a type of ComputationalGraph.
+ 
  CQuery is a class
  	described by input with values of type UnittedQuantity
  	described by output with values of type UnittedQuantity
