@@ -11,6 +11,7 @@ DBN is a type of ComputationalGraph
 	// 'script' is a string containing python code for the computation
 	//described by script with values of type string
 	described by hasEquation with a single value of type ^Equation
+	described by hasModel with a single value of type ^ExternalEquation
 	// DBN info
 	described by ^type with values of type NodeType
 	described by distribution with a single value of type Distribution	
@@ -72,7 +73,7 @@ Range is a class
 //
 //ModelType is a type of Thing, must be one of {equation, pythonFunction } .
 
-Condition is a class. //We need rules to define condition instances? 
+//Condition is a class. //We need rules to define condition instances? 
 
 //************* Model Execution Run ****************//
 

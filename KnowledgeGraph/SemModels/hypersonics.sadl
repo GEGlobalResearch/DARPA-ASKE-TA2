@@ -26,6 +26,13 @@ input of StaticTempEq has at most one value of type Altitude.
 output of StaticTempEq only has values of type StaticTemperature.
 script of StaticTempEq always has value "518.6-3.56 * Altitude /1000.0".
 
+//An equation for the same output could have different inputs
+StaticTempEq2 is a type of ^Equation.
+input of StaticTempEq2 has at most one value of type Altitude.
+output of StaticTempEq2 only has values of type StaticTemperature.
+//assumption of StaticTempEq2 has value "(^value of Altitude > 36152) and (^value of Altitude < 82345)"
+script of StaticTempEq2 always has value "389.98".
+
 StaticTempDBN is a type of DBN.
 hasEquation of StaticTempDBN only has values of type StaticTempEq .
 range of StaticTempDBN always has value (a Range with lower -200 with upper 200).

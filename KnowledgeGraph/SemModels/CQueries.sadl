@@ -1,0 +1,35 @@
+ uri "http://aske.ge.com/CQueries.sadl" alias cqueries.
+ 
+ import "http://aske.ge.com/metamodel".
+ import "http://aske.ge.com/hypersonics".
+ 
+ cq1 is a CQuery
+ 	input (a Altitude with ^value 10000)
+ 	output (a TotalTemperature)
+ 	with execution (a CGExecution compGraph cg1).
+ 	
+ cg1 is a CDBN
+   subgraph sg1
+   subgraph sg2 
+   subgraph sg3 	.
+ 
+ sg1 is a SubGraph
+	cgraph (a StaticTempDBN hasEquation (a StaticTempEq))
+	output (a StaticTemperature ^value 483) 	.
+
+// This node was sampled
+sg2 is a SubGraph
+	cgraph (a MachSpeedDBN distribution uniform)
+	output (a MachSpeed ^value 1.0 ^value 1.5 ^value 2.0) 
+	distribution uniform	.
+
+sg3 is a SubGraph
+	cgraph (a TotalTemperatureDBN hasEquation (a TotalTemperatureEq))
+	output (a TotalTemperature ^value 2000 ^value 2500 ^value 3000)
+	.
+
+	
+//dbn3 is a DBN
+//	hasEquation (a TotalTemperatureEq output (a TotalTemperature ^value 483))
+//	distribution uniform
+//	.

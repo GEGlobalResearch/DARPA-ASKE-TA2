@@ -1,6 +1,16 @@
  uri "http://aske.ge.com/metamodel" alias metamodel.
  
- CDBN is a type of ComputationalGraph.
+ import "http://aske.ge.com/hypersonics".
+  
+ SubGraph is a class
+ 	described by cgraph with values of type ComputationalGraph
+ 	described by output with values of type UnittedQuantity
+ 	.
+  
+ CDBN is a type of ComputationalGraph
+    //described by dbn with values of type ComputationalGraph
+    described by subgraph with values of type SubGraph
+ 	.
  
  CQuery is a class
  	described by input with values of type UnittedQuantity
@@ -14,7 +24,7 @@
  	described by startTime with a single value of type dateTime
  	described by endTime with a single value of type dateTime
  	described by compGraph with values of type ComputationalGraph
- 	described by outputValue with values of type decimal
+ 	//described by output with values of type UnittedQuantity
 	.
  
  
