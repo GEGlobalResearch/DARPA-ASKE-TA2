@@ -1,0 +1,267 @@
+
+# http://vesuvius-test.crd.ge.com:2420/sparql
+# Graph: http://kd.ge.com/aske
+
+# http://aske.ge.com/hypersonics#Altitude
+# http://aske.ge.com/hypersonics#AirSpeed
+# http://aske.ge.com/hypersonics#TotalPressure
+# http://aske.ge.com/hypersonics#TotalTemperature
+
+prefix hyper:<http://aske.ge.com/hypersonics#>
+prefix dbn:<http://aske.ge.com/dbn#>
+prefix imp:<http://sadl.org/sadlimplicitmodel#>
+
+## Given input Altitude and output TotalTemp, find the equations needed
+## Still includes eqns whose output is actually not needed (eg SpeedOfSound)
+select distinct ?Eq where { 
+  {select ?Eq where { # Find all ancestors of TT equation, incl.
+     ?EqOut rdfs:subClassOf ?IBO.
+     ?IBO owl:onProperty imp:output.
+     ?IBO owl:allValuesFrom <http://aske.ge.com/hypersonics#TotalTemperature>.
+     ?EqOut dbn:parent* ?Eq.
+  }}
+  minus 
+  {select distinct ?Eq where { # Eqns that have a non-given input that has no eqn (eg. MachSpeed has Airspeed)
+  # Descendants of eqns that take one of the given inputs, incl.
+  ?EqB rdfs:subClassOf ?IBO.
+  ?IBO owl:onProperty imp:input.
+  ?IBO owl:someValuesFrom ?In.
+  filter (?In in (<http://aske.ge.com/hypersonics#Altitude>)).
+  ?Eq dbn:parent* ?EqB. 
+
+  # and have a non-given input without an eqn.
+  ?Eq rdfs:subClassOf ?B1.
+  ?B1 owl:onProperty imp:input.
+  ?B1 owl:someValuesFrom ?In1.
+  filter (?In1 not in (<http://aske.ge.com/hypersonics#Altitude>)).
+  filter not exists {
+     ?Eq2 rdfs:subClassOf ?B2.
+     ?B2 owl:onProperty imp:output.
+     ?B2 owl:allValuesFrom ?In1.}
+  }}
+  minus 
+  {select distinct ?Eq where { # Eqns that have an ancestor that is not a descendant of eqns that take given inputs
+  ?EqB rdfs:subClassOf ?IBO.
+  ?IBO owl:onProperty imp:input.
+  ?IBO owl:someValuesFrom ?In.
+  filter (?In in (<http://aske.ge.com/hypersonics#Altitude>)).
+  ?Eq dbn:parent* ?EqB. 
+
+  filter not exists {
+    ?Eq dbn:parent* ?EqX.
+    filter not exists { ?EqX dbn:parent ?EqB}
+  }
+}}
+}
+
+
+
+
+
+
+
+select ?Eq where {
+  {select ?Eq ?EqB where {
+     ?EqB rdfs:subClassOf ?IBO.
+     ?IBO owl:onProperty imp:input.
+     ?IBO owl:someValuesFrom <http://aske.ge.com/hypersonics#Altitude>.
+     ?Eq dbn:parent* ?EqB. 
+  }}
+  {?Eq rdfs:subClassOf ?B1.
+   ?B1 owl:onProperty imp:input.
+   ?B1 owl:someValuesFrom ?In1.
+   filter not exists {
+     ?Eq2 rdfs:subClassOf ?B2.
+     ?B2 owl:onProperty imp:output.
+     ?B2 owl:allValuesFrom ?In1.}
+  }union
+  { ?EqB rdfs:subClassOf ?IBO.
+    ?IBO owl:onProperty imp:input.
+    ?IBO owl:someValuesFrom <http://aske.ge.com/hypersonics#Altitude>.
+    ?Eq dbn:parent* ?EqB. 
+    filter not exists {
+      ?Eq dbn:parent* ?Eq3.
+      filter not exists { ?Eq3 dbn:parent ?EqB.}}
+  }
+} 
+
+
+
+
+
+
+select ?X ?DBN ?Y #?output ?input ?script ?distribution 
+where { 
+  ?DBN rdfs:subClassOf dbn:DBN.
+  ?DBN rdfs:subClassOf ?EB.
+  ?EB owl:onProperty dbn:hasEquation.
+  ?EB owl:allValuesFrom ?Y.
+ 
+#  ?X hyper:parent ?input.
+#  ?X hyper:parent ?output.
+#  ?X hyper:script ?script.
+# ?DBN hyper:distribution ?distribution.
+
+{select distinct ?X where { 
+  {select ?X where {<http://aske.ge.com/hypersonics#TotalTemperature> dbn:parent* ?X.}}
+  minus
+  {select distinct ?X where{
+    {select ?D where { ?D dbn:parent+ <http://aske.ge.com/hypersonics#Altitude>.}}
+    ?D dbn:parent+ ?X.
+    ?X dbn:parent ?Z.
+    filter not exists{ ?Z dbn:parent* <http://aske.ge.com/hypersonics#Altitude> }
+  }}
+  minus
+  {select distinct ?X where{
+  {select ?D where { ?D dbn:parent+ <http://aske.ge.com/hypersonics#Altitude>.}}
+  ?D dbn:parent+ ?Y.
+  ?Y dbn:parent* ?X.
+  filter not exists{ ?X dbn:parent* <http://aske.ge.com/hypersonics#Altitude> }
+  }}
+  filter (?X not in (<http://aske.ge.com/hypersonics#Altitude>))
+}}
+}
+
+prefix hyper:<http://aske.ge.com/hypersonics#>
+prefix dbn:<http://aske.ge.com/dbn#>
+
+select distinct ?X where { 
+  {select ?X where {<http://aske.ge.com/hypersonics#TotalTemperature> dbn:parent* ?X.}}
+  minus
+  {select distinct ?X where{
+    {select ?D where { ?D dbn:parent+ <http://aske.ge.com/hypersonics#Altitude>.}}
+    ?D dbn:parent+ ?X.
+    ?X dbn:parent ?Z.
+    filter not exists{ ?Z dbn:parent* <http://aske.ge.com/hypersonics#Altitude> }
+  }}
+  minus
+  {select distinct ?X where{
+  {select ?D where { ?D dbn:parent+ <http://aske.ge.com/hypersonics#Altitude>.}}
+  ?D dbn:parent+ ?Y.
+  ?Y dbn:parent* ?X.
+  filter not exists{ ?X dbn:parent* <http://aske.ge.com/hypersonics#Altitude> }
+  }}
+  filter (?X not in (<http://aske.ge.com/hypersonics#Altitude>))
+}
+
+
+
+prefix hyper:<http://aske.ge.com/hypersonics#>
+prefix dbn:<http://aske.ge.com/dbn#>
+
+select distinct ?X where { 
+  {select ?X where {<http://aske.ge.com/hypersonics#TotalTemperature> dbn:parent* ?X.}}
+  minus
+  {select distinct ?X where{
+    {select ?D where { ?D dbn:parent+ <http://aske.ge.com/hypersonics#Altitude>.}}
+    ?D dbn:parent+ ?X.
+    ?X dbn:parent ?Z.
+    filter not exists{ ?Z dbn:parent* <http://aske.ge.com/hypersonics#Altitude> }
+  }}
+    filter (?X not in (<http://aske.ge.com/hypersonics#Altitude>))
+}
+
+# Nodes that are ascendants of nodes that are partially determined by Altitude, i.e. AirSpeed
+select distinct ?Z where{
+  {select ?X where { ?X dbn:parent+ <http://aske.ge.com/hypersonics#Altitude>.}}
+
+  ?X dbn:parent+ ?Y.
+  ?Y dbn:parent* ?Z.
+  filter not exists{ ?Z dbn:parent* <http://aske.ge.com/hypersonics#Altitude> }
+}
+
+prefix hyper:<http://aske.ge.com/hypersonics#>
+prefix dbn:<http://aske.ge.com/dbn#>
+
+# Nodes that depend on Altitude and have a parent that does not depend on Altitude, i.e. mach
+select distinct ?Y where{
+  {select ?X where { ?X dbn:parent+ <http://aske.ge.com/hypersonics#Altitude>.}}
+
+       ?X dbn:parent+ ?Y.
+       ?Y dbn:parent ?Z.
+       filter not exists{ ?Z dbn:parent* <http://aske.ge.com/hypersonics#Altitude> }
+}
+
+select distinct ?X  where{
+  <http://aske.ge.com/hypersonics#TotalTemperature> dbn:parent* ?X.
+  minus
+  {select ?X where { ?X dbn:parent+ <http://aske.ge.com/hypersonics#Altitude>.}}
+}
+
+prefix hyper:<http://aske.ge.com/hypersonics#>
+prefix dbn:<http://aske.ge.com/dbn#>
+
+select distinct ?X1 ?X2  #?Node
+where{
+ #?X dbn:parent ?Y
+
+ #?X dbn:parent* ?Node.
+filter (?X1=?X2)
+ #filter not exists {values ?Node {<http://aske.ge.com/hypersonics#Altitude>} }
+
+{select distinct ?X1 ?X2  where{
+ <http://aske.ge.com/hypersonics#TotalTemperature> dbn:parent* ?X1.
+ ?X2 dbn:parent* <http://aske.ge.com/hypersonics#Altitude>.
+ #filter (?X1=?X2)
+}}
+}
+
+# Insert Equation graph
+prefix dbn:<http://aske.ge.com/dbn#>
+prefix imp:<http://sadl.org/sadlimplicitmodel#>
+
+#construct { _:bn a dbn:Node. _:bn dbn:eqn ?Eq. _:bn dbn:uq ?Out. ?Out dbn:parent ?In.}
+insert {?EqCh dbn:parent ?EqPa}
+#select distinct ?EqCh ?In ?EqPa 
+where {
+ ?EqCh rdfs:subClassOf imp:Equation.
+ ?EqCh rdfs:subClassOf ?IB.
+ ?IB owl:onProperty imp:input.
+ ?IB owl:someValuesFrom ?In.
+
+ ?EqCh rdfs:subClassOf imp:Equation.
+ ?EqCh rdfs:subClassOf ?OB.
+ ?OB owl:onProperty imp:output.
+ ?OB owl:allValuesFrom ?Out.
+
+ ?EqPa rdfs:subClassOf imp:Equation.
+ ?EqPa rdfs:subClassOf ?OBP.
+ ?OBP owl:onProperty imp:output.
+ ?OBP owl:allValuesFrom ?In.
+}
+
+
+# Old Variable network
+prefix hyper:<http://aske.ge.com/hypersonics#>
+prefix dbn:<http://aske.ge.com/dbn#>
+prefix imp:<http://sadl.org/sadlimplicitmodel#>
+
+construct { ?Out dbn:parent ?In.}
+#select ?Eq ?In ?Out
+where {
+ ?Eq rdfs:subClassOf imp:Equation.
+ ?Eq rdfs:subClassOf ?IB.
+ ?IB owl:onProperty imp:input.
+ ?IB owl:someValuesFrom ?In.
+
+ ?Eq rdfs:subClassOf imp:Equation.
+ ?Eq rdfs:subClassOf ?OB.
+ ?OB owl:onProperty imp:output.
+ ?OB owl:allValuesFrom ?Out.
+}
+
+prefix hyper:<http://aske.ge.com/hypersonics#>
+prefix dbn:<http://aske.ge.com/dbn#>
+
+select distinct ?Eq ?Input ?Output
+where {
+ ?Eq a hyper:Equation .
+
+ ?Eq hyper:input ?In.
+ ?In a ?Input.
+ ?Input a owl:Class.
+
+ ?Eq hyper:output ?Out.
+ ?Out a ?Output.
+ ?Output a owl:Class.
+}

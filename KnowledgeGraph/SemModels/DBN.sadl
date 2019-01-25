@@ -1,0 +1,114 @@
+uri "http://aske.ge.com/dbn" alias dbn .
+
+Thing is a class
+	described by name with values of type string
+	described by description with values of type string
+	.
+
+DBN is a type of ComputationalGraph
+	//described by input with values of type UnittedQuantity
+	//described by output with values of type UnittedQuantity
+	// 'script' is a string containing python code for the computation
+	//described by script with values of type string
+	described by hasEquation with a single value of type ^Equation
+	// DBN info
+	described by ^type with values of type NodeType
+	described by distribution with a single value of type Distribution	
+	described by range with values of type Range 
+	.
+
+// Definition of a DBN
+//DBN is a type of Thing
+//	//described by element with values of type DBN_Node
+//	//described by assumption with values of type Assumption
+//	
+//	// All following attributes are part of the query?
+//	described by trackingBatchNumbers with a single value of type int //query?
+//	described by plotFlag with a single value of type boolean // query?
+//	//described by particleFilterOptions with a single value of type ParticleFilterOptions //Query parameteres->moved to Query
+//	described by numberOfSamples with a single value of type int // query?
+//	described by graphFlag with a single value of type boolean //query?
+//	described by trackingTimeSteps with a single value of type int //query?
+//	//described by taskType with a single value of type TaskType // "Prognosis". //the query type?
+//	described by batchIndexName with a single value of type string
+//	.
+
+
+
+TaskType is a class, must be one of {prognosis,counterfactual,sensitivityAnalysis,riskAssessment,optimization}.
+
+// Use 
+//DBN_Node is a type of UnittedQuantity
+//	//described by variable with a single value of type UnittedQuantity //UnittedQuantity is in the "Science" ontology
+//	described by ntype with values of type NodeType
+//	described by distribution with a single value of type Distribution	
+//	//described by parent with values of type DBN_Node
+//	//described by children with values of type Node
+//	described by range with values of type Range 
+//	//described by distributionParameters with a single value of type DistributionParameters	
+//	described by model with values of type string //Equation
+//	described by ptable with a single value of type PTable
+//	.
+
+NodeType is a class, must be one of {equation,discrete,continuous,constant,deterministic,stochastic_transient,stochastic} .
+
+Distribution is a class, must be one of {uniform,discrete_custom} .
+
+PTable is a type of Thing.
+       //described by 
+
+Range is a class
+	described by lower with a single value of type float
+	described by upper with a single value of type float
+	.
+
+// Node models. Each node has a model.
+//DBN_Model is a type of Thing 
+//	described by modelType with values of type ModelType
+//	described by precondition with values of type Condition
+//	described by modelForm with a single value of type string //the actual equation expression
+//	described by functionName with a single value of type string //the name of the executable?
+//	.
+//
+//ModelType is a type of Thing, must be one of {equation, pythonFunction } .
+
+Condition is a class. //We need rules to define condition instances? 
+
+//************* Model Execution Run ****************//
+
+//ModelRun is a class // Model here is a DBN, not a node model.
+//	 described by dbn with a single value of type DBN
+//	 described by  with a single value of type 
+//	 described by  with a single value of type 
+//	 described by  with a single value of type 
+//	 described by  with a single value of type 
+//	 described by  with a single value of type 
+//	 described by  with a single value of type 
+
+
+
+//************ Query ******************************//
+//Query is a class
+//	 described by output with values of type DBN_Node
+//	 described by observedInput with values of type ObservedInput
+//	 described by sampledInput with values of type DBN_Node //??
+//	 described by queryType with values of type QueryType
+//	 .
+
+//ObservedInput is a class
+//	 described by input with values of type DBN_Node
+//	 described by data with values of type DataSource
+//	 .
+	 
+//QueryType is a class, must be one of {Prognostic, Counterfactual, }.
+
+//ParticleFilterOptions is a class
+//	described by nodeNamesNotRecorded with a single value of type Boolean //null
+//	described by backendKeepVectors with a single value of type Boolean
+//	described by backendFname": "./Results/"
+//	described by backendKeepScalars with a single value of type Boolean
+//	described by parallelProcesses with a single value of type int
+//	described by resampleThreshold with a single value of type float 
+//	described by parallel with a single value of type Boolean
+//	described by backend with a single value of type string
+//	.

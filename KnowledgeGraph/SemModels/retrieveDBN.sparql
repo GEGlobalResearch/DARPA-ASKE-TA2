@@ -1,0 +1,37 @@
+
+
+prefix hyper:<http://aske.ge.com/hypersonics#>
+prefix dbn:<http://aske.ge.com/dbn#>
+prefix imp:<http://sadl.org/sadlimplicitmodel#>
+
+# Retrieve Models
+select distinct ?Model ?Input ?Output (str(?script) as ?ModelForm)
+where {
+  ?Model rdfs:subClassOf dbn:DBN.
+  ?Model rdfs:subClassOf ?BN. ?BN owl:onProperty dbn:hasEquation. 
+  ?BN owl:allValuesFrom ?Eq.
+  VALUES ?Eq {<http://aske.ge.com/hypersonics#TotalTemperatureEq> <http://aske.ge.com/hypersonics#StaticTempEq> <http://aske.ge.com/hypersonics#SpeedOfSoundEq>}
+  ?Eq rdfs:subClassOf ?IB. ?IB owl:onProperty imp:input.
+  ?IB owl:someValuesFrom ?Input.
+  ?Eq rdfs:subClassOf ?OB. ?OB owl:onProperty imp:output.
+  ?OB owl:allValuesFrom ?Output.
+  ?Eq rdfs:subClassOf ?SB. ?SB owl:onProperty imp:script. 
+  ?SB owl:hasValue ?script.
+} order by ?Model
+
+# Retrieve Nodes
+select ?Node ?Child ?Distribution
+where {
+ {select distinct ?Eq ?Node where {
+  {?Eq rdfs:subClassOf ?IB. ?IB owl:onProperty imp:input.  ?IB owl:someValuesFrom ?Node.}
+  union
+  {?Eq rdfs:subClassOf ?OB. ?OB owl:onProperty imp:output. ?OB owl:allValuesFrom ?Node.}
+  
+  VALUES ?Eq {<http://aske.ge.com/hypersonics#TotalTemperatureEq> <http://aske.ge.com/hypersonics#StaticTempEq> <http://aske.ge.com/hypersonics#SpeedOfSoundEq>}
+ }}
+ 
+  ?Eq rdfs:subClassOf ?IB. ?IB owl:onProperty imp:input.  ?IB owl:someValuesFrom ?Node.
+  ?Eq rdfs:subClassOf ?OB. ?OB owl:onProperty imp:output. ?OB owl:allValuesFrom ?Child.
+  ?DBN rdfs:subClassOf ?EB. ?EB owl:onProperty dbn:hasEquation.  ?EB owl:allValuesFrom ?Eq.
+  ?DBN rdfs:subClassOf ?DB. ?DB owl:onProperty dbn:distribution. ?DB owl:hasValue ?Distribution.
+} order by ?Node

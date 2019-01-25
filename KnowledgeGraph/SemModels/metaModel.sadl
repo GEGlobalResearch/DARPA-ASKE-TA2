@@ -1,0 +1,18 @@
+ uri "http://aske.ge.com/metamodel" alias metamodel.
+ 
+ CQuery is a class
+ 	described by input with values of type UnittedQuantity
+ 	described by output with values of type UnittedQuantity
+ 	described by machineGenerated with a single value of type boolean
+ 	//described by compGraph with values of type ComputationalGraph
+ 	described by execution with values of type CGExecution
+ 	.
+ 	
+ CGExecution is a class
+ 	described by startTime with a single value of type dateTime
+ 	described by endTime with a single value of type dateTime
+ 	described by compGraph with values of type ComputationalGraph
+ 	described by outputValue with values of type decimal
+	.
+ 
+ 
