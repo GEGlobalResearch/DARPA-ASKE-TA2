@@ -1,0 +1,43 @@
+# Insert Equation graph
+prefix dbn:<http://aske.ge.com/dbn#>
+prefix imp:<http://sadl.org/sadlimplicitmodel#>
+
+#construct { _:bn a dbn:Node. _:bn dbn:eqn ?Eq. _:bn dbn:uq ?Out. ?Out dbn:parent ?In.}
+insert {?EqCh dbn:parent ?EqPa}
+#select distinct ?EqCh ?In ?EqPa 
+where {
+ ?EqCh rdfs:subClassOf imp:Equation.
+ ?EqCh rdfs:subClassOf ?IB.
+ ?IB owl:onProperty imp:input.
+ ?IB owl:someValuesFrom ?In.
+
+ ?EqCh rdfs:subClassOf imp:Equation.
+ ?EqCh rdfs:subClassOf ?OB.
+ ?OB owl:onProperty imp:output.
+ ?OB owl:allValuesFrom ?Out.
+
+ ?EqPa rdfs:subClassOf imp:Equation.
+ ?EqPa rdfs:subClassOf ?OBP.
+ ?OBP owl:onProperty imp:output.
+ ?OBP owl:allValuesFrom ?In.
+}
+
+
+# Old Variable network
+prefix hyper:<http://aske.ge.com/hypersonics#>
+prefix dbn:<http://aske.ge.com/dbn#>
+prefix imp:<http://sadl.org/sadlimplicitmodel#>
+
+construct { ?Out dbn:parent ?In.}
+#select ?Eq ?In ?Out
+where {
+ ?Eq rdfs:subClassOf imp:Equation.
+ ?Eq rdfs:subClassOf ?IB.
+ ?IB owl:onProperty imp:input.
+ ?IB owl:someValuesFrom ?In.
+
+ ?Eq rdfs:subClassOf imp:Equation.
+ ?Eq rdfs:subClassOf ?OB.
+ ?OB owl:onProperty imp:output.
+ ?OB owl:allValuesFrom ?Out.
+}

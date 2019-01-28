@@ -1,0 +1,52 @@
+# http://aske.ge.com/hypersonics#Altitude
+# http://aske.ge.com/hypersonics#AirSpeed
+# http://aske.ge.com/hypersonics#TotalPressure
+# http://aske.ge.com/hypersonics#TotalTemperature
+
+prefix hyper:<http://aske.ge.com/hypersonics#>
+prefix dbn:<http://aske.ge.com/dbn#>
+prefix imp:<http://sadl.org/sadlimplicitmodel#>
+
+## Given input Altitude and output TotalTemp, find the equations needed
+## Still includes eqns whose output is actually not needed (eg SpeedOfSound)
+select distinct ?Eq where { 
+  {select ?Eq where { # Find all ancestors of TT equation, incl.
+     ?EqOut rdfs:subClassOf ?IBO.
+     ?IBO owl:onProperty imp:output.
+     ?IBO owl:allValuesFrom <http://aske.ge.com/hypersonics#TotalTemperature>.
+     ?EqOut dbn:parent* ?Eq.
+  }}
+  minus 
+  {select distinct ?Eq where { # Eqns that have a non-given input that has no eqn (eg. MachSpeed has Airspeed)
+  # Descendants of eqns that take one of the given inputs, incl.
+  ?EqB rdfs:subClassOf ?IBO.
+  ?IBO owl:onProperty imp:input.
+  ?IBO owl:someValuesFrom ?In.
+  filter (?In in (<http://aske.ge.com/hypersonics#Altitude>)).
+  ?Eq dbn:parent* ?EqB. 
+
+  # and have a non-given input without an eqn.
+  ?Eq rdfs:subClassOf ?B1.
+  ?B1 owl:onProperty imp:input.
+  ?B1 owl:someValuesFrom ?In1.
+  filter (?In1 not in (<http://aske.ge.com/hypersonics#Altitude>)).
+  filter not exists {
+     ?Eq2 rdfs:subClassOf ?B2.
+     ?B2 owl:onProperty imp:output.
+     ?B2 owl:allValuesFrom ?In1.}
+  }}
+  minus 
+  {select distinct ?Eq where { # Eqns that have an ancestor that is not a descendant of eqns that take given inputs
+  ?EqB rdfs:subClassOf ?IBO.
+  ?IBO owl:onProperty imp:input.
+  ?IBO owl:someValuesFrom ?In.
+  filter (?In in (<http://aske.ge.com/hypersonics#Altitude>)).
+  ?Eq dbn:parent* ?EqB. 
+
+  filter not exists {
+    ?Eq dbn:parent* ?EqX.
+    filter not exists { ?EqX dbn:parent ?EqB}
+  }
+}}
+}
+

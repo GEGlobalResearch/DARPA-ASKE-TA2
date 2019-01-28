@@ -1,0 +1,32 @@
+prefix hyper:<http://aske.ge.com/hypersonics#>
+prefix dbn:<http://aske.ge.com/dbn#>
+prefix imp:<http://sadl.org/sadlimplicitmodel#>
+prefix mm:<http://aske.ge.com/metamodel#>
+
+# Output variable, values, Equation or distribution, 
+
+select ?Output ?Val ?EquationOrDistr ?Input where {
+ {select ?Output ?EquationOrDistr ?Val ?Input where {
+  ?cq mm:subgraph ?sg.
+  ?sg mm:cgraph / dbn:hasEquation ?eqBN.
+  ?eqBN a ?EQorDistr.
+  ?sg dbn:output ?OBN.
+  ?OBN a ?Output.
+  ?OBN imp:value ?Val.
+  optional {?EquationOrDistr dbn:parent ?PQ. 
+            ?PQ rdfs:subClassOf ?PQBN.
+            ?PQBN owl:onProperty imp:output.
+            ?PQBN owl:allValuesFrom ?Input}
+  #filter regex(str(?EquationOrDistr), "hypersonics") 
+ }}
+ union
+ {select ?EquationOrDistr ?Output ?Val where {
+  ?cq1 mm:subgraph ?sg.
+  ?sg mm:cgraph / dbn:distribution ?EquationOrDistr.
+  ?sg dbn:output ?OBN.
+  ?OBN a ?Output.
+  ?OBN imp:value ?Val.
+  filter not exists {?sg dbn:hasEquation ?eq.}
+ }}
+  #filter regex(str(?Output), "hypersonics")
+}
