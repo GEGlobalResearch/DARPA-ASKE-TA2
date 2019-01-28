@@ -1,5 +1,17 @@
 uri "http://aske.ge.com/dbn" alias dbn .
 
+^Equation is a class
+	described by input with values of type UnittedQuantity
+	described by output with values of type UnittedQuantity
+	described by script with values of type string
+	described by assumption with values of type Condition.
+	
+^ExternalEquation is a class.
+ComputationalGraph is a class.
+
+Condition is a class.
+
+
 Thing is a class
 	described by name with values of type string
 	described by description with values of type string

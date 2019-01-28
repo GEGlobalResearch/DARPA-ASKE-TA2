@@ -1,8 +1,10 @@
 uri "http://aske.ge.com/testdiag" alias testdiag.
 
 import "http://aske.ge.com/hypersonics" .
+import "http://aske.ge.com/CQueries.sadl".
 
-what is Altitude.CM: Altitude is a class.
+
+
 
 
 

@@ -1,4 +1,4 @@
- uri "http://aske.ge.com/CQueries.sadl" alias cqueries.
+ uri "http://aske.ge.com/CQueries" alias cqueries.
  
  import "http://aske.ge.com/metamodel".
  import "http://aske.ge.com/hypersonics".

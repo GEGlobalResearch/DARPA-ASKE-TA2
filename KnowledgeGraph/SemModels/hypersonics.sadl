@@ -15,10 +15,10 @@ MachSpeed is a type of Speed.
 TotalTemperature is a type of AtmosphericTemperature.
 TotalPressure is a type of AtmosphericPressure.
 
-//AltitudeDBN is a type of DBN.
-//output of AltitudeDBN only has values of type Altitude.
+AltitudeDBN is a type of DBN.
+output of AltitudeDBN only has values of type Altitude.
 //input of AltitudeDBN always has value null.
-//distribution of AltitudeDB has default value of type uniform.
+distribution of AltitudeDBN always has value uniform.
 
 StaticTempEq is a type of ^Equation.
 input of StaticTempEq has at most one value of type Altitude.
@@ -38,12 +38,6 @@ hasEquation of StaticTempDBN only has values of type StaticTempEq .
 range of StaticTempDBN always has value (a Range with lower -200 with upper 200).
 distribution of StaticTempDBN always has value uniform. //should be default value
 
-
-//An instance equation with given input. This would come from a query?
-stTempEq1 is a StaticTempEq
-	with input (a Altitude with ^value 10000)
-	//with output (a StaticTemperature)
-	.
 
 StaticPressureEq is a type of ^Equation.
 input of StaticPressureEq has at most one value of type Altitude.
@@ -91,17 +85,6 @@ hasEquation of  TotalTemperatureDBN only has values of type TotalTemperatureEq.
 range of TotalTemperatureDBN always has value (a Range with lower -200 with upper 200).
 distribution of TotalTemperatureDBN always has value uniform.
 
-totalPressureEq is an ^Equation
-	with input (a StaticPressure ps0)
-	with input (a MachSpeed mach)
-	with output (a TotalPressure tp)
-	//with script "ps0*(tt0/ts0)**(1.4/(1.4-1.0))"
-	//plugging in tt0 expression
-	with script "ps0*(1.0 + 0.5*(1.4-1.0)*mach*mach)**(1.4/(1.4-1.0))"
-	with ^type equation
-	with distribution uniform
-	with range (a Range with lower -200 with upper 200)
-	.
 TotalPressureEq is a type of ^Equation.
 input of TotalPressureEq has at most one value of type StaticPressure.
 input of TotalPressureEq has at most one value of type MachSpeed.
@@ -112,6 +95,28 @@ TotalPressureDBN is a type of DBN.
 hasEquation of  TotalPressureDBN only has values of type TotalPressureEq.
 range of TotalPressureDBN always has value (a Range with lower -200 with upper 200).
 distribution of TotalPressureDBN always has value uniform.
+
+
+
+//An instance equation with given input. This would come from a query?
+//stTempEq1 is a StaticTempEq
+//	with input (a Altitude with ^value 10000)
+//	//with output (a StaticTemperature)
+//	.
+
+//totalPressureEq is an ^Equation
+//	with input (a StaticPressure ps0)
+//	with input (a MachSpeed mach)
+//	with output (a TotalPressure tp)
+//	//with script "ps0*(tt0/ts0)**(1.4/(1.4-1.0))"
+//	//plugging in tt0 expression
+//	with script "ps0*(1.0 + 0.5*(1.4-1.0)*mach*mach)**(1.4/(1.4-1.0))"
+//	with ^type equation
+//	with distribution uniform
+//	with range (a Range with lower -200 with upper 200)
+//	.
+
+
 
 //staticTemperatureDBN is a StaticTemperatureDBN
 //	//with hasEquation staticTemperatureEq
