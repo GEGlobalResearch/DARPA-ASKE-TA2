@@ -1,4 +1,4 @@
-uri "http://aske.ge.com/dbn" alias dbn .
+uri "http://aske.ge.com/sciknow" alias sciknow .
 
 ^Equation is a class
 	described by input with values of type UnittedQuantity
@@ -6,20 +6,23 @@ uri "http://aske.ge.com/dbn" alias dbn .
 	described by script with values of type string
 	described by assumption with values of type Condition.
 	
-^ExternalEquation is a class.
+^ExternalEquation is a type of ^Equation
+	described by externalURI with values of type anyURI
+    described by location with values of type string
+  .
 ComputationalGraph is a class.
 
 Condition is a class.
-
 
 Thing is a class
 	described by name with values of type string
 	described by description with values of type string
 	.
 
+
 DBN is a type of ComputationalGraph
 	//described by input with values of type UnittedQuantity
-	//described by output with values of type UnittedQuantity
+	described by node with values of type UnittedQuantity
 	// 'script' is a string containing python code for the computation
 	//described by script with values of type string
 	described by hasEquation with a single value of type ^Equation

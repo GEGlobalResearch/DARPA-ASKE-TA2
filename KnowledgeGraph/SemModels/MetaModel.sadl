@@ -1,30 +1,28 @@
- uri "http://aske.ge.com/metamodel" alias metamodel.
+uri "http://aske.ge.com/metamodel" alias mm.
  
- import "http://aske.ge.com/hypersonics".
+import "http://aske.ge.com/sciknow".
   
- SubGraph is a class
+ 
+CDBN is a type of ComputationalGraph
+    described by subgraph with values of type SubGraph
+ 	.
+
+SubGraph is a class
  	described by cgraph with values of type ComputationalGraph
  	described by output with values of type UnittedQuantity
  	.
-  
- CDBN is a type of ComputationalGraph
-    //described by dbn with values of type ComputationalGraph
-    described by subgraph with values of type SubGraph
- 	.
  
- CQuery is a class
+CGQuery is a class
  	described by input with values of type UnittedQuantity
  	described by output with values of type UnittedQuantity
  	described by machineGenerated with a single value of type boolean
- 	//described by compGraph with values of type ComputationalGraph
  	described by execution with values of type CGExecution
  	.
  	
- CGExecution is a class
+CGExecution is a class
  	described by startTime with a single value of type dateTime
  	described by endTime with a single value of type dateTime
  	described by compGraph with values of type ComputationalGraph
- 	//described by output with values of type UnittedQuantity
 	.
  
  

@@ -1,7 +1,12 @@
 uri "http://aske.ge.com/testdiag" alias testdiag.
 
 import "http://aske.ge.com/hypersonics" .
-import "http://aske.ge.com/CQueries.sadl".
+import "http://aske.ge.com/CGQueries".
+
+//what is the ^value of TotalTemperature and the ^value of TotalPressure when the ^value of Altitude is 30000 and the ^value of AirSpeed is 1000?
+
+
+
 
 
 

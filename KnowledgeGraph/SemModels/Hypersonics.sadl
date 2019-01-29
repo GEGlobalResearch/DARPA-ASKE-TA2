@@ -1,7 +1,6 @@
 uri "http://aske.ge.com/hypersonics" alias hypersonics .
 
-import "http://aske.ge.com/dbn".
-
+import "http://aske.ge.com/sciknow".
 
 Altitude is a type of UnittedQuantity.
 AtmosphericTemperature is a type of UnittedQuantity.
@@ -19,6 +18,11 @@ AltitudeDBN is a type of DBN.
 output of AltitudeDBN only has values of type Altitude.
 //input of AltitudeDBN always has value null.
 distribution of AltitudeDBN always has value uniform.
+
+AirSpeedDBN is a type of DBN.
+output of AirSpeedDBN only has values of type AirSpeed.
+distribution of AltitudeDBN always has value uniform.
+
 
 StaticTempEq is a type of ^Equation.
 input of StaticTempEq has at most one value of type Altitude.
