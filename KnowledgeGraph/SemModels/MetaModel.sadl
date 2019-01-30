@@ -6,6 +6,8 @@ import "http://aske.ge.com/sciknow".
 CDBN is a type of ComputationalGraph
     described by subgraph with values of type SubGraph
  	.
+ 
+KChain is a type of ComputationalGraph.
 
 SubGraph is a class
  	described by cgraph with values of type ComputationalGraph
@@ -23,6 +25,7 @@ CGExecution is a class
  	described by startTime with a single value of type dateTime
  	described by endTime with a single value of type dateTime
  	described by compGraph with values of type ComputationalGraph
+ 	described by accuracy with values of type decimal
 	.
  
  
