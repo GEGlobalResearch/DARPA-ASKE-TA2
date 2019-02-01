@@ -4,7 +4,7 @@
  import "http://aske.ge.com/hypersonics".
  
  cgq1 is a CGQuery
- 	input (a Altitude with ^value 10000)
+ 	input (a Altitude with ^value 30000)
  	output (a TotalTemperature)
  	with execution (a CGExecution cge1 with compGraph cg1)
  	.
@@ -32,7 +32,39 @@ sg2 is a SubGraph
     .
 sg3 is a SubGraph
 	cgraph (a TotalTemperatureDBN hasEquation (a TotalTemperatureEq))
-	output (a TotalTemperature ^value 2000 ^value 2500 ^value 3000)
+	output (a TotalTemperature ^value 200 ^value 250 ^value 300)
+	.
+
+// Query with Altitude and Speed
+ cgq2 is a CGQuery
+ 	input (a Altitude with ^value 30000)
+ 	input (a AirSpeed with ^value 2000)
+ 	output (a TotalTemperature)
+ 	with execution (a CGExecution cge2 with compGraph cg2)
+ 	.
+  	
+ cg2 is a CDBN
+   subgraph sg21
+   subgraph sg22 
+   subgraph sg23 
+   subgraph sg24 	.
+ 
+ sg21 is a SubGraph
+	cgraph (a StaticTempDBN hasEquation (a StaticTempEq))
+	output (a StaticTemperature ^value 420) 	.
+
+sg22 is a SubGraph
+	cgraph (a SpeedOfSoundDBN hasEquation (a SpeedOfSoundEq))
+	output (a SpeedOfSound ^value 1000) 
+    .
+
+sg23 is a SubGraph
+	cgraph (a MachSpeedDBN hasEquation (a MachSpeedEq))
+	output (a MachSpeed ^value 3.0 ) 
+    .
+sg24 is a SubGraph
+	cgraph (a TotalTemperatureDBN hasEquation (a TotalTemperatureEq))
+	output (a TotalTemperature ^value 500)
 	.
 
 	
