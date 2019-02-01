@@ -5,6 +5,8 @@ import java.util.UUID;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import com.ge.research.sadl.darpa.kapeesh.utility.Table;
+
 /**
  * Class to enable translation of SADL-generated
  * SPARQL query results into JSON input for DBN
@@ -81,15 +83,16 @@ public class DbnJsonGenerator {
 		dbn_all.put("analyticSettings", analyticSettings);
 	}
 
-	public JSONObject createModelObject (JSONObject models) {
+	public JSONObject createModelObject (JSONObject models) throws Exception {
 
+		Table table = Table.fromJson(models);
 
 		return new JSONObject();
 	}
 
-	public JSONObject createNodeObject (JSONObject nodes) {
+	public JSONObject createNodeObject (JSONObject nodes) throws Exception {
 
-
+		Table table = Table.fromJson(nodes);
 
 		return new JSONObject();
 	}
