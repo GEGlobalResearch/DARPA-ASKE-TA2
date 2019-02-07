@@ -7,6 +7,15 @@ what is the ^value of TotalTemperature and the ^value of TotalPressure when the 
 
 what is the ^value of MachSpeed when the ^value of Altitude is 30000 and the ^value of AirSpeed is 2000?
 
+what is the ^value of MachSpeed when the ^value of Altitude is 30000?
+
+what is MachSpeed?
+CM: MachSpeed is a class.
+
+
+
+
+	
 
 
 
