@@ -15,7 +15,7 @@ TotalTemperature is a type of AtmosphericTemperature.
 TotalPressure is a type of AtmosphericPressure.
 
 AltitudeDBN is a type of DBN.
-output of AltitudeDBN only has values of type Altitude.
+node of AltitudeDBN only has values of type Altitude.
 //input of AltitudeDBN always has value null.
 distribution of AltitudeDBN always has value uniform.
 
@@ -29,6 +29,7 @@ input of StaticTempEq has at most one value of type Altitude.
 //input of StaticTempEq has at least one value of type Altitude. //No, because it may be sampled?
 //assumption of StaticTempEq2 has value (a Condition (^value of Altitude <= 36152))
 output of StaticTempEq only has values of type StaticTemperature.
+//arguments of StaticTempEq only has values of type [(an Argument with argName "alt", with argType Altitude)].
 expression of StaticTempEq always has value "518.6-3.56 * Altitude /1000.0".
 
 //An equation for the same output could have different inputs
