@@ -3,7 +3,7 @@ uri "http://aske.ge.com/metamodel" alias mm.
 import "http://aske.ge.com/sciknow".
   
  
-CDBN is a type of ComputationalGraph
+CCG is a type of ComputationalGraph
     described by subgraph with values of type SubGraph
  	.
  
@@ -27,5 +27,17 @@ CGExecution is a class
  	described by compGraph with values of type ComputationalGraph
  	described by accuracy with values of type decimal
 	.
- 
- 
+
+Dataset is a type of Thing
+	described by creator with a single value of type string //Person
+	.
+CSVDataset is a type of Dataset
+	described by column with values of type CSVColumn 
+	.
+	
+CSVColumn is a type of Thing
+	//described by name with values of type string
+	described by colType with values of type string
+	described by variable with values of type UnittedQuantity //Variable
+	described by percentMissingValues with values of type float
+	. 

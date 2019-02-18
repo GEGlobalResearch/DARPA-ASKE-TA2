@@ -16,7 +16,7 @@
 // 	accuracy .05
 // 	.
   	
- cg1 is a CDBN
+ cg1 is a CCG
    subgraph sg1
    subgraph sg2 
    subgraph sg3 	.
@@ -43,7 +43,7 @@ sg3 is a SubGraph
  	with execution (a CGExecution cge2 with compGraph cg2)
  	.
   	
- cg2 is a CDBN
+ cg2 is a CCG
    subgraph sg21
    subgraph sg22 
    subgraph sg23 
