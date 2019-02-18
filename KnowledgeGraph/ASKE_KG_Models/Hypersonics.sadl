@@ -14,6 +14,8 @@ MachSpeed is a type of Speed.
 TotalTemperature is a type of AtmosphericTemperature.
 TotalPressure is a type of AtmosphericPressure.
 
+alt is a Altitude ^value 100.
+
 AltitudeDBN is a type of DBN.
 node of AltitudeDBN only has values of type Altitude.
 //input of AltitudeDBN always has value null.

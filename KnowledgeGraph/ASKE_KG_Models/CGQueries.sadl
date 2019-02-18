@@ -4,8 +4,8 @@
  import "http://aske.ge.com/hypersonics".
  
  cgq1 is a CGQuery
- 	input (a Altitude with ^value 30000)
- 	output (a TotalTemperature)
+ 	mm:input (a Altitude with ^value 30000)
+ 	mm:output (a TotalTemperature)
  	with execution (a CGExecution cge1 with compGraph cg1)
  	.
  		
@@ -23,23 +23,23 @@
  
  sg1 is a SubGraph
 	cgraph (a StaticTempDBN hasEquation (a StaticTempEq))
-	output (a StaticTemperature ^value 483) 	.
+	mm:output (a StaticTemperature ^value 483) 	.
 
 // This node was sampled
 sg2 is a SubGraph
 	cgraph (a MachSpeedDBN distribution uniform)
-	output (a MachSpeed ^value 1.0 ^value 1.5 ^value 2.0) 
+	mm:output (a MachSpeed ^value 1.0 ^value 1.5 ^value 2.0) 
     .
 sg3 is a SubGraph
 	cgraph (a TotalTemperatureDBN hasEquation (a TotalTemperatureEq))
-	output (a TotalTemperature ^value 200 ^value 250 ^value 300)
+	mm:output (a TotalTemperature ^value 200 ^value 250 ^value 300)
 	.
 
 // Query with Altitude and Speed
  cgq2 is a CGQuery
- 	input (a Altitude with ^value 30000)
- 	input (a AirSpeed with ^value 2000)
- 	output (a TotalTemperature)
+ 	mm:input (a Altitude with ^value 30000)
+ 	mm:input (a AirSpeed with ^value 2000)
+ 	mm:output (a TotalTemperature)
  	with execution (a CGExecution cge2 with compGraph cg2)
  	.
   	
@@ -51,20 +51,20 @@ sg3 is a SubGraph
  
  sg21 is a SubGraph
 	cgraph (a StaticTempDBN hasEquation (a StaticTempEq))
-	output (a StaticTemperature ^value 420) 	.
+	mm:output (a StaticTemperature ^value 420) 	.
 
 sg22 is a SubGraph
 	cgraph (a SpeedOfSoundDBN hasEquation (a SpeedOfSoundEq))
-	output (a SpeedOfSound ^value 1000) 
+	mm:output (a SpeedOfSound ^value 1000) 
     .
 
 sg23 is a SubGraph
 	cgraph (a MachSpeedDBN hasEquation (a MachSpeedEq))
-	output (a MachSpeed ^value 3.0 ) 
+	mm:output (a MachSpeed ^value 3.0 ) 
     .
 sg24 is a SubGraph
 	cgraph (a TotalTemperatureDBN hasEquation (a TotalTemperatureEq))
-	output (a TotalTemperature ^value 500)
+	mm:output (a TotalTemperature ^value 500)
 	.
 
 	
