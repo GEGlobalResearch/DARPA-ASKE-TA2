@@ -1,0 +1,104 @@
+prefix imp:<http://sadl.org/sadlimplicitmodel#>
+prefix sci:<http://aske.ge.com/sciknow#>
+prefix dbn:<http://aske.ge.com/dbn#>
+
+# Retrieve Models
+select distinct ?Model ?Input ?Output (str(?expr) as ?ModelForm)
+where {
+  ?Model rdfs:subClassOf sci:DBN.
+  ?Model rdfs:subClassOf ?BN. 
+  ?BN owl:onProperty sci:hasEquation. 
+  ?BN owl:someValuesFrom ?Eq.
+  filter (?Eq in (<http://aske.ge.com/hypersonics#TotalTemperatureEq>, <http://aske.ge.com/hypersonics#StaticTempEq>, <http://aske.ge.com/hypersonics#SpeedOfSoundEq>, <http://aske.ge.com/hypersonics#MachSpeedEq>))
+  ?Eq imp:input/imp:argType ?Input.
+  ?Eq imp:output ?Oinst.
+  ?Oinst a ?Output.
+  ?Eq imp:expression ?expr.
+} order by ?Model
+
+# Retrieve Nodes
+select distinct ?Node ?Child ?Distribution where {
+ {select distinct ?Eq ?Node ?Child where {
+   ?Eq imp:input/imp:argType ?Node.
+   ?Eq imp:output ?Oinst. ?Oinst a ?Child.
+   filter (?Eq in (<http://aske.ge.com/hypersonics#TotalTemperatureEq>, <http://aske.ge.com/hypersonics#StaticTempEq>, <http://aske.ge.com/hypersonics#SpeedOfSoundEq>, <http://aske.ge.com/hypersonics#MachSpeedEq>))
+ }}
+ union
+ { select distinct ?Eq ?Node where {
+   ?Eq imp:output ?Oi. ?Oi a ?Node.
+   filter (?Eq in (<http://aske.ge.com/hypersonics#TotalTemperatureEq>, <http://aske.ge.com/hypersonics#StaticTempEq>, <http://aske.ge.com/hypersonics#SpeedOfSoundEq>, <http://aske.ge.com/hypersonics#MachSpeedEq>))
+   filter not exists {
+     ?Eq1 imp:input/imp:argType ?Node.
+     filter (?Eq1 in (<http://aske.ge.com/hypersonics#TotalTemperatureEq>, <http://aske.ge.com/hypersonics#StaticTempEq>, <http://aske.ge.com/hypersonics#SpeedOfSoundEq>, <http://aske.ge.com/hypersonics#MachSpeedEq>))
+   }
+ }}
+  ?DBN rdfs:subClassOf ?EB. ?EB owl:onProperty sci:hasEquation.  ?EB owl:someValuesFrom ?Eq.
+  ?DBN rdfs:subClassOf ?DB. ?DB owl:onProperty sci:distribution. ?DB owl:hasValue ?Distribution.
+} order by ?Node
+
+
+
+
+prefix hyper:<http://aske.ge.com/hypersonics#>
+prefix dbn:<http://aske.ge.com/dbn#>
+prefix imp:<http://sadl.org/sadlimplicitmodel#>
+
+# Retrieve Models
+select distinct ?Model ?Input ?Output (str(?script) as ?ModelForm)
+where {
+  ?Model rdfs:subClassOf dbn:DBN.
+  ?Model rdfs:subClassOf ?BN. ?BN owl:onProperty dbn:hasEquation. 
+  ?BN owl:allValuesFrom ?Eq.
+  VALUES ?Eq {<http://aske.ge.com/hypersonics#TotalTemperatureEq> <http://aske.ge.com/hypersonics#StaticTempEq> <http://aske.ge.com/hypersonics#SpeedOfSoundEq>}
+  ?Eq rdfs:subClassOf ?IB. ?IB owl:onProperty imp:input.
+  ?IB owl:someValuesFrom ?Input.
+  ?Eq rdfs:subClassOf ?OB. ?OB owl:onProperty imp:output.
+  ?OB owl:allValuesFrom ?Output.
+  ?Eq rdfs:subClassOf ?SB. ?SB owl:onProperty imp:script. 
+  ?SB owl:hasValue ?script.
+} order by ?Model
+
+# Retrieve Nodes
+prefix hyper:<http://aske.ge.com/hypersonics#>
+prefix dbn:<http://aske.ge.com/dbn#>
+prefix imp:<http://sadl.org/sadlimplicitmodel#>
+
+select ?Node ?Child ?Distribution
+where {
+ {select distinct ?Eq ?Node ?Child where {
+   ?Eq rdfs:subClassOf ?IB. ?IB owl:onProperty imp:input.  ?IB owl:someValuesFrom ?Node.
+   ?Eq rdfs:subClassOf ?OB. ?OB owl:onProperty imp:output. ?OB owl:allValuesFrom ?Child.
+   VALUES ?Eq {<http://aske.ge.com/hypersonics#TotalTemperatureEq> <http://aske.ge.com/hypersonics#StaticTempEq> <http://aske.ge.com/hypersonics#SpeedOfSoundEq>}
+  }}
+  union
+  {select distinct ?Eq ?Node where {
+    ?Eq rdfs:subClassOf ?OB. ?OB owl:onProperty imp:output. ?OB owl:allValuesFrom ?Node.
+    VALUES ?Eq {<http://aske.ge.com/hypersonics#TotalTemperatureEq> <http://aske.ge.com/hypersonics#StaticTempEq> <http://aske.ge.com/hypersonics#SpeedOfSoundEq>}
+    filter not exists {
+      ?Eq1 rdfs:subClassOf ?OB1. ?OB1 owl:onProperty imp:input. ?OB1 owl:someValuesFrom ?Node.
+      VALUES ?Eq1 {<http://aske.ge.com/hypersonics#TotalTemperatureEq> <http://aske.ge.com/hypersonics#StaticTempEq> <http://aske.ge.com/hypersonics#SpeedOfSoundEq>}
+    }
+  }}
+   ?DBN rdfs:subClassOf ?EB. ?EB owl:onProperty dbn:hasEquation.  ?EB owl:allValuesFrom ?Eq.
+   ?DBN rdfs:subClassOf ?DB. ?DB owl:onProperty dbn:distribution. ?DB owl:hasValue ?Distribution.
+} order by ?Node
+
+
+select ?Node ?Child ?Distribution
+where {
+ {select distinct ?Eq ?Node where {
+  {?Eq rdfs:subClassOf ?IB. ?IB owl:onProperty imp:input.  ?IB owl:someValuesFrom ?Node.}
+  union
+  {?Eq rdfs:subClassOf ?OB. ?OB owl:onProperty imp:output. ?OB owl:allValuesFrom ?Node.}
+  
+  VALUES ?Eq {<http://aske.ge.com/hypersonics#TotalTemperatureEq> <http://aske.ge.com/hypersonics#StaticTempEq> <http://aske.ge.com/hypersonics#SpeedOfSoundEq>}
+ }}
+ 
+  ?Eq rdfs:subClassOf ?IB. ?IB owl:onProperty imp:input.  ?IB owl:someValuesFrom ?Node.
+  ?Eq rdfs:subClassOf ?OB. ?OB owl:onProperty imp:output. ?OB owl:allValuesFrom ?Child.
+  ?DBN rdfs:subClassOf ?EB. ?EB owl:onProperty dbn:hasEquation.  ?EB owl:allValuesFrom ?Eq.
+  ?DBN rdfs:subClassOf ?DB. ?DB owl:onProperty dbn:distribution. ?DB owl:hasValue ?Distribution.
+} order by ?Node
+
+
+

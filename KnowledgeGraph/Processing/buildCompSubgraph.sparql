@@ -3,17 +3,98 @@
 # http://aske.ge.com/hypersonics#TotalPressure
 # http://aske.ge.com/hypersonics#TotalTemperature
 
-prefix hyper:<http://aske.ge.com/hypersonics#>
 prefix dbn:<http://aske.ge.com/dbn#>
 prefix imp:<http://sadl.org/sadlimplicitmodel#>
+prefix owl:<http://www.w3.org/2002/07/owl#>
+prefix rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+prefix sci:<http://aske.ge.com/sciknow#>
+
+
+select distinct ?Eq ?DBN ?Out where {
+ {select ?Eq where {
+    ?EqOut a imp:Equation.
+     ?EqOut imp:output ?Oinst.
+     ?Oinst a ?Out.
+     filter (?Out in ( <http://aske.ge.com/hypersonics#TotalTemperature> )).
+     ?EqOut dbn:parent* ?Eq.
+
+    ?Eq imp:input/imp:argType ?In.
+    filter (?In in (<http://aske.ge.com/hypersonics#Altitude>)).
+  }}
+   union {
+   select ?Eq where {
+     ?EqOut a imp:Equation.
+     ?EqOut imp:output ?Oinst.
+     ?Oinst a ?Out.
+     filter (?Out in ( <http://aske.ge.com/hypersonics#TotalTemperature> )).
+     ?EqOut dbn:parent* ?Eq.
+     ?Eq imp:input/imp:argType ?In.
+      ?Eq2 a imp:Equation.
+      ?Eq2 imp:output ?Oi.
+      ?Oi a ?In. 
+   }}
+ ?Eq imp:output ?Oi.
+ ?Oi a ?Out.
+ ?DBN rdfs:subClassOf ?EQR.
+ ?EQR owl:onProperty sci:hasEquation.
+ ?EQR owl:someValuesFrom ?Eq.
+}
+
+
+
+select distinct ?Eq ?DBN ?Out where { 
+  {select ?Eq where {
+     ?EqOut a imp:Equation.
+     ?EqOut imp:output ?Oinst.
+     ?Oinst a ?Out.
+     filter (?Out in ( <http://aske.ge.com/hypersonics#TotalTemperature> )).
+     ?EqOut dbn:parent* ?Eq.
+  }}
+  minus
+  {select distinct ?Eq where { 
+    ?EqB a imp:Equation.
+    ?EqB imp:input/imp:argType ?In.
+    filter (?In in (<http://aske.ge.com/hypersonics#Altitude>)).
+    ?Eq dbn:parent* ?EqB. 
+    # and have a non-given input without an eqn.
+    ?Eq imp:input/imp:argType ?In1.
+    filter (?In1 not in (<http://aske.ge.com/hypersonics#Altitude>)).
+    filter not exists {
+       ?Eq2 a imp:Equation.
+       ?Eq2 imp:output ?Oi.
+       ?Oi a ?In1.} 
+  }}
+  minus 
+  {select distinct ?Eq where {
+    ?EqB a imp:Equation.
+    ?EqB imp:input/imp:argType ?In.
+    filter (?In in (<http://aske.ge.com/hypersonics#Altitude>)).
+    ?Eq dbn:parent* ?EqB. 
+
+    filter not exists {
+      ?Eq dbn:parent* ?EqX.
+      filter not exists { ?EqX dbn:parent ?EqB}
+    }
+   }}
+ ?Eq imp:output ?Oi.
+ ?Oi a ?Out.
+ ?DBN rdfs:subClassOf ?EQR.
+ ?EQR owl:onProperty sci:hasEquation.
+ ?EQR owl:someValuesFrom ?Eq.
+
+}
+
+
+
 
 ## Given input Altitude and output TotalTemp, find the equations needed
 ## Still includes eqns whose output is actually not needed (eg SpeedOfSound)
-select distinct ?Eq where { 
+select distinct ?Eq ?DBN ?Out where { 
   {select ?Eq where { # Find all ancestors of TT equation, incl.
      ?EqOut rdfs:subClassOf ?IBO.
      ?IBO owl:onProperty imp:output.
-     ?IBO owl:allValuesFrom <http://aske.ge.com/hypersonics#TotalTemperature>.
+     ?IBO owl:allValuesFrom ?Out.
+     filter (?Out in ( <http://aske.ge.com/hypersonics#TotalTemperature> )).
      ?EqOut dbn:parent* ?Eq.
   }}
   minus 
@@ -48,5 +129,10 @@ select distinct ?Eq where {
     filter not exists { ?EqX dbn:parent ?EqB}
   }
 }}
+ ?Eq rdfs:subClassOf ?BO.
+ ?BO owl:onProperty imp:output.
+ ?BO owl:allValuesFrom ?Out.
+ ?DBN rdfs:subClassOf ?EQR.
+ ?EQR owl:onProperty sci:hasEquation.
+ ?EQR owl:someValuesFrom ?Eq.
 }
-

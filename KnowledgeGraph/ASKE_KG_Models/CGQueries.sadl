@@ -5,11 +5,11 @@
  
  cgq1 is a CGQuery
  	mm:input (a Altitude with ^value 30000)
- 	mm:output (a TotalTemperature)
- 	with execution (a CGExecution cge1 with compGraph cg1)
+ 	mm:output (a TotalTemperature tt) //same instance as output in sg3
+ 	with execution cge1 with compGraph cg1
  	.
  		
-// cge1 is a CGExecution
+ cge1 is a CGExecution.
 // 	startTime	"2019-01-26T21:32:52"
 // 	endTime		"2019-01-26T21:45:25"
 // 	compGraph cg1
@@ -21,9 +21,13 @@
    subgraph sg2 
    subgraph sg3 	.
  
+// cg3 is a CCG
+// 	subgraph (a SubGraph cgraph (a StaticTempDBN hasEquation (a StaticTempEq)) 
+// 		                 mm:output (a StaticTemperature ^value 483) ) .
+ 
  sg1 is a SubGraph
-	cgraph (a StaticTempDBN hasEquation (a StaticTempEq))
-	mm:output (a StaticTemperature ^value 483) 	.
+	cgraph (a StaticTempDBN hasEquation StaticTempEq)
+	mm:output (a StaticTemperature ^value 483).
 
 // This node was sampled
 sg2 is a SubGraph
@@ -31,17 +35,18 @@ sg2 is a SubGraph
 	mm:output (a MachSpeed ^value 1.0 ^value 1.5 ^value 2.0) 
     .
 sg3 is a SubGraph
-	cgraph (a TotalTemperatureDBN hasEquation (a TotalTemperatureEq))
-	mm:output (a TotalTemperature ^value 200 ^value 250 ^value 300)
+	cgraph (a TotalTemperatureDBN hasEquation TotalTemperatureEq)
+	mm:output (a TotalTemperature tt ^value 200 ^value 250 ^value 300)
 	.
 
 // Query with Altitude and Speed
  cgq2 is a CGQuery
  	mm:input (a Altitude with ^value 30000)
  	mm:input (a AirSpeed with ^value 2000)
- 	mm:output (a TotalTemperature)
- 	with execution (a CGExecution cge2 with compGraph cg2)
- 	.
+ 	mm:output (a TotalTemperature tt1) //same instance as sg24
+ 	with execution cge2 with compGraph cg2 .
+  	
+ cge2 is a CGExecution.
   	
  cg2 is a CCG
    subgraph sg21
@@ -50,21 +55,21 @@ sg3 is a SubGraph
    subgraph sg24 	.
  
  sg21 is a SubGraph
-	cgraph (a StaticTempDBN hasEquation (a StaticTempEq))
-	mm:output (a StaticTemperature ^value 420) 	.
+	cgraph (a StaticTempDBN hasEquation StaticTempEq)
+	mm:output (a StaticTemperature ^value 420) .
 
 sg22 is a SubGraph
-	cgraph (a SpeedOfSoundDBN hasEquation (a SpeedOfSoundEq))
+	cgraph (a SpeedOfSoundDBN hasEquation SpeedOfSoundEq)
 	mm:output (a SpeedOfSound ^value 1000) 
     .
 
 sg23 is a SubGraph
-	cgraph (a MachSpeedDBN hasEquation (a MachSpeedEq))
+	cgraph (a MachSpeedDBN hasEquation MachSpeedEq)
 	mm:output (a MachSpeed ^value 3.0 ) 
     .
 sg24 is a SubGraph
-	cgraph (a TotalTemperatureDBN hasEquation (a TotalTemperatureEq))
-	mm:output (a TotalTemperature ^value 500)
+	cgraph (a TotalTemperatureDBN hasEquation TotalTemperatureEq)
+	mm:output (a TotalTemperature tt1 ^value 500)
 	.
 
 	

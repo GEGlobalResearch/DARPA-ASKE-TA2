@@ -11,12 +11,12 @@ KChain is a type of ComputationalGraph.
 
 SubGraph is a class
  	described by cgraph with values of type ComputationalGraph
- 	described by output with values of type UnittedQuantity
+ 	described by mm:output with values of type UnittedQuantity
  	.
  
 CGQuery is a class
- 	described by input with values of type UnittedQuantity
- 	described by output with values of type UnittedQuantity
+ 	described by mm:input with values of type UnittedQuantity
+ 	described by mm:output with values of type UnittedQuantity
  	described by machineGenerated with a single value of type boolean
  	described by execution with values of type CGExecution
  	.
@@ -41,3 +41,10 @@ CSVColumn is a type of Thing
 	described by variable with values of type UnittedQuantity //Variable
 	described by percentMissingValues with values of type float
 	. 
+
+parent describes ^Equation with values of type ^Equation.
+	
+//Rule DependencyGraph
+//	if ?Eq is a rdfs:subClassOf ^Equation and
+//	   ?Eq is a rdfs:subClassOf ?IB and 
+//	then ?Eq parent
