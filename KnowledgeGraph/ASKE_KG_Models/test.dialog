@@ -1,8 +1,10 @@
 uri "http://aske.ge.com/testdiag" alias testdiag.
 
 import "http://aske.ge.com/hypersonics" .
-import "http://aske.ge.com/CGQueries".
+//import "http://aske.ge.com/CGQueries".
 import "http://sadl.org/model.sadl".
+import "http://aske.ge.com/metamodel" .
+import "http://aske.ge.com/sciknow" .
 
 what is the ^value of TotalTemperature and the ^value of TotalPressure when the ^value of Altitude is 30000 and the ^value of AirSpeed is 1000?
 
@@ -16,23 +18,16 @@ CM: MachSpeed is a class.
 what is the ^value of StaticTemperature when the ^value of Altitude is 30000?
 
 
+//Ask select m where m is a DBN.
 
-
-
-
-
-
-
-
-
-
+//Ask select eq where ccg has subgraph s1 and s1 has cgraph dbn and dbn has hasEquation eq.
 
 
 //what is the ^value of ((a StaticTemperature)  of (a Aircraft)) when the ^value of (an Altitude) of the Aircraft is 30000?
 
 //what is the ^value of altitude of (a Aircraft)? 
 
-//Ask: "select ?x where {?x ?y ?z}".
+//Ask: select ?x where {?x ?y ?z}".
 
 
 //what is the area of (a Circle) when the radius of the Circle is 100?
