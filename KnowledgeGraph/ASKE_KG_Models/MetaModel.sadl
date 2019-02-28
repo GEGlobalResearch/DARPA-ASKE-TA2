@@ -1,8 +1,7 @@
 uri "http://aske.ge.com/metamodel" alias mm.
  
 import "http://aske.ge.com/sciknow".
-  
- 
+
 CCG is a type of ComputationalGraph
     described by subgraph with values of type SubGraph
  	.
@@ -13,8 +12,11 @@ SubGraph is a class
  	described by cgraph with values of type ComputationalGraph
  	described by mm:output with values of type UnittedQuantity
  	.
+
+QueryType is a class must be one of {prognostic,calibration}.
  
 CGQuery is a class
+	described by queryType with a single value of type QueryType
  	described by mm:input with values of type UnittedQuantity
  	described by mm:output with values of type UnittedQuantity
  	described by machineGenerated with a single value of type boolean
