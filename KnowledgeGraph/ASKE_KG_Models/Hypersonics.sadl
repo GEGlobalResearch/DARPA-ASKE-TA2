@@ -27,13 +27,13 @@ TotalPressure is a type of AtmosphericPressure.
 //	.
 	
 AltitudeDBN is a type of DBN.
-node of AltitudeDBN only has values of type Altitude.
+node of AltitudeDBN always has value (a Argument argType Altitude argName "altitude").
 //input of AltitudeDBN always has value null.
 distribution of AltitudeDBN always has value uniform.
 range of AltitudeDBN always has value (a Range lower 0 upper 60000).
 
 AirSpeedDBN is a type of DBN.
-node of AirSpeedDBN only has values of type AirSpeed.
+node of AirSpeedDBN always has value (a Argument argType AirSpeed argName "speed").
 distribution of AltitudeDBN always has value uniform.
 range of AirSpeedDBN always has value (a Range lower 0 upper 5000).
 
@@ -41,9 +41,9 @@ range of AirSpeedDBN always has value (a Range lower 0 upper 5000).
 //stEq1 expression "518.6-3.56 * Altitude /1000.0".
 
 StaticTempEq is a ^Equation
-input (a Argument argType Altitude argName "alt")
+input (a Argument argType Altitude argName "altitude")
 output (a StaticTemperature)
-expression "518.6-3.56 * Altitude /1000.0"
+expression "518.6-3.56 * altitude /1000.0"
 .
 //input of StaticTempEq always has value (a Argument argType Altitude argName "alt").
 ////input of StaticTempEq has at least one value of type Altitude. //No, because it may be sampled?
@@ -125,7 +125,7 @@ range of TotalTemperatureDBN always has value (a Range with lower -200 with uppe
 distribution of TotalTemperatureDBN always has value uniform.
 
 TotalPressureEq is a ^Equation
-input (a Argument argType StaticPressure argName "ts0")
+input (a Argument argType StaticPressure argName "ps0")
 input (a Argument argType MachSpeed argName "mach")
 output (a TotalPressure)
 expression "ps0*(1.0 + 0.5*(1.4-1.0)*mach*mach)**(1.4/(1.4-1.0))".

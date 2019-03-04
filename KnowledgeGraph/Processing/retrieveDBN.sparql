@@ -3,7 +3,7 @@ prefix sci:<http://aske.ge.com/sciknow#>
 prefix dbn:<http://aske.ge.com/dbn#>
 
 # Retrieve Models
-select distinct ?Model ?Input ?Output (str(?expr) as ?ModelForm)
+select distinct ?Model ?Input (str(?Label) as ?InputLabel) ?Output (str(?expr) as ?ModelForm)
 where {
   ?Model rdfs:subClassOf sci:DBN.
   ?Model rdfs:subClassOf ?BN. 
@@ -11,6 +11,7 @@ where {
   ?BN owl:someValuesFrom ?Eq.
   filter (?Eq in (<http://aske.ge.com/hypersonics#TotalTemperatureEq>, <http://aske.ge.com/hypersonics#StaticTempEq>, <http://aske.ge.com/hypersonics#SpeedOfSoundEq>, <http://aske.ge.com/hypersonics#MachSpeedEq>))
   ?Eq imp:input/imp:argType ?Input.
+  ?Eq imp:input/imp:argName ?Label.
   ?Eq imp:output ?Oinst.
   ?Oinst a ?Output.
   ?Eq imp:expression ?expr.
