@@ -1,6 +1,7 @@
 prefix imp:<http://sadl.org/sadlimplicitmodel#>
 prefix sci:<http://aske.ge.com/sciknow#>
 prefix dbn:<http://aske.ge.com/dbn#>
+prefix mm:<http://aske.ge.com/metamodel#>
 
 # Retrieve Models
 select distinct ?Model ?Input (str(?Label) as ?InputLabel) ?Output (str(?expr) as ?ModelForm)
@@ -10,15 +11,20 @@ where {
   ?BN owl:onProperty sci:hasEquation. 
   ?BN owl:someValuesFrom ?Eq.
   filter (?Eq in (<http://aske.ge.com/hypersonics#TotalTemperatureEq>, <http://aske.ge.com/hypersonics#StaticTempEq>, <http://aske.ge.com/hypersonics#SpeedOfSoundEq>, <http://aske.ge.com/hypersonics#MachSpeedEq>))
-  ?Eq imp:input/imp:argType ?Input.
-  ?Eq imp:input/imp:argName ?Label.
+  ?Eq imp:input?In.
+  ?In imp:argType ?Input.
+  ?In imp:argName ?Label.
   ?Eq imp:output ?Oinst.
   ?Oinst a ?Output.
   ?Eq imp:expression ?expr.
 } order by ?Model
 
+
 # Retrieve Nodes
-select distinct ?Node ?Child ?Distribution where {
+select distinct ?Node ?Child ?Distribution ?Lower ?Upper ?Value 
+from <http://kd.ge.com/aske2>
+from <http://kd.ge.com/md>
+where {
  {select distinct ?Eq ?Node ?Child where {
    ?Eq imp:input/imp:argType ?Node.
    ?Eq imp:output ?Oinst. ?Oinst a ?Child.
@@ -35,6 +41,18 @@ select distinct ?Node ?Child ?Distribution where {
  }}
   ?DBN rdfs:subClassOf ?EB. ?EB owl:onProperty sci:hasEquation.  ?EB owl:someValuesFrom ?Eq.
   ?DBN rdfs:subClassOf ?DB. ?DB owl:onProperty sci:distribution. ?DB owl:hasValue ?Distribution.
+  ?DBN rdfs:subClassOf ?RB. ?RB owl:onProperty sci:range.        ?RB owl:hasValue ?Range.
+  ?Range sci:lower ?Lower.
+  ?Range sci:upper ?Upper.
+  #?CG mm:subgraph/mm:cgraph ?DBNI.
+  ?Q mm:execution/mm:compGraph ?CG.
+  filter (?CG in (<http://aske.ge.com/metamodel#CG_1552404980768>)).
+  #?DBNI a ?DBN.
+     optional{
+     #?Q mm:execution/mm:compGraph ?CG.
+     ?Q mm:input ?II.
+     ?II a ?Node.
+     ?II imp:value ?Value.}  
 } order by ?Node
 
 

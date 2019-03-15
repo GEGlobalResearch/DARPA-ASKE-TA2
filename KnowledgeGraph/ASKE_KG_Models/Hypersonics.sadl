@@ -14,6 +14,10 @@ MachSpeed is a type of Speed.
 TotalTemperature is a type of AtmosphericTemperature.
 TotalPressure is a type of AtmosphericPressure.
 
+//Air is a class
+//  described by altitude with values of type Altitude,
+//	described by ttemp with values of type TotalTemperature.
+
 //alt is a Altitude ^value 100.
 //
 //Aircraft is a class
@@ -44,6 +48,7 @@ StaticTempEq is a ^Equation
 input (a Argument argType Altitude argName "altitude")
 output (a StaticTemperature)
 expression "518.6-3.56 * altitude /1000.0"
+assumption "altitude < 36152"
 .
 //input of StaticTempEq always has value (a Argument argType Altitude argName "alt").
 ////input of StaticTempEq has at least one value of type Altitude. //No, because it may be sampled?
