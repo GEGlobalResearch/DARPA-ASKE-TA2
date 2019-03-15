@@ -29,7 +29,7 @@ public abstract class Utility {
 		
 		ArrayList<ArrayList<String> > rowsList = new ArrayList<ArrayList<String> >();
 		for (String row : rows) {
-			String[] rowContent = row.split(",");
+			String[] rowContent = row.split(",", -1);
 			rowsList.add(new ArrayList<String>(Arrays.asList(rowContent)));
 		}
 
@@ -37,6 +37,10 @@ public abstract class Utility {
         }
 
 	private static String decode(String s) throws UnsupportedEncodingException {
+		// Include all other special encoding cases here
+		s = s.replace("+", "%2B");
+		s = s.replace("\r", "");
+
 		String decoded = URLDecoder.decode(s, StandardCharsets.UTF_8.toString());
 		return decoded;
 	}
