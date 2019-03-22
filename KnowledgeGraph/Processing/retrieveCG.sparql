@@ -1,0 +1,159 @@
+prefix imp:<http://sadl.org/sadlimplicitmodel#>
+prefix sci:<http://aske.ge.com/sciknow#>
+prefix mm:<http://aske.ge.com/metamodel#>
+
+select ?X ?Y ?Z ?X_style ?X_color ?Z_shape ?Z_tooltip
+where {
+{select (?Input as ?X) (?EQ as ?Y) (?Output as ?Z) ?X_style ?X_color ('box' as ?Z_shape) ?Z_tooltip
+where {
+    ?CCG a mm:CCG.
+    filter (?CCG in (<http://aske.ge.com/metamodel#CG_1552665175674>)).
+    ?CCG mm:subgraph ?SG.
+    ?SG mm:cgraph ?CG.
+    ?CG sci:hasEquation ?EQ.
+    ?EQ imp:input ?I.
+    ?I imp:argType ?Input.
+    ?EQ imp:output ?O.
+    ?O a ?Output.
+    ?CCG mm:subgraph ?SG1.
+    ?SG1 mm:cgraph ?CG1.
+    ?CG1 sci:hasEquation ?EQ1.
+    ?EQ1 imp:output ?O1.
+    ?O1 a ?Input.
+    ?EQ imp:expression ?Expr.
+	 bind(str(?Expr) as ?Z_tooltip)    bind('solid' as ?X_style)
+    bind('black' as ?X_color)
+}}union
+{select (?Input as ?X) (?EQ as ?Y) (?Output as ?Z) ?X_style ?X_color ('box' as ?Z_shape) ?Z_tooltip
+where {
+    ?CCG a mm:CCG.
+    filter (?CCG in (<http://aske.ge.com/metamodel#CG_1552665175674>)).
+    ?CCG mm:subgraph ?SG.
+    ?SG mm:cgraph ?CG.
+    ?CG sci:hasEquation ?EQ.
+    ?EQ imp:input ?I.
+    ?I imp:argType ?Input.
+    ?EQ imp:output ?O.
+    ?O a ?Output.
+    ?EQ imp:expression ?Expr.
+	 bind(str(?Expr) as ?Z_tooltip)   filter not exists {
+    ?CCG mm:subgraph ?SG2.
+    ?SG2 mm:cgraph ?CG2.
+    ?CG2 sci:hasEquation ?EQ2.
+    ?EQ2 imp:output ?O2.
+    ?O2 a ?Input.}
+    bind('filled' as ?X_style)
+    bind('yellow' as ?X_color)
+}}union
+ {select (?Output as ?X) ?Y (?Value as ?Z) ?X_style ?X_color ('oval' as ?Z_shape) ('output value' as ?Z_tooltip)
+  where {
+    ?CCG mm:subgraph ?SG.
+    filter (?CCG in (<http://aske.ge.com/metamodel#CG_1552665175674>)).
+    ?SG mm:output ?Oinst.
+    ?Oinst a ?Output.
+    ?Oinst imp:value ?Value.
+    bind("value" as ?Y).
+    bind('solid' as ?X_style)
+    bind('black' as ?X_color)
+  }}
+}
+
+
+
+prefix hyper:<http://aske.ge.com/hypersonics#>
+prefix dbn:<http://aske.ge.com/dbn#>
+prefix imp:<http://sadl.org/sadlimplicitmodel#>
+select distinct ?Input ?EQ ?Output
+from <http://kd.ge.com/md>
+from <http://kd.ge.com/aske2>
+where {
+ ?CCG a <http://aske.ge.com/metamodel#CCG>.
+ filter (?CCG in (<http://aske.ge.com/metamodel#CG_1552416135454>)).
+ ?CCG <http://aske.ge.com/metamodel#subgraph> ?SG.
+ ?SG <http://aske.ge.com/metamodel#cgraph> ?CG.
+ ?CG <http://aske.ge.com/sciknow#hasEquation> ?EQ.
+ ?EQ <http://sadl.org/sadlimplicitmodel#input> ?I.
+ ?I <http://sadl.org/sadlimplicitmodel#argType> ?Input.
+ ?EQ <http://sadl.org/sadlimplicitmodel#output> ?O.
+ ?O a ?Output.
+} order by ?EQ
+
+
+## Get the CG and the values as well.
+prefix sci:<http://aske.ge.com/sciknow#>
+prefix mm:<http://aske.ge.com/metamodel#>
+prefix imp:<http://sadl.org/sadlimplicitmodel#>
+
+select distinct ?X ?Y ?Z
+from <http://kd.ge.com/md2>
+from <http://kd.ge.com/aske3>
+where {
+ {select ?Input as ?X ?EQ as ?Y ?Output as ?Z
+  where {
+    ?CCG a mm:CCG.
+    filter (?CCG in (<http://aske.ge.com/metamodel#CG_1552510529898>)).
+    ?CCG mm:subgraph ?SG.
+    ?SG mm:cgraph ?CG.
+    ?CG sci:hasEquation ?EQ.
+    ?EQ imp:input ?I.
+    ?I imp:argType ?Input.
+    ?EQ imp:output ?O.
+    ?O a ?Output.
+  }}union
+ {select ?Output as ?X ?Y ?Value as ?Z 
+  where {
+    ?CCG mm:subgraph ?SG.
+    filter (?CCG in (<http://aske.ge.com/metamodel#CG_1552510529898>)).
+    ?SG mm:output ?Oinst.
+    ?Oinst a ?Output.
+    ?Oinst imp:value ?Value.
+   bind("value" as ?Y).
+  }}
+} order by ?X
+
+
+
+
+prefix mm:<http://aske.ge.com/metamodel#>
+prefix sci:<http://aske.ge.com/sciknow#>
+prefix imp:<http://sadl.org/sadlimplicitmodel#>
+
+#construct {
+# ?EQ imp:input ?I.
+# ?I imp:argType ?Input.
+# ?EQ imp:output ?O.
+# ?O a ?Output.
+#}
+select distinct ?Input ?EQ ?Output
+from <http://kd.ge.com/md>
+from <http://kd.ge.com/aske2>
+where {
+ ?CCG a mm:CCG.
+  filter (?CCG in (<http://aske.ge.com/metamodel#CG_1552416135454>)).
+ ?CCG mm:subgraph ?SG.
+ ?SG mm:cgraph ?CG.
+ ?CG sci:hasEquation ?EQ.
+ ?EQ imp:input ?I.
+ ?I imp:argType ?Input.
+ ?EQ imp:output ?O.
+ ?O a ?Output.
+} order by ?EQ
+
+
+construct {
+ ?EQ <http://sadl.org/sadlimplicitmodel#input> ?I.
+ ?I <http://sadl.org/sadlimplicitmodel#argType> ?Input.
+ ?EQ <http://sadl.org/sadlimplicitmodel#output> ?O.
+ ?O a ?Output.
+}
+#select distinct ?EQ ?Input ?Output
+where {
+ ?CCG a <http://aske.ge.com/metamodel#CCG>.
+ ?CCG <http://aske.ge.com/metamodel#subgraph> ?SG.
+ ?SG <http://aske.ge.com/metamodel#cgraph> ?CG.
+ ?CG <http://aske.ge.com/sciknow#hasEquation> ?EQ.
+ ?EQ <http://sadl.org/sadlimplicitmodel#input> ?I.
+ ?I <http://sadl.org/sadlimplicitmodel#argType> ?Input.
+ ?EQ <http://sadl.org/sadlimplicitmodel#output> ?O.
+ ?O a ?Output.
+} order by ?EQ
