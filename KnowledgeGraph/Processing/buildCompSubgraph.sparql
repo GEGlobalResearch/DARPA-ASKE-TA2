@@ -1,4 +1,3 @@
-
 prefix hyper:<http://aske.ge.com/hypersonics#>
 prefix dbn:<http://aske.ge.com/dbn#>
 prefix imp:<http://sadl.org/sadlimplicitmodel#>
@@ -41,9 +40,6 @@ where {
  ?EQR owl:allValuesFrom ?EqClass.
  ?Eq a ?EqClass.
 }
-
-
-
 
 
 # http://aske.ge.com/hypersonics#Altitude

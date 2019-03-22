@@ -1,3 +1,28 @@
+# With Equation subclasses
+prefix dbn:<http://aske.ge.com/dbn#>
+prefix imp:<http://sadl.org/sadlimplicitmodel#>
+
+
+insert {?EqCh dbn:parent ?EqPa} 
+#select distinct ?EqCh ?EqPa 
+where { 
+    ?EqCh a ?EqClass. 
+    ?EqClass rdfs:subClassOf imp:Equation. 
+    ?EqCh imp:input ?Arg. 
+    ?Arg imp:argType ?In. 
+    ?EqCh imp:output ?Oinst. 
+    ?Oinst a ?Out. 
+    
+    ?EqPa a ?EqClass1. 
+    ?EqClass1 rdfs:subClassOf imp:Equation. 
+    ?EqPa imp:output ?POinst. 
+    ?POinst a ?In. 
+}
+
+
+
+
+
 # Insert Equation graph
 prefix dbn:<http://aske.ge.com/dbn#>
 prefix imp:<http://sadl.org/sadlimplicitmodel#>

@@ -13,7 +13,7 @@ SubGraph is a class
  	described by mm:output with values of type UnittedQuantity
  	.
 
-QueryType is a class must be one of {prognostic,calibration}.
+QueryType is a class must be one of {prognostic,calibration,explanation}.
  
 CGQuery is a class
 	described by queryType with a single value of type QueryType
