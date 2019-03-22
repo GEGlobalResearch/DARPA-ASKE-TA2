@@ -11,12 +11,13 @@ where {
   ?BN owl:onProperty sci:hasEquation. 
   ?BN owl:someValuesFrom ?Eq.
   filter (?Eq in (<http://aske.ge.com/hypersonics#TotalTemperatureEq>, <http://aske.ge.com/hypersonics#StaticTempEq>, <http://aske.ge.com/hypersonics#SpeedOfSoundEq>, <http://aske.ge.com/hypersonics#MachSpeedEq>))
-  ?Eq imp:input?In.
-  ?In imp:argType ?Input.
-  ?In imp:argName ?Label.
-  ?Eq imp:output ?Oinst.
+  ?Eq sci:input?In.
+  ?In sci:argType ?Input.
+  ?In sci:argName ?Label.
+  ?Eq sci:output ?Oinst.
   ?Oinst a ?Output.
-  ?Eq imp:expression ?expr.
+  ?Eq imp:expression ?Scr.
+  ?Scr imp:script ?expr.
 } order by ?Model
 
 
@@ -26,16 +27,16 @@ from <http://kd.ge.com/aske2>
 from <http://kd.ge.com/md>
 where {
  {select distinct ?Eq ?Node ?Child where {
-   ?Eq imp:input/imp:argType ?Node.
-   ?Eq imp:output ?Oinst. ?Oinst a ?Child.
+   ?Eq sci:input/sci:argType ?Node.
+   ?Eq sci:output ?Oinst. ?Oinst a ?Child.
    filter (?Eq in (<http://aske.ge.com/hypersonics#TotalTemperatureEq>, <http://aske.ge.com/hypersonics#StaticTempEq>, <http://aske.ge.com/hypersonics#SpeedOfSoundEq>, <http://aske.ge.com/hypersonics#MachSpeedEq>))
  }}
  union
  { select distinct ?Eq ?Node where {
-   ?Eq imp:output ?Oi. ?Oi a ?Node.
+   ?Eq sci:output ?Oi. ?Oi a ?Node.
    filter (?Eq in (<http://aske.ge.com/hypersonics#TotalTemperatureEq>, <http://aske.ge.com/hypersonics#StaticTempEq>, <http://aske.ge.com/hypersonics#SpeedOfSoundEq>, <http://aske.ge.com/hypersonics#MachSpeedEq>))
    filter not exists {
-     ?Eq1 imp:input/imp:argType ?Node.
+     ?Eq1 sci:input/sci:argType ?Node.
      filter (?Eq1 in (<http://aske.ge.com/hypersonics#TotalTemperatureEq>, <http://aske.ge.com/hypersonics#StaticTempEq>, <http://aske.ge.com/hypersonics#SpeedOfSoundEq>, <http://aske.ge.com/hypersonics#MachSpeedEq>))
    }
  }}

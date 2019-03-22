@@ -1,3 +1,51 @@
+
+prefix hyper:<http://aske.ge.com/hypersonics#>
+prefix dbn:<http://aske.ge.com/dbn#>
+prefix imp:<http://sadl.org/sadlimplicitmodel#>
+prefix owl:<http://www.w3.org/2002/07/owl#>
+prefix rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+prefix sci:<http://aske.ge.com/sciknow#>
+
+select distinct ?DBN ?Out (group_concat(distinct ?Eq ; separator=',') as ?Eqns)
+from <http://kd.ge.com/aske3>
+where {
+
+  {select ?Eq where { 
+    ?EqOut a ?EqClass. 
+    ?EqClass rdfs:subClassOf imp:Equation. 
+     ?EqOut sci:output ?Oinst.
+     ?Oinst a ?Out1.
+     filter (?Out1 in ( <http://aske.ge.com/hypersonics#TotalTemperature> )).
+     ?EqOut dbn:parent* ?Eq.
+    ?Eq sci:input/sci:argType ?In.
+    filter (?In in (<http://aske.ge.com/hypersonics#Altitude>)).
+  } }   
+  union {
+   select ?Eq where {
+     ?EqOut a ?EqClass. 
+     ?EqClass rdfs:subClassOf imp:Equation.
+     ?EqOut sci:output ?Oinst.
+     ?Oinst a ?Out.
+     filter (?Out in ( <http://aske.ge.com/hypersonics#TotalTemperature> )).
+     ?EqOut dbn:parent* ?Eq.
+     ?Eq sci:input/sci:argType ?In.
+      ?Eq2 a ?EqClass2. 
+      ?EqClass2 rdfs:subClassOf imp:Equation.
+      ?Eq2 sci:output ?Oi.
+      ?Oi a ?In. 
+   }}
+ ?Eq sci:output ?Oi.
+ ?Oi a ?Out.
+ ?DBN rdfs:subClassOf ?EQR.
+ ?EQR owl:onProperty sci:hasEquation.
+ ?EQR owl:allValuesFrom ?EqClass.
+ ?Eq a ?EqClass.
+}
+
+
+
+
+
 # http://aske.ge.com/hypersonics#Altitude
 # http://aske.ge.com/hypersonics#AirSpeed
 # http://aske.ge.com/hypersonics#TotalPressure
