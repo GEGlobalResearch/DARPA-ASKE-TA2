@@ -47,8 +47,9 @@ range of AirSpeedDBN always has value (a Range lower 0 upper 5000).
 StaticTempEq is a ^Equation
 input (a Argument argType Altitude argName "altitude")
 output (a StaticTemperature)
-expression "518.6-3.56 * altitude /1000.0"
-assumption "altitude < 36152"
+//expression "518.6-3.56 * altitude /1000.0"
+//assumption "altitude < 36152"
+expression (a Script with script "518.6-3.56 * altitude /1000.0", with language Text)
 .
 //input of StaticTempEq always has value (a Argument argType Altitude argName "alt").
 ////input of StaticTempEq has at least one value of type Altitude. //No, because it may be sampled?
@@ -73,7 +74,7 @@ distribution of StaticTempDBN always has value uniform. //should be default valu
 StaticPressureEq is a ^Equation
 input (a Argument argType Altitude argName "alt")
 output (a StaticPressure)
-expression "2116.0*((518.6-3.56*alt/1000.0)/518.6)**5.256".
+expression (a Script with script "2116.0*((518.6-3.56*alt/1000.0)/518.6)**5.256", with language Text).
 //input of StaticPressureEq has at most one value of type Altitude.
 //output of StaticPressureEq only has values of type StaticPressure.
 //	//with expression "2116.0*(ts0/518.6)**5.256"
@@ -89,7 +90,7 @@ distribution of StaticPressureDBN always has value uniform.
 SpeedOfSoundEq is a ^Equation
 input (a Argument argType StaticTemperature argName "ts0")
 output (a SpeedOfSound)
-expression "(1.4*1718.0*ts0)**0.5".
+expression (a Script with script "(1.4*1718.0*ts0)**0.5", with language Text).
 //input of SpeedOfSoundEq has at most one value of type StaticTemperature.
 //output of SpeedOfSoundEq only has values of type SpeedOfSound.
 //expression  of SpeedOfSoundEq always has value "(1.4*1718.0*ts0)**0.5".
@@ -103,7 +104,7 @@ MachSpeedEq is a ^Equation
 input (a Argument argType AirSpeed argName "u0")
 input (a Argument argType SpeedOfSound argName "a0")
 output (a MachSpeed)
-expression "u0/5280.0 * 3600.0 / a0".
+expression (a Script with script "u0/5280.0 * 3600.0 / a0", with language Text).
 //input of MachSpeedEq has at most one value of type SpeedOfSound.
 //output of MachSpeedEq only has values of type MachSpeed.
 //expression  of MachSpeedEq always has value "u0/5280.0 * 3600.0 / a0".
@@ -118,7 +119,7 @@ TotalTemperatureEq is a ^Equation
 input (a Argument argType StaticTemperature argName "ts0")
 input (a Argument argType MachSpeed argName "mach")
 output (a TotalTemperature)
-expression "ts0*(1.0 + 0.5*(1.4-1.0)*mach*mach)".
+expression (a Script with script "ts0*(1.0 + 0.5*(1.4-1.0)*mach*mach)", with language Text).
 //input of TotalTemperatureEq has at most one value of type StaticTemperature.
 //input of TotalTemperatureEq has at most one value of type MachSpeed.
 //output of TotalTemperatureEq only has values of type TotalTemperature.
@@ -133,7 +134,7 @@ TotalPressureEq is a ^Equation
 input (a Argument argType StaticPressure argName "ps0")
 input (a Argument argType MachSpeed argName "mach")
 output (a TotalPressure)
-expression "ps0*(1.0 + 0.5*(1.4-1.0)*mach*mach)**(1.4/(1.4-1.0))".
+expression (a Script with script "ps0*(1.0 + 0.5*(1.4-1.0)*mach*mach)**(1.4/(1.4-1.0))", with language Text).
 //input of TotalPressureEq has at most one value of type StaticPressure.
 //input of TotalPressureEq has at most one value of type MachSpeed.
 //output of TotalPressureEq only has values of type TotalPressure.
