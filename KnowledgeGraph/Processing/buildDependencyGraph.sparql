@@ -1,6 +1,7 @@
 # With Equation subclasses
 prefix dbn:<http://aske.ge.com/dbn#>
 prefix imp:<http://sadl.org/sadlimplicitmodel#>
+prefix sci:<http://aske.ge.com/sciknow#>
 
 
 insert {?EqCh dbn:parent ?EqPa} 
@@ -8,14 +9,14 @@ insert {?EqCh dbn:parent ?EqPa}
 where { 
     ?EqCh a ?EqClass. 
     ?EqClass rdfs:subClassOf imp:Equation. 
-    ?EqCh imp:input ?Arg. 
-    ?Arg imp:argType ?In. 
-    ?EqCh imp:output ?Oinst. 
+    ?EqCh sci:input ?Arg. 
+    ?Arg sci:argType ?In. 
+    ?EqCh sci:output ?Oinst. 
     ?Oinst a ?Out. 
     
     ?EqPa a ?EqClass1. 
     ?EqClass1 rdfs:subClassOf imp:Equation. 
-    ?EqPa imp:output ?POinst. 
+    ?EqPa sci:output ?POinst. 
     ?POinst a ?In. 
 }
 

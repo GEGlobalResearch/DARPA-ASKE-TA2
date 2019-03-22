@@ -9,7 +9,8 @@ where {
   ?Model rdfs:subClassOf sci:DBN.
   ?Model rdfs:subClassOf ?BN. 
   ?BN owl:onProperty sci:hasEquation. 
-  ?BN owl:someValuesFrom ?Eq.
+  ?BN owl:allValuesFrom ?EqClass.
+  ?Eq a ?EqClass.
   filter (?Eq in (<http://aske.ge.com/hypersonics#TotalTemperatureEq>, <http://aske.ge.com/hypersonics#StaticTempEq>, <http://aske.ge.com/hypersonics#SpeedOfSoundEq>, <http://aske.ge.com/hypersonics#MachSpeedEq>))
   ?Eq sci:input?In.
   ?In sci:argType ?Input.
@@ -40,7 +41,8 @@ where {
      filter (?Eq1 in (<http://aske.ge.com/hypersonics#TotalTemperatureEq>, <http://aske.ge.com/hypersonics#StaticTempEq>, <http://aske.ge.com/hypersonics#SpeedOfSoundEq>, <http://aske.ge.com/hypersonics#MachSpeedEq>))
    }
  }}
-  ?DBN rdfs:subClassOf ?EB. ?EB owl:onProperty sci:hasEquation.  ?EB owl:someValuesFrom ?Eq.
+  ?DBN rdfs:subClassOf ?EB. ?EB owl:onProperty sci:hasEquation.  ?EB owl:allValuesFrom ?EqClass.
+  ?Eq a ?EqClass.
   ?DBN rdfs:subClassOf ?DB. ?DB owl:onProperty sci:distribution. ?DB owl:hasValue ?Distribution.
   ?DBN rdfs:subClassOf ?RB. ?RB owl:onProperty sci:range.        ?RB owl:hasValue ?Range.
   ?Range sci:lower ?Lower.

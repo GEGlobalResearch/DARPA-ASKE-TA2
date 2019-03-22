@@ -53,13 +53,13 @@ output (a StaticTemperature)
 //assumption "altitude < 36152"
 expression (a Script with script "518.6-3.56 * altitude /1000.0", with language Text)
 .
-StaticTemperatureEq2 is a StaticTemperatureEquation 
-input (a Argument argType Altitude argName "altitude")
-//input of StaticTempEq has at least one value of type Altitude. //No, because it may be sampled?
-//assumption of StaticTempEq2 has value (a Condition (^value of Altitude <= 36152))
-output (a StaticTemperature)
-//arguments of StaticTempEq only has values of type [(an Argument with argName "alt", with argType Altitude)].
-expression (a Script with script  "518.6-3.56 * altitude /1000.0", with language Text).
+//StaticTemperatureEq2 is a StaticTemperatureEquation 
+//input (a Argument argType Altitude argName "altitude")
+////input of StaticTempEq has at least one value of type Altitude. //No, because it may be sampled?
+////assumption of StaticTempEq2 has value (a Condition (^value of Altitude <= 36152))
+//output (a StaticTemperature)
+////arguments of StaticTempEq only has values of type [(an Argument with argName "alt", with argType Altitude)].
+//expression (a Script with script  "518.6-3.56 * altitude /1000.0", with language Text).
 
 //An equation for the same output could have different inputs
 //StaticTempEq2 is a type of ^Equation.
