@@ -44,7 +44,7 @@ range of AirSpeedDBN always has value (a Range lower 0 upper 5000).
 //Equation stEq1(Altitude alt) returns StaticTemperature: a StaticTemperature.
 //stEq1 expression "518.6-3.56 * Altitude /1000.0".
 
-Ask ShowEquationReturningType: "select ?eq ?script where {?eq <http://aske.ge.com/sciknow#sciknow:output> ?sciknow:output . ?sciknow:output <rdf:type> ? . ?eq <expression> ?expr . ?expr <script> ?script}".
+Ask ShowEquationReturningType (note "takes 1 parameter, the Semantic type of the return value"): "select ?eq ?script where {?eq <sciknow:output> ?output . ?output <rdf:type> ? . ?eq <expression> ?expr . ?expr <script> ?script}".
 
 //sciknow:sciknow:input of StaticTempEq always has value (a Argument argType Altitude argName "alt").
 ////sciknow:sciknow:input of StaticTempEq has at least one value of type Altitude. //No, because it may be sampled?
