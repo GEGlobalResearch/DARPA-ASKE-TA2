@@ -41,12 +41,14 @@ range of AirSpeedDBN always has value (a Range lower 0 upper 5000).
 //stEq1 expression "518.6-3.56 * Altitude /1000.0".
 
 StaticTempEq is a ^Equation
-input (a Argument argType Altitude argName "altitude")
-output (a StaticTemperature)
-expression (a Script with script "518.6-3.56 * altitude /1000.0", with language Text)
-.
-//input of StaticTempEq always has value (a Argument argType Altitude argName "alt").
-////input of StaticTempEq has at least one value of type Altitude. //No, because it may be sampled?
+sciknow:input (a Argument argType Altitude argName "altitude")
+sciknow:output (a StaticTemperature)
+expression (a Script with script "518.6-3.56 * altitude /1000.0", with language Text).
+
+Ask ShowEquationReturningType: "select ?eq ?script where {?eq <http://aske.ge.com/sciknow#output> ?output . ?output <rdf:type> ? . ?eq <expression> ?expr . ?expr <script> ?script}".
+
+//sciknow:input of StaticTempEq always has value (a Argument argType Altitude argName "alt").
+////sciknow:input of StaticTempEq has at least one value of type Altitude. //No, because it may be sampled?
 ////assumption of StaticTempEq2 has value (a Condition (^value of Altitude <= 36152))
 //output of StaticTempEq only has values of type StaticTemperature.
 ////arguments of StaticTempEq only has values of type [(an Argument with argName "alt", with argType Altitude)].
@@ -54,7 +56,7 @@ expression (a Script with script "518.6-3.56 * altitude /1000.0", with language 
 
 //An equation for the same output could have different inputs
 //StaticTempEq2 is a type of ^Equation.
-//input of StaticTempEq2 has at most one value of type Altitude.
+//sciknow:input of StaticTempEq2 has at most one value of type Altitude.
 //output of StaticTempEq2 only has values of type StaticTemperature.
 ////assumption of StaticTempEq2 has value (a Condition (^value of Altitude > 36152) and (^value of Altitude =< 82345))
 //expression of StaticTempEq2 always has value "389.98".
@@ -66,11 +68,11 @@ distribution of StaticTempDBN always has value uniform. //should be default valu
 
 
 StaticPressureEq is a ^Equation
-input (a Argument argType Altitude argName "alt")
-output (a StaticPressure)
+sciknow:input (a Argument argType Altitude argName "alt")
+sciknow:output (a StaticPressure)
 expression (a Script with script "2116.0*((518.6-3.56*alt/1000.0)/518.6)**5.256", with language Text).
-//input of StaticPressureEq has at most one value of type Altitude.
-//output of StaticPressureEq only has values of type StaticPressure.
+//sciknow:input of StaticPressureEq has at most one value of type Altitude.
+//sciknow:output of StaticPressureEq only has values of type StaticPressure.
 //	//with expression "2116.0*(ts0/518.6)**5.256"
 //	//plugged in ts0 expresion
 //expression  of StaticPressureEq always has value "2116.0*((518.6-3.56*alt/1000.0)/518.6)**5.256".
@@ -82,11 +84,11 @@ distribution of StaticPressureDBN always has value uniform.
 
 
 SpeedOfSoundEq is a ^Equation
-input (a Argument argType StaticTemperature argName "ts0")
-output (a SpeedOfSound)
+sciknow:input (a Argument argType StaticTemperature argName "ts0")
+sciknow:output (a SpeedOfSound)
 expression (a Script with script "(1.4*1718.0*ts0)**0.5", with language Text).
-//input of SpeedOfSoundEq has at most one value of type StaticTemperature.
-//output of SpeedOfSoundEq only has values of type SpeedOfSound.
+//sciknow:input of SpeedOfSoundEq has at most one value of type StaticTemperature.
+//sciknow:output of SpeedOfSoundEq only has values of type SpeedOfSound.
 //expression  of SpeedOfSoundEq always has value "(1.4*1718.0*ts0)**0.5".
 
 SpeedOfSoundDBN is a type of DBN.
@@ -95,12 +97,12 @@ range of SpeedOfSoundDBN always has value (a Range with lower -200 with upper 20
 distribution of SpeedOfSoundDBN always has value uniform.
 
 MachSpeedEq is a ^Equation
-input (a Argument argType AirSpeed argName "u0")
-input (a Argument argType SpeedOfSound argName "a0")
-output (a MachSpeed)
+sciknow:input (a Argument argType AirSpeed argName "u0")
+sciknow:input (a Argument argType SpeedOfSound argName "a0")
+sciknow:output (a MachSpeed)
 expression (a Script with script "u0/5280.0 * 3600.0 / a0", with language Text).
-//input of MachSpeedEq has at most one value of type SpeedOfSound.
-//output of MachSpeedEq only has values of type MachSpeed.
+//sciknow:input of MachSpeedEq has at most one value of type SpeedOfSound.
+//sciknow:output of MachSpeedEq only has values of type MachSpeed.
 //expression  of MachSpeedEq always has value "u0/5280.0 * 3600.0 / a0".
 
 MachSpeedDBN is a type of DBN.
@@ -110,13 +112,13 @@ distribution of MachSpeedDBN always has value uniform.
 
 
 TotalTemperatureEq is a ^Equation
-input (a Argument argType StaticTemperature argName "ts0")
-input (a Argument argType MachSpeed argName "mach")
-output (a TotalTemperature)
+sciknow:input (a Argument argType StaticTemperature argName "ts0")
+sciknow:input (a Argument argType MachSpeed argName "mach")
+sciknow:output (a TotalTemperature)
 expression (a Script with script "ts0*(1.0 + 0.5*(1.4-1.0)*mach*mach)", with language Text).
-//input of TotalTemperatureEq has at most one value of type StaticTemperature.
-//input of TotalTemperatureEq has at most one value of type MachSpeed.
-//output of TotalTemperatureEq only has values of type TotalTemperature.
+//sciknow:input of TotalTemperatureEq has at most one value of type StaticTemperature.
+//sciknow:input of TotalTemperatureEq has at most one value of type MachSpeed.
+//sciknow:output of TotalTemperatureEq only has values of type TotalTemperature.
 //expression  of TotalTemperatureEq always has value "ts0*(1.0 + 0.5*(1.4-1.0)*mach*mach)".
 
 TotalTemperatureDBN is a type of DBN.
@@ -125,13 +127,13 @@ range of TotalTemperatureDBN always has value (a Range with lower -200 with uppe
 distribution of TotalTemperatureDBN always has value uniform.
 
 TotalPressureEq is a ^Equation
-input (a Argument argType StaticPressure argName "ps0")
-input (a Argument argType MachSpeed argName "mach")
-output (a TotalPressure)
+sciknow:input (a Argument argType StaticPressure argName "ps0")
+sciknow:input (a Argument argType MachSpeed argName "mach")
+sciknow:output (a TotalPressure)
 expression (a Script with script "ps0*(1.0 + 0.5*(1.4-1.0)*mach*mach)**(1.4/(1.4-1.0))", with language Text).
-//input of TotalPressureEq has at most one value of type StaticPressure.
-//input of TotalPressureEq has at most one value of type MachSpeed.
-//output of TotalPressureEq only has values of type TotalPressure.
+//sciknow:input of TotalPressureEq has at most one value of type StaticPressure.
+//sciknow:input of TotalPressureEq has at most one value of type MachSpeed.
+//sciknow:output of TotalPressureEq only has values of type TotalPressure.
 //expression  of TotalPressureEq always has value "ps0*(1.0 + 0.5*(1.4-1.0)*mach*mach)**(1.4/(1.4-1.0))".
 
 TotalPressureDBN is a type of DBN.
@@ -143,8 +145,8 @@ distribution of TotalPressureDBN always has value uniform.
 
 //An instance equation with given input. This would come from a query?
 //stTempEq1 is a StaticTempEq
-//	with input (a Altitude with ^value 10000)
-//	//with output (a StaticTemperature)
+//	with sciknow:input (a Altitude with ^value 10000)
+//	//with sciknow:output (a StaticTemperature)
 //	.
 
 //totalPressureEq is an ^Equation

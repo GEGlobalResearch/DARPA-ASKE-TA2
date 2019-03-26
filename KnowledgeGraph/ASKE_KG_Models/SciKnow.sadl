@@ -14,8 +14,8 @@ ComputationalGraph is a class.
 Argument is a class.
 argType describes Argument with a single value of type ScientificConcept.
 argName describes Argument with a single value of type string.
-input describes ^Equation with values of type Argument.
-output describes ^Equation with values of type ScientificConcept.
+sciknow:input describes ^Equation with values of type Argument.
+sciknow:output describes ^Equation with values of type ScientificConcept.
 
 Condition is a class.
 

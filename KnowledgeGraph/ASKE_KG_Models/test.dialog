@@ -14,12 +14,10 @@ import "http://sadl.org/TableAndEquation.sadl".
 //
 //what is MachSpeed?
 
-//what is the ^value of StaticTemperature when the ^value of Altitude is 30000?
-
+//what is the ^value of TotalTemperature when the ^value of Altitude is 30000?
+//What is MachSpeed?
 
 //what is the ^value of Altitude when the ^value of StaticTemperature is 800?
-
-
 
 //Ask select m where m is a DBNCM: "Failed to find results".
 
@@ -40,7 +38,9 @@ import "http://sadl.org/TableAndEquation.sadl".
 Doc1 is a Dataset with column (a CSVColumn header "Alt" variable Altitude)
 with column (a CSVColumn header "u0" variable AirSpeed)
 with column (a CSVColumn header "tt" variable TotalTemperature)
-with location "file://aske/files/doc1.csv".
+with location "file://aske/files/doc1.csv".CM: "'v0' = null, 'v1' = null, 'v2' = null, 'v3' = null".
+
+
 
 //Doc2 is the int List [2,3,4].
 //Doc3 is a table [double alt (alias "Alt") (Altitude {"ft"}), double u0 (AirSpeed {"mph"}), double tt (TotalTemperature {"R"})] with data located at "http://somewhere".
@@ -53,32 +53,6 @@ with location "file://aske/files/doc1.csv".
 // ask for models that "match" this dataset
 
 
+//Ask FindEquationMatchingSemanticType: [TotalTemperature].
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//Ask ShowEquationReturningType: [TotalTemperature].
