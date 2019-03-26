@@ -1,6 +1,7 @@
 prefix imp:<http://sadl.org/sadlimplicitmodel#>
 prefix sci:<http://aske.ge.com/sciknow#>
 prefix dbn:<http://aske.ge.com/dbn#>
+prefix mm:<http://aske.ge.com/metamodel#>
 
 # Retrieve Models
 select distinct ?Model ?Input (str(?Label) as ?InputLabel) ?Output (str(?expr) as ?ModelForm)
@@ -8,33 +9,53 @@ where {
   ?Model rdfs:subClassOf sci:DBN.
   ?Model rdfs:subClassOf ?BN. 
   ?BN owl:onProperty sci:hasEquation. 
-  ?BN owl:someValuesFrom ?Eq.
+  ?BN owl:allValuesFrom ?EqClass.
+  ?Eq a ?EqClass.
   filter (?Eq in (<http://aske.ge.com/hypersonics#TotalTemperatureEq>, <http://aske.ge.com/hypersonics#StaticTempEq>, <http://aske.ge.com/hypersonics#SpeedOfSoundEq>, <http://aske.ge.com/hypersonics#MachSpeedEq>))
-  ?Eq imp:input/imp:argType ?Input.
-  ?Eq imp:input/imp:argName ?Label.
-  ?Eq imp:output ?Oinst.
+  ?Eq sci:input?In.
+  ?In sci:argType ?Input.
+  ?In sci:argName ?Label.
+  ?Eq sci:output ?Oinst.
   ?Oinst a ?Output.
-  ?Eq imp:expression ?expr.
+  ?Eq imp:expression ?Scr.
+  ?Scr imp:script ?expr.
 } order by ?Model
 
+
 # Retrieve Nodes
-select distinct ?Node ?Child ?Distribution where {
+select distinct ?Node ?Child ?Distribution ?Lower ?Upper ?Value 
+from <http://kd.ge.com/aske2>
+from <http://kd.ge.com/md>
+where {
  {select distinct ?Eq ?Node ?Child where {
-   ?Eq imp:input/imp:argType ?Node.
-   ?Eq imp:output ?Oinst. ?Oinst a ?Child.
+   ?Eq sci:input/sci:argType ?Node.
+   ?Eq sci:output ?Oinst. ?Oinst a ?Child.
    filter (?Eq in (<http://aske.ge.com/hypersonics#TotalTemperatureEq>, <http://aske.ge.com/hypersonics#StaticTempEq>, <http://aske.ge.com/hypersonics#SpeedOfSoundEq>, <http://aske.ge.com/hypersonics#MachSpeedEq>))
  }}
  union
  { select distinct ?Eq ?Node where {
-   ?Eq imp:output ?Oi. ?Oi a ?Node.
+   ?Eq sci:output ?Oi. ?Oi a ?Node.
    filter (?Eq in (<http://aske.ge.com/hypersonics#TotalTemperatureEq>, <http://aske.ge.com/hypersonics#StaticTempEq>, <http://aske.ge.com/hypersonics#SpeedOfSoundEq>, <http://aske.ge.com/hypersonics#MachSpeedEq>))
    filter not exists {
-     ?Eq1 imp:input/imp:argType ?Node.
+     ?Eq1 sci:input/sci:argType ?Node.
      filter (?Eq1 in (<http://aske.ge.com/hypersonics#TotalTemperatureEq>, <http://aske.ge.com/hypersonics#StaticTempEq>, <http://aske.ge.com/hypersonics#SpeedOfSoundEq>, <http://aske.ge.com/hypersonics#MachSpeedEq>))
    }
  }}
-  ?DBN rdfs:subClassOf ?EB. ?EB owl:onProperty sci:hasEquation.  ?EB owl:someValuesFrom ?Eq.
+  ?DBN rdfs:subClassOf ?EB. ?EB owl:onProperty sci:hasEquation.  ?EB owl:allValuesFrom ?EqClass.
+  ?Eq a ?EqClass.
   ?DBN rdfs:subClassOf ?DB. ?DB owl:onProperty sci:distribution. ?DB owl:hasValue ?Distribution.
+  ?DBN rdfs:subClassOf ?RB. ?RB owl:onProperty sci:range.        ?RB owl:hasValue ?Range.
+  ?Range sci:lower ?Lower.
+  ?Range sci:upper ?Upper.
+  #?CG mm:subgraph/mm:cgraph ?DBNI.
+  ?Q mm:execution/mm:compGraph ?CG.
+  filter (?CG in (<http://aske.ge.com/metamodel#CG_1552404980768>)).
+  #?DBNI a ?DBN.
+     optional{
+     #?Q mm:execution/mm:compGraph ?CG.
+     ?Q mm:input ?II.
+     ?II a ?Node.
+     ?II imp:value ?Value.}  
 } order by ?Node
 
 

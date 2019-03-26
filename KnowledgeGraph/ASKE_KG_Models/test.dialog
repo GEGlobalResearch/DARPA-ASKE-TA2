@@ -7,17 +7,32 @@ import "http://aske.ge.com/sciknow" .
 import "http://sadl.org/TableAndEquation.sadl".
 
 //what is the ^value of TotalTemperature and the ^value of TotalPressure when the ^value of Altitude is 30000 and the ^value of AirSpeed is 1000?
-//
+
+
+
 //what is the ^value of MachSpeed when the ^value of Altitude is 30000 and the ^value of AirSpeed is 2000?
 //
 //what is the ^value of MachSpeed when the ^value of Altitude is 30000?
 //
 //what is MachSpeed?
 
-//what is the ^value of TotalTemperature when the ^value of Altitude is 30000?
-//What is MachSpeed?
+//what is the ^value of StaticTemperature when the ^value of Altitude is 30000?
 
-//what is the ^value of Altitude when the ^value of StaticTemperature is 800?
+//what is the ^value of TotalTemperature when the ^value of Altitude is 30000?
+
+
+//what is the TotalTemperature when the Altitude is 30000?
+ 
+//what is the ttemp of (an Air) when altitude of the Air is (a Altitude with ^value 30000)? 
+
+//Doc1 is a Dataset with column (a CSVColumn header "Alt" variable Altitude)
+//with column (a CSVColumn header "u0" variable AirSpeed)
+//with column (a CSVColumn header "tt" variable TotalTemperature)
+//with location "file://aske/files/doc1.csv".
+
+
+//what is the ^value of Altitude when the ^value of TotalTemperature is 800?
+
 
 //Ask select m where m is a DBNCM: "Failed to find results".
 
@@ -25,28 +40,27 @@ import "http://sadl.org/TableAndEquation.sadl".
 //Ask select eq where ccg has subgraph s1 and s1 has cgraph dbn and dbn has hasEquation eq.
 
 
-//what is the ^value of ((a StaticTemperature)  of (a Aircraft)) when the ^value of (an Altitude) of the Aircraft is 30000?
+//what is the ^value of ((a StaticTemperature)  of (a Air)) when the ^value of (an Altitude) of the Air is 30000?CM: 
+ 
+
 
 //what is the ^value of altitude of (a Aircraft)? 
 
 //Ask: select ?x where {?x ?y ?z}".
 
+//Ask "construct  {?x ?y ?z} where {?x ?y ?z}".
 
-//what is the area of (a Circle) when the radius of the Circle is 100?
+//what is the area of (a Circle) when the radius of the Circle is 100?CM: 
+
 //What is the area of a Circle with radius 2?CM: "Failed to find results".
-
-Doc1 is a Dataset with column (a CSVColumn header "Alt" variable Altitude)
-with column (a CSVColumn header "u0" variable AirSpeed)
-with column (a CSVColumn header "tt" variable TotalTemperature)
-with location "file://aske/files/doc1.csv".CM: "'v0' = null, 'v1' = null, 'v2' = null, 'v3' = null".
-
-
 
 //Doc2 is the int List [2,3,4].
 //Doc3 is a table [double alt (alias "Alt") (Altitude {"ft"}), double u0 (AirSpeed {"mph"}), double tt (TotalTemperature {"R"})] with data located at "http://somewhere".
 //Doc4 is a table [double Alt (Altitude), double u0 (AirSpeed), double tt (TotalTemperature)].
 
 //Find a model for Doc3.
+
+//What is the area of a Circle with radius 2?
 
 
 //Ask "select distinct ?colname ?typ where {<http://sadl.org/TableAndEquation.sadl#Doc3> <columnDescriptors> ?cdlist . ?cdlist <http://jena.hpl.hp.com/ARQ/list#member> ?member . ?member <descriptorName> ?colname . ?member <augmentedType> ?augtype . ?augtype <semType> ?typ}".
