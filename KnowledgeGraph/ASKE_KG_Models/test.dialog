@@ -37,7 +37,6 @@ import "http://sadl.org/TableAndEquation.sadl".
 
 //what is the ^value of TotalPressure when the ^value of Altitude is 30000?
 
-
 //Doc1 is a Dataset with column (a CSVColumn header "Alt" variable Altitude)
 //with column (a CSVColumn header "u0" variable AirSpeed)
 //with column (a CSVColumn header "tt" variable TotalTemperature)
@@ -66,11 +65,6 @@ import "http://sadl.org/TableAndEquation.sadl".
 
 //What is the area of a Circle with radius 2?CM: "Failed to find results".
 
-//Doc1 is a Dataset with column (a CSVColumn header "Alt" variable Altitude)
-//with column (a CSVColumn header "u0" variable AirSpeed)
-//with column (a CSVColumn header "tt" variable TotalTemperature)
-//with location "file://aske/files/doc1.csv".
-
 //Doc2 is the int List [2,3,4].
 //Doc3 is a table [double alt (alias "Alt") (Altitude {"ft"}), double u0 (AirSpeed {"mph"}), double tt (TotalTemperature {"R"})] with data located at "http://somewhere".
 //Doc4 is a table [double Alt (Altitude), double u0 (AirSpeed), double tt (TotalTemperature)].
@@ -83,32 +77,18 @@ import "http://sadl.org/TableAndEquation.sadl".
 // ask for models that "match" this dataset
 
 
+//Ask FindEquationMatchingSemanticType: [TotalTemperature].
+
+//Ask ShowEquationReturningType: [TotalTemperature].
+//CM: "'eq' = 'http://aske.ge.com/hypersonics#TotalTemperatureEq', 'script' = 'ts0*(1.0 + 0.5*(1.4-1.0)*mach*mach)'".
+
+
+//what is ShowEquationReturningType?: 
+//CM: ShowEquationReturningType  (note 'takes 1 parameter, the Semantic type of the return value') is a NamedQuery.
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//ask "select ?p ?v where {<http://aske.ge.com/hypersonics#ShowEquationReturningType> ?p ?v}"?
+//CM: "'p','v'
+//'http://www.w3.org/2000/01/rdf-schema#comment','takes 1 parameter, the Semantic type of the return value'
+//'http://www.w3.org/1999/02/22-rdf-syntax-ns#type','http://sadl.org/sadlimplicitmodel#NamedQuery'".

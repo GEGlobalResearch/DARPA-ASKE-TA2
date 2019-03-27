@@ -8,6 +8,16 @@
  Doc3 is a table [double alt (alias "Alt") (Altitude {"ft"}), double u0 (AirSpeed {"mph"}), double tt (StaticTemperature {"R"})] with data located at "http://somewhere".
  Doc4 is a table [double alt2 (alias "Alt") (Altitude {"ft"}), double u02 (AirSpeed {"mph"}), double tt2 (TotalTemperature {"R"})] with data located at "http://somewhere".
  
+// Ask FindEquationMatchingSemanticType: "select ?sc where {? <rdfs:subClassOf> ?sc}". 
+// 
+//// Ask FindEquationMatchingSemanticType. 
+// 
+// Ask FindEquationMatchingSemanticType: [hypersonics:TotalTemperature]. 
+
+Ask FindEquationMatchingSemanticType: "select ?eq where {?eq <returnTypes> ?retlist . ?retlist <http://jena.hpl.hp.com/ARQ/list#member> ?member .
+	?member <augmentedType> ?augtype . ?augtype <semType> ?}".
+
+ 
 // Ask: "select ?eq ?name ?argsemtype where {
 //	{select ?eq ?name ?argsemtype where {?eq <arguments> ?arglist . ?arglist <http://jena.hpl.hp.com/ARQ/list#member> ?member .
 //	?member <descriptorName> ?name . ?member <augmentedType> ?augtype . ?augtype <semType> ?argsemtype}}
@@ -225,25 +235,25 @@
 //	OPTIONAL{?member <descriptorName> ?argname} . ?member <augmentedType> ?augtype . ?augtype <semType> ?argsemtype .
 //	VALUES ?argsemtype {<TotalTemperature> <AirSpeed> <Altitude>}	}}
 //	}".	
-Ask: "select distinct ?eq ?argname ?argsemtype where {
-	{select ?eq ?argname ?argsemtype where {?eq <arguments> ?arglist . ?arglist <http://jena.hpl.hp.com/ARQ/list#member> ?member .
-	?member <descriptorName> ?argname . ?member <augmentedType> ?augtype . ?augtype <semType> ?argsemtype
-	}}
-	UNION
-	{select ?eq ?argname ?argsemtype where {?eq <returnTypes> ?retlist . ?retlist <http://jena.hpl.hp.com/ARQ/list#member> ?member .
-	OPTIONAL{?member <descriptorName> ?argname} . ?member <augmentedType> ?augtype . ?augtype <semType> ?argsemtype .
-	}}
-	. 	VALUES ?argsemtype {<TotalTemperature> <AirSpeed> <Altitude>}
-	}".	
-	
-Ask: "select distinct ?eq ?argname ?argsemtype where {
-	{select ?eq ?argname ?argsemtype where {?eq <arguments> ?arglist . ?arglist <http://jena.hpl.hp.com/ARQ/list#member> ?member . 	
-	?member <descriptorName> ?argname . ?member <augmentedType> ?augtype . ?augtype <semType> ?argsemtype	
-	}}	
-	UNION	
-	{select ?eq ?argname ?argsemtype where {?eq <returnTypes> ?retlist . ?retlist <http://jena.hpl.hp.com/ARQ/list#member> ?member . 	
-	OPTIONAL{?member <descriptorName> ?argname} . ?member <augmentedType> ?augtype . ?augtype <semType> ?argsemtype .
-	}}
-	. 	VALUES ?argsemtype {<http://aske.ge.com/hypersonics#Altitude> <http://aske.ge.com/hypersonics#AirSpeed>}
-	}".
+//Ask: "select distinct ?eq ?argname ?argsemtype where {
+//	{select ?eq ?argname ?argsemtype where {?eq <arguments> ?arglist . ?arglist <http://jena.hpl.hp.com/ARQ/list#member> ?member .
+//	?member <descriptorName> ?argname . ?member <augmentedType> ?augtype . ?augtype <semType> ?argsemtype
+//	}}
+//	UNION
+//	{select ?eq ?argname ?argsemtype where {?eq <returnTypes> ?retlist . ?retlist <http://jena.hpl.hp.com/ARQ/list#member> ?member .
+//	OPTIONAL{?member <descriptorName> ?argname} . ?member <augmentedType> ?augtype . ?augtype <semType> ?argsemtype .
+//	}}
+//	. 	VALUES ?argsemtype {<TotalTemperature> <AirSpeed> <Altitude>}
+//	}".	
+//	
+//Ask: "select distinct ?eq ?argname ?argsemtype where {
+//	{select ?eq ?argname ?argsemtype where {?eq <arguments> ?arglist . ?arglist <http://jena.hpl.hp.com/ARQ/list#member> ?member . 	
+//	?member <descriptorName> ?argname . ?member <augmentedType> ?augtype . ?augtype <semType> ?argsemtype	
+//	}}	
+//	UNION	
+//	{select ?eq ?argname ?argsemtype where {?eq <returnTypes> ?retlist . ?retlist <http://jena.hpl.hp.com/ARQ/list#member> ?member . 	
+//	OPTIONAL{?member <descriptorName> ?argname} . ?member <augmentedType> ?augtype . ?augtype <semType> ?argsemtype .
+//	}}
+//	. 	VALUES ?argsemtype {<http://aske.ge.com/hypersonics#Altitude> <http://aske.ge.com/hypersonics#AirSpeed>}
+//	}".
 	
