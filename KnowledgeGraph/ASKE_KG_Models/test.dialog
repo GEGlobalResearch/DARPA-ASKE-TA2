@@ -18,16 +18,24 @@ import "http://sadl.org/TableAndEquation.sadl".
 
 //what is the ^value of StaticTemperature when the ^value of Altitude is 30000?
 
+
 //what is the ^value of TotalTemperature when the ^value of Altitude is 30000?
 
 
-//what is the TotalTemperature when the Altitude is 30000?
- 
+//What is StaticTemperature?
+
+//Find a model for Doc3.
 
 
+//what is the ^value of MachSpeed when the ^value of Altitude is 10000?
 
-//what is the ttemp of (an Air) when altitude of the Air is (a Altitude with ^value 30000)? 
+//what is the ^value of AirSpeed when the ^value of Altitude is 10000?
 
+
+//what is the ^value of StaticPressure when the ^value of Altitude is 10000?
+
+
+//what is the ^value of TotalPressure when the ^value of Altitude is 30000?
 
 
 //Doc1 is a Dataset with column (a CSVColumn header "Alt" variable Altitude)
@@ -36,8 +44,7 @@ import "http://sadl.org/TableAndEquation.sadl".
 //with location "file://aske/files/doc1.csv".
 
 
-//what is the ^value of Altitude when the ^value of TotalTemperature is 800?
-
+//what is the ^value of Altitude when the ^value of TotalTemperature is 100?
 
 //Ask select m where m is a DBNCM: "Failed to find results".
 
@@ -68,7 +75,6 @@ import "http://sadl.org/TableAndEquation.sadl".
 //Doc3 is a table [double alt (alias "Alt") (Altitude {"ft"}), double u0 (AirSpeed {"mph"}), double tt (TotalTemperature {"R"})] with data located at "http://somewhere".
 //Doc4 is a table [double Alt (Altitude), double u0 (AirSpeed), double tt (TotalTemperature)].
 
-//Find a model for Doc3.
 
 //What is the area of a Circle with radius 2?
 
