@@ -26,6 +26,10 @@ public class DbnJsonGenerator {
 	public JSONObject dbn_nodes;
 
 	public HashMap<String, String> variableShortNameMap;
+
+	public String dbnExecMode;
+	public boolean hypothesis;
+
 	/**
 	 * Constructors
 	 */
@@ -64,6 +68,14 @@ public class DbnJsonGenerator {
 		dbn_all.put("workDir", prop.getWorkDirRoot());
 
 		initializeAnalyticSettings(prop);
+		hypothesis = false;
+	}
+
+	/**
+	 * Set the execution mode for the DBN (e.g. 'prognostic', 'calibration', 'explanation', etc.
+	 */
+	public void setExecutionMode(String mode) {
+		dbnExecMode = mode;
 	}
 
 	/**
@@ -91,6 +103,41 @@ public class DbnJsonGenerator {
 		dbn_all.put("analyticSettings", analyticSettings);
 	}
 
+	/**
+	 * Update the ObservationData for hypothesis testing
+	 */
+	public void updateObservationData(JSONObject obsData) throws Exception {
+		
+	    if (!obsData.isEmpty()) {
+		Table table = Table.fromJson(obsData);
+
+		JSONObject ObservationData = new JSONObject();
+		JSONObject Data = new JSONObject();
+
+		String[] colNames = table.getColumnNames();
+		for (String colName : colNames) {
+			JSONArray values = new JSONArray();
+			for (int row = 0; row < table.getNumRows(); row++) {
+				values.add(table.getCellAsFloat(row, colName));
+			}
+			for (String s : variableShortNameMap.keySet()) {
+				String sNoURI = s.substring(s.indexOf("#") + 1);
+				if (sNoURI.equals(colName)) {
+					Data.put(variableShortNameMap.get(s), values);
+				}
+			}
+		}	
+		ObservationData.put("Data", Data);
+
+		JSONObject analyticSettings = (JSONObject) dbn_all.get("analyticSettings");
+		analyticSettings.put("ObservationData", ObservationData);
+		dbn_all.put("analyticSettings", analyticSettings);
+
+		hypothesis = true;
+	    }
+
+	}
+		
 	public JSONObject createInitialDBNSetup() {
 		JSONObject dbnSetup = new JSONObject();
 
@@ -98,7 +145,7 @@ public class DbnJsonGenerator {
 		dbnSetup.put("NumberOfSamples", 500);
 		dbnSetup.put("PlotFlag", false);
 		dbnSetup.put("TrackingTimeSteps", 1);
-		dbnSetup.put("TaskName", "Prognosis");
+		dbnSetup.put("TaskName", "Prognosis");		// or 'Calibration' -- apparently, this does not matter
 		
 		JSONObject pfOptions = new JSONObject();
 		pfOptions.put("NodeNamesNotRecorded", new JSONArray());
@@ -226,6 +273,28 @@ public class DbnJsonGenerator {
 			nodeObject.put("Children", childrenJsonArr);
 
 			dbnNodes.put(variableShortNameMap.get(nodeName), nodeObject);
+
+			String[] value = filteredtable.getColumnUniqueValues("Value");
+			if (value.length > 0 && !value[0].isEmpty() && value[0] != "") {
+				// Possibly, a calibration task
+				JSONObject obsNodeObject = new JSONObject();
+				obsNodeObject.put("Type", "Stochastic_Transient_Observation");
+				obsNodeObject.put("Tag", new JSONArray());
+				obsNodeObject.put("Distribution", "Normal");
+				JSONObject distParams = new JSONObject();
+				distParams.put("mu", variableShortNameMap.get(nodeName));
+				distParams.put("sigma", 0.05);		// TODO: Confirm is hardcoding this is ok
+				obsNodeObject.put("DistributionParameters", distParams);
+				JSONArray obsParentJsonArr = new JSONArray();
+				obsParentJsonArr.add(variableShortNameMap.get(nodeName));
+				obsNodeObject.put("Parents", obsParentJsonArr);
+				obsNodeObject.put("ObservationNoise", 0.05);
+				JSONArray values = new JSONArray();
+				values.add(Double.parseDouble(value[0]));
+				obsNodeObject.put("ObservationData", values);
+
+				dbnNodes.put(variableShortNameMap.get(nodeName) + "_obs", obsNodeObject);
+			}
 		    }
 		}
 
@@ -235,7 +304,6 @@ public class DbnJsonGenerator {
 			nodeObject.put("Type", "Stochastic_Transient");
 			nodeObject.put("Tag", new JSONArray());
 			nodeObject.put("InitialChildren", new JSONArray());	// TODO: Confirm if this is ok
-			nodeObject.put("IsDistributionFixed", true);	// TODO: Confirm if this is ok
 			
 			nodeObject.put("Parents", new JSONArray());
 			Table filteredtable = table.getSubsetWhereMatches("Node", nodeName);
@@ -265,8 +333,13 @@ public class DbnJsonGenerator {
 			range.add(Double.parseDouble(upper[0]));
 			nodeObject.put("Range", range);
 			JSONArray values = new JSONArray();
-			if (!value[0].isEmpty() && value[0] != "")
+			if (!hypothesis)
+				nodeObject.put("IsDistributionFixed", true);
+			if (!value[0].isEmpty() && value[0] != "") {
 				values.add(Double.parseDouble(value[0]));
+			} else if (dbnExecMode.equals("calibration") && !hypothesis) {
+				nodeObject.put("IsDistributionFixed", false);
+			}
 			nodeObject.put("ObservationData", values);
 		    }
 		}
