@@ -29,20 +29,27 @@ public class ServiceController {
 	@CrossOrigin
 	@RequestMapping(value="/SADLResultSetToJson", method=RequestMethod.POST)
 	public JSONObject convertCSVStrToJson (@RequestParam(name="nodes") String nodes,
-					       @RequestParam(name="models") String models) throws Exception {
+					       @RequestParam(name="models") String models,
+					       @RequestParam(name="mode") String executionMode,
+					       @RequestParam(name="data") String data) throws Exception {
 		
 		JSONObject nodesJSON = new JSONObject();
 		JSONObject modelsJSON = new JSONObject();
+		JSONObject dataJSON = new JSONObject();
 
 		if (nodes != null && !nodes.isEmpty()) 
 			nodesJSON = Utility.createTable(nodes).toJson();
 		if (models != null && !models.isEmpty()) 
 			modelsJSON = Utility.createTable(models).toJson();
+		if (data != null && !data.isEmpty()) 
+			dataJSON = Utility.createTable(data).toJson();
 
 		JSONObject resultSetJSON = new JSONObject();
 
 		resultSetJSON.put("nodes", nodesJSON);
 		resultSetJSON.put("models", modelsJSON);
+		resultSetJSON.put("mode", executionMode);
+		resultSetJSON.put("data", dataJSON);
 
 		return resultSetJSON;
 	}
@@ -55,7 +62,11 @@ public class ServiceController {
 
                 generator.initializeJSON(prop);
 
+                generator.setExecutionMode((String)sadlResultSet.get("mode"));
+
 		generator.createModelObject(Utility.getJsonFromMap((LinkedHashMap)sadlResultSet.get("models")));
+
+		generator.updateObservationData(Utility.getJsonFromMap((LinkedHashMap)sadlResultSet.get("data")));
 
 		generator.createNodeObject(Utility.getJsonFromMap((LinkedHashMap)sadlResultSet.get("nodes")));
 
