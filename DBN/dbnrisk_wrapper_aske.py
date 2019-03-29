@@ -31,7 +31,6 @@ from gedbn.runDBN import run
 from gedbn.Postprocessing import postprocessing_PF
 
 from flask import Flask, request, Response, jsonify
-from flask_json_multidict import get_json_multidict
 
 #%%%
 def RunDBNRisk(ubl_input,log_instance):
@@ -39,7 +38,8 @@ def RunDBNRisk(ubl_input,log_instance):
     if ubl_input['analyticSettings']['DBNSetup']['WorkDir']!=work_dir:
         ubl_input['analyticSettings']['DBNSetup']['WorkDir'] = work_dir + '/'
         ubl_input['analyticSettings']['DBNSetup']['ParticleFilterOptions']['BackendFname'] = work_dir + '/Results/'
-    model_details = copy.deepcopy(ubl_input)      
+    #model_details = copy.deepcopy(ubl_input)
+    model_details = {}
     model_details['modelStatus'] = ""        
 
     # Generate input json to DBN
@@ -67,6 +67,22 @@ def RunDBNRisk(ubl_input,log_instance):
     log_instance.info("Total number of particles = %d"%(number_samples))
 
     pfdbn = run(DBN_setup_file, n_steps, number_samples, log_instance)
+
+    dbn_model_results = pickle.load(open(os.path.join(work_dir,'Results/dbn_model_latest.pkl'),'r'))
+    nodeIndices = [x in dbn_model_results.keys() or x+'_outputs' in dbn_model_results.keys() for x in ubl_input['analyticSettings']['Nodes'].keys()]
+    results = {}
+    for ind, node in enumerate(ubl_input['analyticSettings']['Nodes'].keys()):
+        results[node] = {}
+        if nodeIndices[ind]:
+            if node in dbn_model_results.keys():
+                nodename = node
+            elif node+'_outputs' in dbn_model_results.keys():
+                nodename = node+'_outputs'
+
+            results[node]['mean'] = np.mean(dbn_model_results[nodename][0])
+            results[node]['std'] = np.std(dbn_model_results[nodename][0])
+
+    model_details['results'] = results
 
     model_details['modelStatus'] = 'Success'
     model_details['statusMessage'] = 'DBN risk assessment completed successfully.'
@@ -170,6 +186,8 @@ def runDBN(ubl_input,log_instance):
     logging.basicConfig(format='%(message)s',filename=logFilePath,filemode='w',level=logging.INFO)
     #sl = StreamToLogger(log_instance, logging.INFO)
     #sys.stdout = sl
+    
+    line = '==============================================================================='
 
     log_instance.info(line)
     log_instance.info('Local time: %s'%(time.strftime("%a %b %d %H:%M:%S %Y")))
@@ -178,14 +196,18 @@ def runDBN(ubl_input,log_instance):
 
     sys.path.append(ubl_input['workDir'])
     
+    print 'inside runDBN'
+    
     model_details, pfdbn = RunDBNRisk(ubl_input,log_instance)
     
-    work_dir = ubl_input['workDir']
-    json_file_name = 'Results/node_statistics.json'
-    node_stats = json.load(open(os.path.join(work_dir,json_file_name),'rb'))
+    print 'Ran runDBNRisk'
     
-    model_details['results'] = {}
-    model_details['results']['nodeStatistics'] = node_stats
+    # work_dir = ubl_input['workDir']
+    # json_file_name = 'Results/node_statistics.json'
+    # node_stats = json.load(open(os.path.join(work_dir,json_file_name),'rb'))
+    #
+    # model_details['results'] = {}
+    # model_details['results']['nodeStatistics'] = node_stats
     
     modelFilesList = []
     modelFilesTypeList = []
@@ -199,23 +221,88 @@ def runDBN(ubl_input,log_instance):
 # Create Flask application object
 app = Flask(__name__)
 
-@app.route('/run',methods = ['POST'])
-def run():
+@app.route('/hello',methods=['POST'])
+def hello():
+    print "Welcome to ASKE Execution Bot! Let's do some queries!"
+    return json.dumps({"modelStatus": "Success", "statusMessage": "Welcome to ASKE Execution Bot! Let's do some queries!"})
+
+@app.route('/process',methods = ['POST'])
+def process():
     # Read input json data
-    in_json = request.json
-    ubl_input = json.loads(in_json,cls=Decoder)
-    log_instance = logging.getLogger('root')
-    model_details, pfdbn = runDBN(ubl_input,log_instance)
-    #print output_dict
-    # Return data in json format
-    output_json = json.dumps(model_details)
-    output_response = Response(output_json, status = 200,
-                               mimetype = 'application/json')
-    
-    log_instance.info("Successfully wrote %s"%(model_details_json_filename))
-    log_instance.info('Local time: %s'%(time.strftime("%a %b %d %H:%M:%S %Y")))
-    log_instance.info('DBN risk assessment %s has finished.'%task_name)
-    return  output_response
+    try:
+        log_instance = logging.getLogger('root')
+    except Exception:
+        error_message = traceback.format_exc()
+        output_json = {}
+        output_json['modelStatus'] = 'Failure'
+        output_json['statusMessage'] = error_message + ' Issues with folders for model execution, exiting...'
+        output_response = Response(output_json, status=500,
+                                   mimetype='application/json')
+        return output_response
+    try:
+        in_json = request.json
+        #print in_json
+        ubl_input = json.loads(in_json,cls=Decoder)
+
+    except Exception:
+        #Error in reading in the json
+        error_message = traceback.format_exc()
+
+        output_json = {}
+        output_json['modelStatus'] = 'Failure'
+        output_json['statusMessage'] = error_message + ' Issues with the input json, exiting...'
+        output_response = Response(output_json, status=500,
+                                   mimetype='application/json')
+        return output_response
+    try:
+        model_details, pfdbn = runDBN(ubl_input,log_instance)
+        #print output_dict
+        # Return data in json format
+        print 'Completed dbn run, extracted info'
+        output_json = json.dumps(model_details)
+        task_name = ubl_input['taskName']
+        print output_json
+        output_response = Response(output_json, status = 200,
+                                   mimetype = 'application/json')
+        
+        #log_instance.info("Successfully wrote %s"%(model_details_json_filename))
+        log_instance.info('Local time: %s'%(time.strftime("%a %b %d %H:%M:%S %Y")))
+        log_instance.info('DBN risk assessment %s has finished.'%task_name)
+        logging.shutdown()
+        return output_response
+    except Exception:
+        error_message = traceback.format_exc()
+        log_instance.error(error_message)
+        work_dir = ubl_input['workDir']
+        model_details_json_filename = os.path.join(work_dir,'ModelDetails.json')
+        
+        try:
+            if os.path.exists(model_details_json_filename):
+                model_details = json.load(open(model_details_json_filename,'rb'))
+            elif os.path.exists(os.path.join(work_dir,'ModelDetails-input.json')):
+                model_details = json.load(open(os.path.join(work_dir,'ModelDetails-input.json'),'rb'))
+
+            else:
+                model_details = {}
+            model_details['modelStatus'] = "Failure"
+            model_details['statusMessage'] = error_message
+            
+        except Exception:
+            pass
+        output_json = json.dumps(model_details)
+        output_response = Response(output_json, status=500,
+                                   mimetype='application/json')
+        logging.shutdown()
+        return output_response
+        
+        # model_details['analyticSettings'] = ubl_input['analyticSettings']
+        #
+        # model_details_json_file = open(model_details_json_filename, 'w')
+        # json.dump(model_details, model_details_json_file, sort_keys=True)
+        # model_details_json_file.close()
+
+
+        
     
 #%%%
 if __name__=='__main__':
@@ -243,8 +330,29 @@ if __name__=='__main__':
             json_file.close()
 
         log_instance = logging.getLogger('root')
-
         
+        model_name = ubl_input['modelName']
+        task_name = ubl_input['taskName']
+        model_run_loc = ubl_input['workDir']
+        logFileName = model_name + '.log'
+        if ('logFile' in ubl_input.keys()):
+            logFileName=ubl_input['logFile']
+        logFilePath = os.path.join(model_run_loc,logFileName)
+        logging.basicConfig(format='%(message)s',filename=logFilePath,filemode='w',level=logging.INFO)
+        #sl = StreamToLogger(log_instance, logging.INFO)
+        #sys.stdout = sl
+        
+        line = '==============================================================================='
+    
+        log_instance.info(line)
+        log_instance.info('Local time: %s'%(time.strftime("%a %b %d %H:%M:%S %Y")))
+        log_instance.info('DBN risk assessment %s has started.'%task_name)
+
+
+        sys.path.append(ubl_input['workDir'])
+        
+        model_details, pfdbn = RunDBNRisk(ubl_input,log_instance)
+
         
 
         model_details_json_filename = 'ModelDetails.json'    

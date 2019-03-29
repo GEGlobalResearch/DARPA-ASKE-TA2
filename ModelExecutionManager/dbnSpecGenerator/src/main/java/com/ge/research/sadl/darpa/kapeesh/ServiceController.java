@@ -55,9 +55,11 @@ public class ServiceController {
 
                 generator.initializeJSON(prop);
 
+		generator.createModelObject(Utility.getJsonFromMap((LinkedHashMap)sadlResultSet.get("models")));
+
 		generator.createNodeObject(Utility.getJsonFromMap((LinkedHashMap)sadlResultSet.get("nodes")));
 
-		generator.createModelObject(Utility.getJsonFromMap((LinkedHashMap)sadlResultSet.get("models")));
+		generator.createMapObject();
 
                 generator.printDbnJSON();
 
