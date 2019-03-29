@@ -1,0 +1,29 @@
+prefix imp:<http://sadl.org/sadlimplicitmodel#> 
+prefix mm:<http://aske.ge.com/metamodel#> 
+prefix sci:<http://aske.ge.com/sciknow#> 
+ 
+select distinct (strafter(str(?CCG),'#') as ?Model) (strafter(str(?Var),'#') as ?Variable) ?Mean ?StdDev ?VarError ?ModelAccuracy
+where { 
+ 
+   {?CCG mm:subgraph ?SG. 
+    filter (?CCG in (COMPGRAPH)).
+    ?CCG mm:modelError ?ModelAccuracy.
+    ?SG mm:output ?Oinst.
+    ?Oinst a ?Var. 
+    ?Oinst imp:value ?Mean. 
+    ?Oinst imp:stddev ?StdDev. 
+    #?Oinst imp:varError ?VarError.
+   } union {
+    ?CCG mm:subgraph ?SG.
+    filter (?CCG in (COMPGRAPH)).
+    ?CCG mm:modelError ?ModelAccuracy.
+    ?Q mm:execution ?CE.
+    ?CE mm:compGraph ?CCG.
+    ?Q mm:output ?Vinst.
+    ?Vinst a ?Var.
+    ?Vinst imp:value ?Mean.
+    ?Vinst imp:stddev ?StdDev.
+    #?Vinst imp:varError ?VarError.
+   }
+}
+

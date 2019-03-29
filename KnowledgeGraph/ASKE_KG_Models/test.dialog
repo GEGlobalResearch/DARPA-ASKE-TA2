@@ -1,19 +1,16 @@
 uri "http://aske.ge.com/testdiag" alias testdiag.
 
 import "http://aske.ge.com/hypersonics" .
-//import "http://aske.ge.com/CGQueries".
 import "http://aske.ge.com/metamodel" .
 import "http://aske.ge.com/sciknow" .
 import "http://sadl.org/TableAndEquation.sadl".
 
 //what is the ^value of TotalTemperature and the ^value of TotalPressure when the ^value of Altitude is 30000 and the ^value of AirSpeed is 1000?
 
-
-
 //what is the ^value of MachSpeed when the ^value of Altitude is 30000 and the ^value of AirSpeed is 2000?
-//
+
 //what is the ^value of MachSpeed when the ^value of Altitude is 30000?
-//
+
 //what is MachSpeed?
 
 //what is the ^value of StaticTemperature when the ^value of Altitude is 30000?
@@ -22,9 +19,14 @@ import "http://sadl.org/TableAndEquation.sadl".
 //what is the ^value of TotalTemperature when the ^value of Altitude is 30000?
 
 
+
+//what is the ^value of Altitude when the ^value of TotalTemperature is 500?
+
+
 //What is StaticTemperature?
 
-//Find a model for Doc3.
+//Find a model for Doc4.
+
 
 
 //what is the ^value of MachSpeed when the ^value of Altitude is 10000?
@@ -43,7 +45,6 @@ import "http://sadl.org/TableAndEquation.sadl".
 //with location "file://aske/files/doc1.csv".
 
 
-//what is the ^value of Altitude when the ^value of TotalTemperature is 100?
 
 //Ask select m where m is a DBNCM: "Failed to find results".
 

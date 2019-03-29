@@ -83,10 +83,10 @@ expression (a Script with script "2116.0*((518.6-3.56*altitude/1000.0)/518.6)**5
 //	//plugged in ts0 expresion
 //expression  of StaticPressureEq always has value "2116.0*((518.6-3.56*alt/1000.0)/518.6)**5.256".
 
-//StaticPressureEq2 is a StaticPressureEquation
-//sciknow:input (a Argument argType StaticTemperature argName "ts0")
-//sciknow:output (a StaticPressure)
-//expression (a Script with script "2116.0*(ts0/518.6)**5.256", with language Text).
+StaticPressureEq2 is a StaticPressureEquation
+sciknow:input (a Argument argType StaticTemperature argName "ts0")
+sciknow:output (a StaticPressure)
+expression (a Script with script "2116.0*(ts0/518.6)**5.256", with language Text).
 
 StaticPressureDBN is a type of DBN.
 hasEquation of  StaticPressureDBN only has values of type StaticPressureEquation.
@@ -114,7 +114,7 @@ MachSpeedEquation is a type of ^Equation.
 //MachSpeedEq is a ^Equation
 MachSpeedEq is a MachSpeedEquation
 sciknow:input (a Argument argType AirSpeed argName "u0")
-sciknow:input (a Argument argType SpeedOfSound argName "a0")
+//sciknow:input (a Argument argType SpeedOfSound argName "a0")
 sciknow:output (a MachSpeed)
 expression (a Script with script "u0/5280.0 * 3600.0 / a0", with language Text).
 //sciknow:input of MachSpeedEq has at most one value of type SpeedOfSound.

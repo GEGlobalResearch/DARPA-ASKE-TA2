@@ -4,6 +4,7 @@ import "http://aske.ge.com/sciknow".
 
 CCG is a type of ComputationalGraph
     described by subgraph with values of type SubGraph
+    described by modelError with values of type decimal
  	.
  
 KChain is a type of ComputationalGraph.
@@ -32,7 +33,7 @@ CGExecution is a class
 
 Dataset is a type of Thing
 	described by creator with a single value of type string //Person
-	described by location with a single value of type string
+//	described by location with a single value of type string
 	.
 
 CSVDataset is a type of Dataset
