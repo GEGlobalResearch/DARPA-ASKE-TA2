@@ -15,9 +15,9 @@ import "http://sadl.org/TableAndEquation.sadl".
 
 //what is the ^value of StaticTemperature when the ^value of Altitude is 30000?
 
-
 //what is the ^value of TotalTemperature when the ^value of Altitude is 30000?
 
+//what is the ^value of TotalTemperature when the ^value of MachSpeed is 6?
 
 
 //what is the ^value of Altitude when the ^value of TotalTemperature is 500?
@@ -28,7 +28,6 @@ import "http://sadl.org/TableAndEquation.sadl".
 //Find a model for Doc4.
 
 
-
 //what is the ^value of MachSpeed when the ^value of Altitude is 10000?
 
 //what is the ^value of AirSpeed when the ^value of Altitude is 10000?
@@ -36,8 +35,11 @@ import "http://sadl.org/TableAndEquation.sadl".
 
 //what is the ^value of StaticPressure when the ^value of Altitude is 10000?
 
-
 //what is the ^value of TotalPressure when the ^value of Altitude is 30000?
+
+//what is the ^value of TotalPressure when the ^value of StaticTemperature is 800?
+
+
 
 //Doc1 is a Dataset with column (a CSVColumn header "Alt" variable Altitude)
 //with column (a CSVColumn header "u0" variable AirSpeed)

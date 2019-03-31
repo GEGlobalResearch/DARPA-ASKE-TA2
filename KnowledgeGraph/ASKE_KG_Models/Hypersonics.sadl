@@ -57,10 +57,10 @@ sciknow:output (a StaticTemperature)
 //assumption "altitude < 36152"
 expression (a Script with script "518.6-3.56 * altitude /1000.0", with language Text)
 .
-//StaticTemperatureEq2 is a StaticTemperatureEquation 
-//sciknow:input (a Argument argType Altitude argName "altitude")
-//sciknow:output (a StaticTemperature)
-//expression (a Script with script  "389.98", with language Text).
+StaticTemperatureEq2 is a StaticTemperatureEquation 
+sciknow:input (a Argument argType Altitude argName "altitude")
+sciknow:output (a StaticTemperature)
+expression (a Script with script  "389.98", with language Text).
 
 StaticTempDBN is a type of DBN.
 hasEquation of StaticTempDBN only has values of type StaticTemperatureEquation. //StaticTempEq. //or StaticTempEq2) .
@@ -114,7 +114,7 @@ MachSpeedEquation is a type of ^Equation.
 //MachSpeedEq is a ^Equation
 MachSpeedEq is a MachSpeedEquation
 sciknow:input (a Argument argType AirSpeed argName "u0")
-//sciknow:input (a Argument argType SpeedOfSound argName "a0")
+sciknow:input (a Argument argType SpeedOfSound argName "a0")
 sciknow:output (a MachSpeed)
 expression (a Script with script "u0/5280.0 * 3600.0 / a0", with language Text).
 //sciknow:input of MachSpeedEq has at most one value of type SpeedOfSound.

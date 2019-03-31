@@ -4,12 +4,118 @@ prefix imp:<http://sadl.org/sadlimplicitmodel#>
 prefix owl:<http://www.w3.org/2002/07/owl#>
 prefix rdfs:<http://www.w3.org/2000/01/rdf-schema#>
 prefix sci:<http://aske.ge.com/sciknow#>
+prefix afn:<http://jena.apache.org/ARQ/function#>
+
+select distinct ?DBN ?Out ?Eq where {
+ {select distinct ?Eq where {
+    ?EqOut a ?EqClass. 
+    ?EqClass rdfs:subClassOf imp:Equation.
+     ?EqOut sci:output ?Oinst.
+     ?Oinst a ?Out.
+     filter (?Out in ( <http://aske.ge.com/hypersonics#TotalPressure> )).
+     ?EqOut dbn:parent* ?EqIn.
+    ?EqIn sci:input/sci:argType ?In.
+    filter (?In in (<http://aske.ge.com/hypersonics#Altitude>)).
+    
+    ?EqOut dbn:parent* ?Eq.
+    ?Eq dbn:parent* ?EqIn.
+  }}
+    union {
+   select distinct ?Eq where {
+    ?EqOut a ?EqClass. 
+    ?EqClass rdfs:subClassOf imp:Equation.
+     ?EqOut sci:output ?Oinst.
+     ?Oinst a ?Out.
+     filter (?Out in ( <http://aske.ge.com/hypersonics#TotalPressure> )).
+     ?EqOut dbn:parent* ?EqIn.
+    ?EqIn sci:input/sci:argType ?In.
+
+    ?EqOut dbn:parent* ?EqInPath.
+    ?EqInPath dbn:parent* ?EqIn.
+
+    ?EqInPath dbn:parent ?Eq.
+    filter not exists {
+       ?Eq dbn:parent* ?EqIn.
+    }
+    filter not exists{
+      ?Eq sci:input/sci:argType ?In1.
+      filter (?In1 in (<http://aske.ge.com/hypersonics#Altitude>)).
+    }
+    filter (?In in (<http://aske.ge.com/hypersonics#Altitude>)).
+  }}
+   ?Eq sci:output ?Oi.
+ ?Oi a ?Out.
+ ?DBN rdfs:subClassOf ?EQR.
+ ?EQR owl:onProperty sci:hasEquation.
+ ?EQR owl:allValuesFrom ?EqClass.
+ ?Eq a ?EqClass.
+}
+
+http://aske.ge.com/hypersonics#MachSpeedEq
+http://aske.ge.com/hypersonics#SpeedOfSoundEq
+http://aske.ge.com/hypersonics#StaticPressureEq
+http://aske.ge.com/hypersonics#StaticPressureEq2
+http://aske.ge.com/hypersonics#StaticTemperatureEq
+http://aske.ge.com/hypersonics#TotalPressureEq
+<http://aske.ge.com/hypersonics#TotalPressureEq>,<http://aske.ge.com/hypersonics#StaticPressureEq>,<http://aske.ge.com/hypersonics#StaticTemperatureEq>
+<http://aske.ge.com/hypersonics#TotalPressureEq>,<http://aske.ge.com/hypersonics#StaticPressureEq2>,<http://aske.ge.com/hypersonics#StaticTemperatureEq>
+
+
+
+
+
+	public static final String BUILD_COMP_GRAPH = "prefix hyper:<http://aske.ge.com/hypersonics#>\n" + 
+			"prefix dbn:<http://aske.ge.com/dbn#>\n" + 
+			"prefix imp:<http://sadl.org/sadlimplicitmodel#>\n" + 
+			"prefix owl:<http://www.w3.org/2002/07/owl#>\n" + 
+			"prefix rdfs:<http://www.w3.org/2000/01/rdf-schema#>\n" +
+			"prefix sci:<http://aske.ge.com/sciknow#>\n" +
+			"prefix afn:<http://jena.apache.org/ARQ/function#>\n" +
+			"select distinct ?DBN ?Out ?Eq where {\n" + 
+			//"select ?DBN ?Out (group_concat(?Eq ; separator=',') as ?Eqns) where {\n" +
+			" {select ?Eq where {\n" + 
+			"    ?EqOut a ?EqClass. \n" + 
+			"    ?EqClass rdfs:subClassOf imp:Equation.\n" + 
+			"     ?EqOut sci:output ?Oinst.\n" + 
+			"     ?Oinst a ?Out.\n" + 
+			"     filter (?Out in ( LISTOFOUTPUTS )).\n" + 
+			"     ?EqOut dbn:parent* ?Eq.\n" + 
+			"    ?Eq sci:input/sci:argType ?In.\n" + 
+			"    filter (?In in (LISTOFINPUTS)).\n" + 
+			"  }}\n" + 
+			"   union {\n" + 
+			"   select ?Eq where {\n" + 
+			"     ?EqOut a ?EqClass. \n" + 
+			"    ?EqClass rdfs:subClassOf imp:Equation.\n" + 
+			"     ?EqOut sci:output ?Oinst.\n" + 
+			"     ?Oinst a ?Out.\n" + 
+			"     filter (?Out in ( LISTOFOUTPUTS )).\n" + 
+			"     ?EqOut dbn:parent* ?Eq.\n" + 
+			"     ?Eq sci:input/sci:argType ?In.\n" + 
+			"      ?Eq2 a ?EqClass2. \n" + 
+			"    ?EqClass2 rdfs:subClassOf imp:Equation.\n" + 
+			"      ?Eq2 sci:output ?Oi.\n" + 
+			"      ?Oi a ?In. \n" + 
+			"   }}\n "	+
+			" ?Eq sci:output ?Oi.\n" + 
+			" ?Oi a ?Out.\n" + 
+			" ?DBN rdfs:subClassOf ?EQR.\n" + 
+			" ?EQR owl:onProperty sci:hasEquation.\n" + 
+			" ?EQR owl:allValuesFrom ?EqClass.\n" +
+			" ?Eq a ?EqClass.\n" +
+			"}group by ?DBN ?Out ?Eq";
+prefix hyper:<http://aske.ge.com/hypersonics#>
+prefix dbn:<http://aske.ge.com/dbn#>
+prefix imp:<http://sadl.org/sadlimplicitmodel#>
+prefix owl:<http://www.w3.org/2002/07/owl#>
+prefix rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+prefix sci:<http://aske.ge.com/sciknow#>
 
 select distinct ?DBN ?Out (group_concat(distinct ?Eq ; separator=',') as ?Eqns)
 from <http://kd.ge.com/aske3>
 where {
 
-  {select ?Eq where { 
+  {select ?Eq where {
     ?EqOut a ?EqClass. 
     ?EqClass rdfs:subClassOf imp:Equation. 
      ?EqOut sci:output ?Oinst.
