@@ -1,0 +1,211 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Welcome to ASKE TA2 KApEESH’s documentation! &#8212; ASKE TA2 KApEESH 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="welcome-to-aske-ta2-kapeesh-s-documentation">
+<h1>Welcome to ASKE TA2 KApEESH’s documentation!<a class="headerlink" href="#welcome-to-aske-ta2-kapeesh-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>DARPA’s Automating Scientific Knowledge Extraction (ASKE) topic area 2 focusing on machine assisted inference. Here we describe in detail
+the execution module based on GE’s Dynamic Bayesian Network (DBN) framework.</p>
+<div class="section" id="module-dbn">
+<h2>Module: DBN<a class="headerlink" href="#module-dbn" title="Permalink to this headline">¶</a></h2>
+<hr class="docutils" />
+<div class="toctree-wrapper compound">
+</div>
+<span class="target" id="module-dbnrisk_wrapper_aske"></span><p>Wrapper module that integrates GE’s DBN framework as the execution engine for KaPEESH as part of DARPA ASKE Topic Area 2.
+We utilize Python’s flask framework to design REST services that can be used through an API.</p>
+<p>Written by Natarajan Chennimalai Kumar</p>
+<p>General Electric Global Research Center</p>
+<p>Mar 27, 2019</p>
+<dl class="function">
+<dt id="dbnrisk_wrapper_aske.RunDBNExecute">
+<code class="descname">RunDBNExecute</code><span class="sig-paren">(</span><em>aske_input</em>, <em>log_instance</em><span class="sig-paren">)</span><a class="headerlink" href="#dbnrisk_wrapper_aske.RunDBNExecute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Primary DBN execution function. This function sets up the data structures to be used for the DBN execution
+and performs some level of postprocessing.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>aske_input</strong> – Python dict object containing the DBN execution set up information</li>
+<li><strong>log_instance</strong> – A logging instance to keep track of the current status</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">model_details: Python dict object containing the details and outputs from the DBN execution
+pfdbn: DBN object contains the whole network, prior, posterior samples etc</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="dbnrisk_wrapper_aske.StreamToLogger">
+<em class="property">class </em><code class="descname">StreamToLogger</code><span class="sig-paren">(</span><em>logger</em>, <em>log_level=20</em><span class="sig-paren">)</span><a class="headerlink" href="#dbnrisk_wrapper_aske.StreamToLogger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fake file-like stream object that redirects writes to a logger instance.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="dbnrisk_wrapper_aske.as_float">
+<code class="descname">as_float</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="headerlink" href="#dbnrisk_wrapper_aske.as_float" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks each dict passed to this function if it contains the key “value”
+Args:</p>
+<blockquote>
+<div>obj (dict): The object to decode</div></blockquote>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>dict: The new dictionary with changes if necessary</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="dbnrisk_wrapper_aske.postProcessHypothesis">
+<code class="descname">postProcessHypothesis</code><span class="sig-paren">(</span><em>model_details</em>, <em>aske_input</em><span class="sig-paren">)</span><a class="headerlink" href="#dbnrisk_wrapper_aske.postProcessHypothesis" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function takes the data after the DBN execution to analyze the hypothesis that the model can predict data</p>
+<p>Arguments:
+:param model_details: Python dict object containing current update of details
+:param aske_input: original ubl input dict object
+:return: model_details: updated model details and input json with outputs from the hypothesis testing including error in prediction of the output nodes and aggregated error measures for model comparison</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="dbnrisk_wrapper_aske.process">
+<code class="descname">process</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dbnrisk_wrapper_aske.process" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function runs the DBN execution as a flask REST service that will called by the KApEESH execution manager.
+It sets up logging service, takes the POST request’s json as the input to the DBN execution.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">model_details as the response json</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="dbnrisk_wrapper_aske.runDBN">
+<code class="descname">runDBN</code><span class="sig-paren">(</span><em>aske_input</em>, <em>log_instance</em><span class="sig-paren">)</span><a class="headerlink" href="#dbnrisk_wrapper_aske.runDBN" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes logging and runs the DBN execution. In case of hypothesis generation usecase,
+sets up the hypothesis and postprocessing.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>aske_input</strong> – Python dict object containing the DBN execution set up information</li>
+<li><strong>log_instance</strong> – A logging instance to keep track of the current status</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">model_details: Python dict object containing the details and outputs from the DBN execution
+pfdbn: DBN object contains the whole network, prior, posterior samples etc</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">ASKE TA2 KApEESH</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Natarajan Chennimalai Kumar.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
