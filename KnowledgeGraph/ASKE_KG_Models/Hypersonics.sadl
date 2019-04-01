@@ -1,6 +1,6 @@
 uri "http://aske.ge.com/hypersonics" alias hypersonics .
 
-import "http://aske.ge.com/sciknow".
+import "http://aske.ge.com/sciknow". 
 
 Altitude is a type of UnittedQuantity.
 AtmosphericTemperature is a type of UnittedQuantity.
@@ -29,7 +29,7 @@ TotalPressure is a type of AtmosphericPressure.
 //a1 is an Aircraft
 //	with altitude  (a Altitude with ^value 30000)
 //	.
-	
+		
 AltitudeDBN is a type of DBN.
 node of AltitudeDBN always has value (a Argument argType Altitude argName "altitude").
 //sciknow:input of AltitudeDBN always has value null.
@@ -38,13 +38,11 @@ range of AltitudeDBN always has value (a Range lower 0 upper 60000).
 
 AirSpeedDBN is a type of DBN.
 node of AirSpeedDBN always has value (a Argument argType AirSpeed argName "speed").
-distribution of AltitudeDBN always has value uniform.
+distribution of AirSpeedDBN always has value uniform.
 range of AirSpeedDBN always has value (a Range lower 0 upper 5000).
 
 //Equation stEq1(Altitude alt) returns StaticTemperature: a StaticTemperature.
 //stEq1 expression "518.6-3.56 * Altitude /1000.0".
-
-//Ask ShowEquationReturningType (note "takes 1 parameter, the Semantic type of the return value"): "select ?eq ?script where {?eq <sciknow:output> ?output . ?output <rdf:type> ? . ?eq <expression> ?expr . ?expr <script> ?script}".
 
 //sciknow:sciknow:input of StaticTempEq always has value (a Argument argType Altitude argName "alt").
 ////sciknow:sciknow:input of StaticTempEq has at least one value of type Altitude. //No, because it may be sampled?
@@ -54,18 +52,18 @@ StaticTemperatureEq is a StaticTemperatureEquation
 sciknow:input (a Argument argType Altitude argName "altitude")
 sciknow:output (a StaticTemperature)
 //expression "518.6-3.56 * altitude /1000.0"
-//assumption "altitude < 36152"
-expression (a Script with script "518.6-3.56 * altitude /1000.0", with language Text)
-.
-StaticTemperatureEq2 is a StaticTemperatureEquation 
-sciknow:input (a Argument argType Altitude argName "altitude")
-sciknow:output (a StaticTemperature)
-expression (a Script with script  "389.98", with language Text).
+assumption "altitude < 36152"
+expression (a Script with script "518.6-3.56 * altitude /1000.0", with language Text).
+
+//StaticTemperatureEq2 is a StaticTemperatureEquation 
+//sciknow:input (a Argument argType Altitude argName "altitude")
+//sciknow:output (a StaticTemperature)
+//expression (a Script with script  "389.98", with language Text).
 
 StaticTempDBN is a type of DBN.
 hasEquation of StaticTempDBN only has values of type StaticTemperatureEquation. //StaticTempEq. //or StaticTempEq2) .
 //hasEquation of StaticTempDBN has at most one value of type StaticTempEq2. // {StaticTempEq or StaticTempEq2} .
-range of StaticTempDBN always has value (a Range with lower 0 with upper 60000).
+range of StaticTempDBN always has value (a Range with lower 359 with upper 700).
 distribution of StaticTempDBN always has value uniform. //should be default value
 
 
@@ -83,14 +81,14 @@ expression (a Script with script "2116.0*((518.6-3.56*altitude/1000.0)/518.6)**5
 //	//plugged in ts0 expresion
 //expression  of StaticPressureEq always has value "2116.0*((518.6-3.56*alt/1000.0)/518.6)**5.256".
 
-StaticPressureEq2 is a StaticPressureEquation
-sciknow:input (a Argument argType StaticTemperature argName "ts0")
-sciknow:output (a StaticPressure)
-expression (a Script with script "2116.0*(ts0/518.6)**5.256", with language Text).
+//StaticPressureEq2 is a StaticPressureEquation
+//sciknow:input (a Argument argType StaticTemperature argName "ts0")
+//sciknow:output (a StaticPressure)
+//expression (a Script with script "2116.0*(ts0/518.6)**5.256", with language Text).
 
 StaticPressureDBN is a type of DBN.
 hasEquation of  StaticPressureDBN only has values of type StaticPressureEquation.
-range of StaticPressureDBN always has value (a Range with lower 0 with upper 20000).
+range of StaticPressureDBN always has value (a Range with lower 0 with upper 30000).
 distribution of StaticPressureDBN always has value uniform.
 
 SpeedOfSoundEquation is a type of ^Equation.
@@ -106,7 +104,7 @@ expression (a Script with script "(1.4*1718.0*ts0)**0.5", with language Text).
 
 SpeedOfSoundDBN is a type of DBN.
 hasEquation of  SpeedOfSoundDBN only has values of type SpeedOfSoundEquation.
-range of SpeedOfSoundDBN always has value (a Range with lower 0 with upper 20000).
+range of SpeedOfSoundDBN always has value (a Range with lower 270 with upper 350).
 distribution of SpeedOfSoundDBN always has value uniform.
 
 MachSpeedEquation is a type of ^Equation.
@@ -123,7 +121,7 @@ expression (a Script with script "u0/5280.0 * 3600.0 / a0", with language Text).
 
 MachSpeedDBN is a type of DBN.
 hasEquation of  MachSpeedDBN only has values of type MachSpeedEquation.
-range of MachSpeedDBN always has value (a Range with lower 0 with upper 20000).
+range of MachSpeedDBN always has value (a Range with lower 0 with upper 20).
 distribution of MachSpeedDBN always has value uniform.
 
 TotalTemperatureEquation is a type of ^Equation.
@@ -141,7 +139,7 @@ expression (a Script with script "ts0*(1.0 + 0.5*(1.4-1.0)*mach*mach)", with lan
 
 TotalTemperatureDBN is a type of DBN.
 hasEquation of  TotalTemperatureDBN only has values of type TotalTemperatureEquation.
-range of TotalTemperatureDBN always has value (a Range with lower 0 with upper 20000).
+range of TotalTemperatureDBN always has value (a Range with lower 359 with upper 2000).
 distribution of TotalTemperatureDBN always has value uniform.
 
 TotalPressureEquation is a type of ^Equation.
@@ -159,8 +157,23 @@ expression (a Script with script "ps0*(1.0 + 0.5*(1.4-1.0)*mach*mach)**(1.4/(1.4
 
 TotalPressureDBN is a type of DBN.
 hasEquation of  TotalPressureDBN only has values of type TotalPressureEquation.
-range of TotalPressureDBN always has value (a Range with lower 0 with upper 20000).
+range of TotalPressureDBN always has value (a Range with lower 0 with upper 50000).
 distribution of TotalPressureDBN always has value uniform.
+
+
+
+Ask ShowEquationsReturningType (note "takes 1 parameter, the Semantic type of the return value"): 
+"select distinct (?eq as ?eqID) ?InputTypes (?script as ?expression) ?Assumptions
+ where {
+  ?eq <sciknow:output> ?output .
+  ?output <rdf:type> ? .
+  ?eq <expression> ?expr .
+  ?expr <script> ?script.
+  ?eq <sciknow:input> ?inObj.
+  ?inObj <argType> ?InputTypes.
+  optional{?eq <assumption> ?Assumptions.}
+}".
+//?OutputType 
 
 
 

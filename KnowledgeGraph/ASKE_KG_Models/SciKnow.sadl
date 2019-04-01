@@ -17,6 +17,8 @@ argName describes Argument with a single value of type string.
 sciknow:input describes ^Equation with values of type Argument.
 sciknow:output describes ^Equation with values of type ScientificConcept.
 
+assumption describes ^Equation with values of type string.
+
 Condition is a class.
 
 Thing is a class

@@ -1,0 +1,33 @@
+uri "http://aske.ge.com/demo_interaction" alias demo_interaction.
+
+import "http://aske.ge.com/hypersonics" .
+import "http://aske.ge.com/metamodel" as mm.
+import "http://aske.ge.com/sciknow" as sciknow.
+import "http://sadl.org/TableAndEquation.sadl".
+
+
+//what is the ^value of TotalTemperature when the ^value of Altitude is 60000?
+
+
+//Ask ShowModelEquations: [CG_1554129733343].
+
+//Ask ShowEquationsReturningType: [StaticTemperature].
+
+
+//StaticTemperatureEqStratosphere is a StaticTemperatureEquation 
+//sciknow:input (a Argument argType Altitude argName "altitude")
+//sciknow:output (a StaticTemperature)
+//expression (a Script with script  "390", with language Text)
+//assumption "altitude > 36152 && altitude < 82000".
+
+//what is the ^value of TotalTemperature when the ^value of Altitude is 60000?
+
+
+// Cut & Paste the first model's ID inside the brackets
+//Ask ShowModelEquations: [].
+
+// Cut & Paste the first model's ID inside the brackets
+//Ask ShowModelEquations: [].
+
+
+

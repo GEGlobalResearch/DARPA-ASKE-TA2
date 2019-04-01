@@ -1,10 +1,10 @@
-uri "http://aske.ge.com/testdiag" alias testdiag.
+uri "http://aske.ge.com/prognostics" alias prognostics.
 
 import "http://aske.ge.com/hypersonics" .
 import "http://aske.ge.com/metamodel" as mm.
 import "http://aske.ge.com/sciknow" as sciknow.
 import "http://sadl.org/TableAndEquation.sadl".
-//import "/Users/alfredo/Documents/git/DARPA-ASKE-TA2/KnowledgeGraph/ASKE_KG_Models/OwlModels/MetaData.owl".
+
 
 //what is the ^value of TotalTemperature and the ^value of TotalPressure when the ^value of Altitude is 30000 and the ^value of AirSpeed is 1000?
 
@@ -15,6 +15,35 @@ import "http://sadl.org/TableAndEquation.sadl".
 //what is MachSpeed?
 
 //what is the ^value of StaticTemperature when the ^value of Altitude is 30000?
+
+
+//Ask ShowModelEquations: [CG_1554140666320].
+
+//what is the ^value of StaticTemperature when the ^value of Altitude is 30000 and the ^value of AirSpeed is 1000?
+
+
+//StaticTemperatureEq2 is a StaticTemperatureEquation 
+//sciknow:input (a Argument argType Altitude argName "altitude")
+//sciknow:output (a StaticTemperature)
+//expression (a Script with script  "389.98", with language Text).
+
+
+//what is the ^value of StaticTemperature when the ^value of Altitude is 30000?
+
+//what is the ^value of SpeedOfSound when the ^value of Altitude is 30000?
+
+
+//what is the ^value of TotalTemperature when the ^value of Altitude is 30000 and the ^value of AirSpeed is 5000?
+
+
+//what is the ^value of TotalTemperature when the ^value of Altitude is 30000?
+
+
+//what is the ^value of MachSpeed when the ^value of Altitude is 30000 and the ^value of AirSpeed is 5000?
+
+//what is the ^value of MachSpeed when the ^value of Altitude is 30000?
+
+
 
 //what is the ^value of TotalTemperature when the ^value of Altitude is 60000?
 

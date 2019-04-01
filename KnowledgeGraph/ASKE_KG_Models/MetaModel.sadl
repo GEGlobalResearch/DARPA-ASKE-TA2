@@ -48,7 +48,30 @@ CSVColumn is a type of Thing
 	. 
 
 parent describes ^Equation with values of type ^Equation.
-	
+
+
+Ask ShowModelEquations: 
+"select distinct  (?eq as ?Equation) ?Assumptions
+ where {
+  ?CG a <CCG>.
+  values ?I { ? }.
+  filter (regex(str(?CG), strafter(str(?I),'#') )).
+  ?CG <subgraph> ?SG.
+  ?SG <cgraph> ?DBN.
+  ?DBN <hasEquation> ?eq. 
+  ?eq <expression> ?expr .
+  optional{?eq <assumption> ?Assumptions.}
+ }".
+
+//  ?CG <subgraph> ?SG.
+//  ?SG <cgraph> ?DBN.
+//  ?DBN <hasEquation> ?eq. 
+//  ?eq <expression> ?expr .
+//  ?expr <script> ?script.
+//  optional{?eq <assumption> ?Assumptions.}
+
+
+	//(?eq as ?eqID)
 //Rule DependencyGraph
 //	if ?Eq is a rdfs:subClassOf ^Equation and
 //	   ?Eq is a rdfs:subClassOf ?IB and 

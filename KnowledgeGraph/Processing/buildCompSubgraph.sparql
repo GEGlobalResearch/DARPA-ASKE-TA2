@@ -51,14 +51,7 @@ select distinct ?DBN ?Out ?Eq where {
  ?Eq a ?EqClass.
 }
 
-http://aske.ge.com/hypersonics#MachSpeedEq
-http://aske.ge.com/hypersonics#SpeedOfSoundEq
-http://aske.ge.com/hypersonics#StaticPressureEq
-http://aske.ge.com/hypersonics#StaticPressureEq2
-http://aske.ge.com/hypersonics#StaticTemperatureEq
-http://aske.ge.com/hypersonics#TotalPressureEq
-<http://aske.ge.com/hypersonics#TotalPressureEq>,<http://aske.ge.com/hypersonics#StaticPressureEq>,<http://aske.ge.com/hypersonics#StaticTemperatureEq>
-<http://aske.ge.com/hypersonics#TotalPressureEq>,<http://aske.ge.com/hypersonics#StaticPressureEq2>,<http://aske.ge.com/hypersonics#StaticTemperatureEq>
+
 
 
 

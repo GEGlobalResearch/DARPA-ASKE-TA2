@@ -19,7 +19,6 @@
 Ask FindEquationMatchingSemanticType: "select ?eq where {?eq <returnTypes> ?retlist . ?retlist <http://jena.hpl.hp.com/ARQ/list#member> ?member .
 	?member <augmentedType> ?augtype . ?augtype <semType> ?}".
 
- 
 // Ask: "select ?eq ?name ?argsemtype where {
 //	{select ?eq ?name ?argsemtype where {?eq <arguments> ?arglist . ?arglist <http://jena.hpl.hp.com/ARQ/list#member> ?member .
 //	?member <descriptorName> ?name . ?member <augmentedType> ?augtype . ?augtype <semType> ?argsemtype}}
