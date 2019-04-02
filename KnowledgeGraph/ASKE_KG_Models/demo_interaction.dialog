@@ -8,26 +8,24 @@ import "http://sadl.org/TableAndEquation.sadl".
 
 //what is the ^value of TotalTemperature when the ^value of Altitude is 60000?
 
-
-//Ask ShowModelEquations: [CG_1554129733343].
+// Cut & Paste the model's ID inside the brackets
+//Ask ShowModelEquations: [].
 
 //Ask ShowEquationsReturningType: [StaticTemperature].
 
-
+// The new user equation
 //StaticTemperatureEqStratosphere is a StaticTemperatureEquation 
 //sciknow:input (a Argument argType Altitude argName "altitude")
 //sciknow:output (a StaticTemperature)
 //expression (a Script with script  "390", with language Text)
 //assumption "altitude > 36152 && altitude < 82000".
 
+// Rerun the query after entering the new equation
 //what is the ^value of TotalTemperature when the ^value of Altitude is 60000?
 
 
 // Cut & Paste the first model's ID inside the brackets
-//Ask ShowModelEquations: [].
+//Ask ShowModelEquations: [CG_1554162614111].
 
 // Cut & Paste the first model's ID inside the brackets
 //Ask ShowModelEquations: [].
-
-
-
