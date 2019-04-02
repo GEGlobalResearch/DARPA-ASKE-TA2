@@ -6,25 +6,14 @@ import "http://aske.ge.com/sciknow" as sciknow.
 import "http://sadl.org/TableAndEquation.sadl".
 
 
-//what is the ^value of TotalTemperature when the ^value of Altitude is 60000?
-
-//Ask ShowModelEquations: [CG_1554129733343].
-
-//Ask ShowEquationsReturningType: [TotalTemperature].
-
-//what is StaticTemperature?
-
-//Ask ShowEquationsReturningType: [StaticTemperature].
-
-
-
-//what is the ^value of Altitude when the ^value of TotalTemperature is 500?
-
 
 //what is the ^value of Altitude when the ^value of StaticTemperature is 500?
 
+//what is the ^value of AirSpeed when the ^value of MachSpeed is 2?
+
+//what is the ^value of Altitude when the ^value of TotalPressure is 20000?
 
 
-//what is the ^value of AirSpeed when the ^value of Altitude is 10000?
+
 
 
