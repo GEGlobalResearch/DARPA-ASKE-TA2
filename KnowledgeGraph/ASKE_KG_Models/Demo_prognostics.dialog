@@ -28,3 +28,9 @@ import "http://sadl.org/TableAndEquation.sadl".
 //what is the ^value of TotalTemperature when the ^value of Altitude is 30000 and the ^value of AirSpeed is 5000?
 
 //what is the ^value of TotalTemperature when the ^value of Altitude is 30000?
+
+//what is the ^value of TotalTemperature and the ^value of TotalPressure when the ^value of Altitude is 30000?
+
+
+
+
