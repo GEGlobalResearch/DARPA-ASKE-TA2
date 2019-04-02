@@ -1,0 +1,66 @@
+uri "http://aske.ge.com/hypo" alias hypo.
+
+import "http://aske.ge.com/hypersonics" .
+import "http://aske.ge.com/metamodel" as mm.
+import "http://aske.ge.com/sciknow" as sciknow.
+import "http://sadl.org/TableAndEquation.sadl".
+
+//what is the ^value of TotalTemperature and the ^value of TotalPressure when the ^value of Altitude is 30000 and the ^value of AirSpeed is 1000?
+
+//what is the ^value of MachSpeed when the ^value of Altitude is 30000 and the ^value of AirSpeed is 2000?
+
+//what is the ^value of MachSpeed when the ^value of Altitude is 30000?
+
+//what is MachSpeed?
+
+//what is the ^value of StaticTemperature when the ^value of Altitude is 30000?
+
+//what is the ^value of TotalTemperature when the ^value of Altitude is 60000?
+
+//Ask ShowModelEquations: [CG_1554129733343].
+
+//Ask ShowEquationsReturningType: [TotalTemperature].
+
+//what is StaticTemperature?
+
+//Ask ShowEquationsReturningType: [StaticTemperature].
+
+
+
+//what is the ^value of TotalTemperature when the ^value of MachSpeed is 6?
+
+
+//what is the ^value of Altitude when the ^value of TotalTemperature is 500?
+
+
+//What is StaticTemperature?
+
+//Find a model for Doc4.
+
+
+
+
+
+//what is the ^value of MachSpeed when the ^value of Altitude is 10000?
+
+//what is the ^value of AirSpeed when the ^value of Altitude is 10000?
+
+
+//what is the ^value of StaticPressure when the ^value of Altitude is 10000?
+
+//what is the ^value of TotalPressure when the ^value of Altitude is 30000?
+
+//what is the ^value of TotalPressure when the ^value of StaticTemperature is 800?
+
+
+
+
+//what is ShowEquationReturningType?: 
+//CM: ShowEquationReturningType  (note 'takes 1 parameter, the Semantic type of the return value') is a NamedQuery.
+
+
+
+//ask "select ?p ?v where {<http://aske.ge.com/hypersonics#ShowEquationReturningType> ?p ?v}"?
+//CM: "'p','v'
+//'http://www.w3.org/2000/01/rdf-schema#comment','takes 1 parameter, the Semantic type of the return value'
+//'http://www.w3.org/1999/02/22-rdf-syntax-ns#type','http://sadl.org/sadlimplicitmodel#NamedQuery'".
