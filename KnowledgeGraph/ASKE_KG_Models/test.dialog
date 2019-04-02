@@ -4,7 +4,6 @@ import "http://aske.ge.com/hypersonics" .
 import "http://aske.ge.com/metamodel" as mm.
 import "http://aske.ge.com/sciknow" as sciknow.
 import "http://sadl.org/TableAndEquation.sadl".
-//import "/Users/alfredo/Documents/git/DARPA-ASKE-TA2/KnowledgeGraph/ASKE_KG_Models/OwlModels/MetaData.owl".
 
 //what is the ^value of TotalTemperature and the ^value of TotalPressure when the ^value of Altitude is 30000 and the ^value of AirSpeed is 1000?
 
