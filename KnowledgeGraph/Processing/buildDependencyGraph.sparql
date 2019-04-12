@@ -1,6 +1,43 @@
+/**********************************************************************
+* Note: This license has also been called the "New BSD License" or
+* "Modified BSD License". See also the 2-clause BSD License.
+*
+* Copyright © 2018-2019 - General Electric Company, All Rights Reserved
+*
+* Project: KApEESH, developed with the support of the Defense Advanced
+* Research Projects Agency (DARPA) under Agreement  No.  HR00111990007.
+*
+* Redistribution and use in source and binary forms, with or without
+* modification, are permitted provided that the following conditions are met:
+* 1. Redistributions of source code must retain the above copyright notice,
+*    this list of conditions and the following disclaimer.
+*
+* 2. Redistributions in binary form must reproduce the above copyright notice,
+*    this list of conditions and the following disclaimer in the documentation
+*    and/or other materials provided with the distribution.
+*
+* 3. Neither the name of the copyright holder nor the names of its
+*    contributors may be used to endorse or promote products derived
+*    from this software without specific prior written permission.
+*
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+* ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+* LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+* SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+* CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+* ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+* THE POSSIBILITY OF SUCH DAMAGE.
+*
+***********************************************************************/
+
 # With Equation subclasses
 prefix dbn:<http://aske.ge.com/dbn#>
 prefix imp:<http://sadl.org/sadlimplicitmodel#>
+prefix sci:<http://aske.ge.com/sciknow#>
 
 
 insert {?EqCh dbn:parent ?EqPa} 
@@ -8,14 +45,14 @@ insert {?EqCh dbn:parent ?EqPa}
 where { 
     ?EqCh a ?EqClass. 
     ?EqClass rdfs:subClassOf imp:Equation. 
-    ?EqCh imp:input ?Arg. 
-    ?Arg imp:argType ?In. 
-    ?EqCh imp:output ?Oinst. 
+    ?EqCh sci:input ?Arg. 
+    ?Arg sci:argType ?In. 
+    ?EqCh sci:output ?Oinst. 
     ?Oinst a ?Out. 
     
     ?EqPa a ?EqClass1. 
     ?EqClass1 rdfs:subClassOf imp:Equation. 
-    ?EqPa imp:output ?POinst. 
+    ?EqPa sci:output ?POinst. 
     ?POinst a ?In. 
 }
 
@@ -26,23 +63,21 @@ where {
 # Insert Equation graph
 prefix dbn:<http://aske.ge.com/dbn#>
 prefix imp:<http://sadl.org/sadlimplicitmodel#>
+prefix sci:<http://aske.ge.com/sciknow#>
 
-
-insert {?EqCh dbn:parent ?EqPa} 
-#insert {?EqCh dbn:parent ?EqPa}
-#select distinct ?EqCh ?EqPa 
+#insert {?EqCh dbn:parent ?EqPa} 
+select distinct ?EqCh ?EqPa 
 where { 
     ?EqCh a imp:Equation. 
-    ?EqCh imp:input ?Arg. 
-    ?Arg imp:argType ?In. 
-    ?EqCh imp:output ?Oinst. 
+    ?EqCh sci:input ?Arg. 
+    ?Arg sci:argType ?In. 
+    ?EqCh sci:output ?Oinst. 
     ?Oinst a ?Out. 
     
     ?EqPa a imp:Equation. 
-    ?EqPa imp:output ?POinst. 
+    ?EqPa sci:output ?POinst. 
     ?POinst a ?In. 
 }
-
 
 
 #construct { _:bn a dbn:Node. _:bn dbn:eqn ?Eq. _:bn dbn:uq ?Out. ?Out dbn:parent ?In.}

@@ -1,0 +1,23 @@
+uri "http://aske.ge.com/hypo" alias hypo.
+
+import "http://aske.ge.com/hypersonics" .
+import "http://aske.ge.com/metamodel" as mm.
+import "http://aske.ge.com/sciknow" as sciknow.
+import "http://sadl.org/TableAndEquation.sadl".
+
+// Doc4 is a table 
+//       [double altitude (alias "Altitude") (Altitude {"ft"}), 
+// 	    double u0 (AirSpeed {"mph"}),
+// 	    double tt1 (TotalTemperature {"R"})] 
+// with data located at "file://Data/hypothesis.csv".
+
+//// Uncomment to add this equation to knowledge graph
+//StaticTemperatureEq2 is a StaticTemperatureEquation 
+//sciknow:input (a Argument argType Altitude argName "altitude")
+//sciknow:output (a StaticTemperature)
+//expression (a Script with script  "389.98", with language Text).
+
+// Find models to explain the document.
+//Find a model for Doc4.
+
+

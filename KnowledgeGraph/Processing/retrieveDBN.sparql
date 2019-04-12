@@ -1,3 +1,92 @@
+/**********************************************************************
+* Note: This license has also been called the "New BSD License" or
+* "Modified BSD License". See also the 2-clause BSD License.
+*
+* Copyright © 2018-2019 - General Electric Company, All Rights Reserved
+*
+* Project: KApEESH, developed with the support of the Defense Advanced
+* Research Projects Agency (DARPA) under Agreement  No.  HR00111990007.
+*
+* Redistribution and use in source and binary forms, with or without
+* modification, are permitted provided that the following conditions are met:
+* 1. Redistributions of source code must retain the above copyright notice,
+*    this list of conditions and the following disclaimer.
+*
+* 2. Redistributions in binary form must reproduce the above copyright notice,
+*    this list of conditions and the following disclaimer in the documentation
+*    and/or other materials provided with the distribution.
+*
+* 3. Neither the name of the copyright holder nor the names of its
+*    contributors may be used to endorse or promote products derived
+*    from this software without specific prior written permission.
+*
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+* ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+* LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+* SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+* CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+* ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+* THE POSSIBILITY OF SUCH DAMAGE.
+*
+***********************************************************************/
+prefix hyper:<http://aske.ge.com/hypersonics#>
+prefix dbn:<http://aske.ge.com/dbn#>
+prefix imp:<http://sadl.org/sadlimplicitmodel#>
+prefix sci:<http://aske.ge.com/sciknow#>prefix mm:<http://aske.ge.com/metamodel#>
+prefix owl:<http://www.w3.org/2002/07/owl#>
+prefix rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+
+select distinct ?Node ?Child ?Distribution ?Lower ?Upper where {
+{select distinct ?Node ?Child ?Distribution ?Lower ?Upper # ?Value 
+where {
+   ?Eq sci:input/sci:argType ?Node.
+   ?Eq sci:output ?Oinst. ?Oinst a ?Child.
+   filter (?Eq in (<http://aske.ge.com/hypersonics#TotalTemperatureEq>, <http://aske.ge.com/hypersonics#StaticTempEq>, <http://aske.ge.com/hypersonics#SpeedOfSoundEq>, <http://aske.ge.com/hypersonics#MachSpeedEq>))
+
+ ?DBN rdfs:subClassOf ?N1. ?N1 owl:onProperty sci:node. ?N1 owl:hasValue/sci:argType ?Node.
+ ?DBN rdfs:subClassOf ?DB. ?DB owl:onProperty sci:distribution. ?DB owl:hasValue ?Distribution.
+ ?DBN rdfs:subClassOf ?RB. ?RB owl:onProperty sci:range. ?RB owl:hasValue ?Range.
+ ?Range sci:lower ?Lower.
+ ?Range sci:upper ?Upper.
+}}
+ union {
+ select distinct ?Node ?Child ?Distribution ?Lower ?Upper # ?Value 
+where {
+   ?Eq sci:input/sci:argType ?Node.
+   ?Eq sci:output ?Oinst. ?Oinst a ?Child.
+   filter (?Eq in (<http://aske.ge.com/hypersonics#TotalTemperatureEq>, <http://aske.ge.com/hypersonics#StaticTempEq>, <http://aske.ge.com/hypersonics#SpeedOfSoundEq>, <http://aske.ge.com/hypersonics#MachSpeedEq>))
+
+ ?DBN rdfs:subClassOf ?EB. ?EB owl:onProperty sci:hasEquation.  ?EB owl:allValuesFrom ?EqC. ?Eq1 a ?EqC. ?Eq1 sci:output ?O1. ?O1 a ?Node.
+ ?DBN rdfs:subClassOf ?DB. ?DB owl:onProperty sci:distribution. ?DB owl:hasValue ?Distribution.
+ ?DBN rdfs:subClassOf ?RB. ?RB owl:onProperty sci:range. ?RB owl:hasValue ?Range.
+ ?Range sci:lower ?Lower.
+ ?Range sci:upper ?Upper.
+}}
+ union
+  { select distinct ?Eq ?Node ?Distribution ?Lower ?Upper
+   where {
+   ?Eq sci:output ?Oi. ?Oi a ?Node.
+   filter (?Eq in (<http://aske.ge.com/hypersonics#TotalTemperatureEq>, <http://aske.ge.com/hypersonics#StaticTempEq>, <http://aske.ge.com/hypersonics#SpeedOfSoundEq>, <http://aske.ge.com/hypersonics#MachSpeedEq>))
+   filter not exists {
+     ?Eq1 sci:input/sci:argType ?Node.
+     filter (?Eq1 in (<http://aske.ge.com/hypersonics#TotalTemperatureEq>, <http://aske.ge.com/hypersonics#StaticTempEq>, <http://aske.ge.com/hypersonics#SpeedOfSoundEq>, <http://aske.ge.com/hypersonics#MachSpeedEq>))
+   }
+
+  ?DBN rdfs:subClassOf ?EB. ?EB owl:onProperty sci:hasEquation.  ?EB owl:allValuesFrom ?EqClass.
+  ?Eq a ?EqClass.
+  ?DBN rdfs:subClassOf ?DB. ?DB owl:onProperty sci:distribution. ?DB owl:hasValue ?Distribution.
+  ?DBN rdfs:subClassOf ?RB. ?RB owl:onProperty sci:range.        ?RB owl:hasValue ?Range.
+  ?Range sci:lower ?Lower.
+  ?Range sci:upper ?Upper.
+ }}
+}
+
+
+
 prefix imp:<http://sadl.org/sadlimplicitmodel#>
 prefix sci:<http://aske.ge.com/sciknow#>
 prefix dbn:<http://aske.ge.com/dbn#>
@@ -9,14 +98,16 @@ where {
   ?Model rdfs:subClassOf sci:DBN.
   ?Model rdfs:subClassOf ?BN. 
   ?BN owl:onProperty sci:hasEquation. 
-  ?BN owl:someValuesFrom ?Eq.
+  ?BN owl:allValuesFrom ?EqClass.
+  ?Eq a ?EqClass.
   filter (?Eq in (<http://aske.ge.com/hypersonics#TotalTemperatureEq>, <http://aske.ge.com/hypersonics#StaticTempEq>, <http://aske.ge.com/hypersonics#SpeedOfSoundEq>, <http://aske.ge.com/hypersonics#MachSpeedEq>))
-  ?Eq imp:input?In.
-  ?In imp:argType ?Input.
-  ?In imp:argName ?Label.
-  ?Eq imp:output ?Oinst.
+  ?Eq sci:input?In.
+  ?In sci:argType ?Input.
+  ?In sci:argName ?Label.
+  ?Eq sci:output ?Oinst.
   ?Oinst a ?Output.
-  ?Eq imp:expression ?expr.
+  ?Eq imp:expression ?Scr.
+  ?Scr imp:script ?expr.
 } order by ?Model
 
 
@@ -25,21 +116,29 @@ select distinct ?Node ?Child ?Distribution ?Lower ?Upper ?Value
 from <http://kd.ge.com/aske2>
 from <http://kd.ge.com/md>
 where {
- {select distinct ?Eq ?Node ?Child where {
-   ?Eq imp:input/imp:argType ?Node.
-   ?Eq imp:output ?Oinst. ?Oinst a ?Child.
+ {select distinct ?Eq ?Node ?Child ?DBN ?Distribution ?Lower ?Upper where {
+   ?Eq sci:input/sci:argType ?Node.
+   ?Eq sci:output ?Oinst. ?Oinst a ?Child.
    filter (?Eq in (<http://aske.ge.com/hypersonics#TotalTemperatureEq>, <http://aske.ge.com/hypersonics#StaticTempEq>, <http://aske.ge.com/hypersonics#SpeedOfSoundEq>, <http://aske.ge.com/hypersonics#MachSpeedEq>))
+    ?DBN rdfs:subClassOf ?EB. ?EB owl:onProperty sci:hasEquation.  ?EB owl:allValuesFrom ?EqClass.
+  ?Eq a ?EqClass.
+  ?DBN rdfs:subClassOf ?DB. ?DB owl:onProperty sci:distribution. ?DB owl:hasValue ?Distribution.
+  ?DBN rdfs:subClassOf ?RB. ?RB owl:onProperty sci:range.        ?RB owl:hasValue ?Range.
+  ?Range sci:lower ?Lower.
+  ?Range sci:upper ?Upper.
+
  }}
  union
  { select distinct ?Eq ?Node where {
-   ?Eq imp:output ?Oi. ?Oi a ?Node.
+   ?Eq sci:output ?Oi. ?Oi a ?Node.
    filter (?Eq in (<http://aske.ge.com/hypersonics#TotalTemperatureEq>, <http://aske.ge.com/hypersonics#StaticTempEq>, <http://aske.ge.com/hypersonics#SpeedOfSoundEq>, <http://aske.ge.com/hypersonics#MachSpeedEq>))
    filter not exists {
-     ?Eq1 imp:input/imp:argType ?Node.
+     ?Eq1 sci:input/sci:argType ?Node.
      filter (?Eq1 in (<http://aske.ge.com/hypersonics#TotalTemperatureEq>, <http://aske.ge.com/hypersonics#StaticTempEq>, <http://aske.ge.com/hypersonics#SpeedOfSoundEq>, <http://aske.ge.com/hypersonics#MachSpeedEq>))
    }
  }}
-  ?DBN rdfs:subClassOf ?EB. ?EB owl:onProperty sci:hasEquation.  ?EB owl:someValuesFrom ?Eq.
+  ?DBN rdfs:subClassOf ?EB. ?EB owl:onProperty sci:hasEquation.  ?EB owl:allValuesFrom ?EqClass.
+  ?Eq a ?EqClass.
   ?DBN rdfs:subClassOf ?DB. ?DB owl:onProperty sci:distribution. ?DB owl:hasValue ?Distribution.
   ?DBN rdfs:subClassOf ?RB. ?RB owl:onProperty sci:range.        ?RB owl:hasValue ?Range.
   ?Range sci:lower ?Lower.
@@ -54,6 +153,45 @@ where {
      ?II a ?Node.
      ?II imp:value ?Value.}  
 } order by ?Node
+
+
+
+ {select distinct ?Eq ?Node ?Child ?Distribution ?Lower ?Upper where {
+   ?Eq sci:input/sci:argType ?Node.
+   ?Eq sci:output ?Oinst. ?Oinst a ?Child.
+   filter (?Eq in (<http://aske.ge.com/hypersonics#StaticTemperatureEq>,<http://aske.ge.com/hypersonics#SpeedOfSoundEq>,<http://aske.ge.com/hypersonics#MachSpeedEq>,<http://aske.ge.com/hypersonics#TotalTemperatureEq>))
+
+  ?DBN rdfs:subClassOf ?N1. ?N1 owl:onProperty sci:node. ?N1 owl:hasValue ?Arg. ?Arg sci:argType ?Node.  
+  ?DBN rdfs:subClassOf ?DB. ?DB owl:onProperty sci:distribution. ?DB owl:hasValue ?Distribution.
+  ?DBN rdfs:subClassOf ?RB. ?RB owl:onProperty sci:range.        ?RB owl:hasValue ?Range.
+  ?Range sci:lower ?Lower.
+  ?Range sci:upper ?Upper.
+ }}
+ union
+  { select distinct ?Eq ?Node ?Distribution ?Lower ?Upper
+   where {
+   ?Eq sci:output ?Oi. ?Oi a ?Node.
+   filter (?Eq in (<http://aske.ge.com/hypersonics#TotalTemperatureEq>, <http://aske.ge.com/hypersonics#StaticTempEq>, <http://aske.ge.com/hypersonics#SpeedOfSoundEq>, <http://aske.ge.com/hypersonics#MachSpeedEq>))
+   filter not exists {
+     ?Eq1 sci:input/sci:argType ?Node.
+     filter (?Eq1 in (<http://aske.ge.com/hypersonics#TotalTemperatureEq>, <http://aske.ge.com/hypersonics#StaticTempEq>, <http://aske.ge.com/hypersonics#SpeedOfSoundEq>, <http://aske.ge.com/hypersonics#MachSpeedEq>))
+   }
+
+  ?DBN rdfs:subClassOf ?EB. ?EB owl:onProperty sci:hasEquation.  ?EB owl:allValuesFrom ?EqClass.
+  ?Eq a ?EqClass.
+  ?DBN rdfs:subClassOf ?DB. ?DB owl:onProperty sci:distribution. ?DB owl:hasValue ?Distribution.
+  ?DBN rdfs:subClassOf ?RB. ?RB owl:onProperty sci:range.        ?RB owl:hasValue ?Range.
+  ?Range sci:lower ?Lower.
+  ?Range sci:upper ?Upper.
+ }}
+
+
+
+prefix imp:<http://sadl.org/sadlimplicitmodel#>
+prefix sci:<http://aske.ge.com/sciknow#>
+prefix dbn:<http://aske.ge.com/dbn#>
+prefix mm:<http://aske.ge.com/metamodel#>
+
 
 
 
