@@ -63,6 +63,24 @@ import "http://sadl.org/TableAndEquation.sadl".
 //what is the ^value of TotalTemperature when the ^value of Altitude is 30000 and the ^value of AirSpeed is 5000?
 
 //what is the ^value of TotalTemperature when the ^value of Altitude is 30000?
+//CM: "'Model','Variable','Mean','StdDev'
+//'CG_1557242924261','StaticTemperature','411.8000000000001','1.1368683772161603e-13'
+//'CG_1557242924261','SpeedOfSound','995.2192522253573','3.410605131648481e-13'
+//'CG_1557242924261','MachSpeed','1.7157952310458353','0.9811424274706383'
+//'CG_1557242924261','TotalTemperature','733.5470602503644','285.8452379240483'".
+//
+//
+//Ask ShowModelEquations: [CG_1557242924261].
+//CM: "'Equation','Assumptions'
+//'hypersonics:StaticTemperatureEq','altitude < 36152'
+//'hypersonics:SpeedOfSoundEq',null
+//'hypersonics:MachSpeedEq',null
+//'hypersonics:TotalTemperatureEq',null".
+//
+//Ask ShowEquationsReturningType: [StaticTemperature].
+//CM: "'eqID','InputTypes','expression','Assumptions'
+//'hypersonics:StaticTemperatureEq','hypersonics:Altitude','518.6-3.56*altitude/1000.0','altitude < 36152'
+//'hypersonics:StaticTemperatureEq2','hypersonics:Altitude','389.98',null".
 
 //what is the ^value of TotalTemperature and the ^value of TotalPressure when the ^value of Altitude is 30000?
 

@@ -50,6 +50,10 @@ import "http://sadl.org/TableAndEquation.sadl".
 
 //what is the ^value of StaticTemperature when the ^value of Altitude is 30000?
 
+//what is the ^value of (StaticTemperature of an Air) when the ^value of (Altitude of the Air) is 30000?
+what is the ^value of (staticTemperature of some Air) when the ^value of (altitude of the Air) is 30000?
+
+
 //what is the ^value of TotalTemperature when the ^value of Altitude is 60000?
 
 //Ask ShowModelEquations: [CG_1554129733343].

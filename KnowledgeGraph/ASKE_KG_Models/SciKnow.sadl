@@ -61,6 +61,13 @@ Thing is a class
 	described by description with values of type string
 	.
 
+Temperature is a type of UnittedQuantity.
+
+Kelvin_Rankine is an ^Equation
+sciknow:input (a Argument argType Temperature argName "K")
+sciknow:output (a Temperature)
+expression (a Script with script "(K - 273.15)* 1.8000 + 491.67" ).
+
 
 DBN is a type of ComputationalGraph
 	//described by input with values of type UnittedQuantity
@@ -119,6 +126,7 @@ Range is a class
 	described by lower with a single value of type float
 	described by upper with a single value of type float
 	.
+
 
 // Node models. Each node has a model.
 //DBN_Model is a type of Thing 

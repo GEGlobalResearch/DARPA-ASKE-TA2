@@ -34,33 +34,88 @@
 *
 ***********************************************************************/
 
+# With Equation subclasses
 prefix dbn:<http://aske.ge.com/dbn#>
 prefix imp:<http://sadl.org/sadlimplicitmodel#>
 prefix sci:<http://aske.ge.com/sciknow#>
 
-select ?EqCh ?EqPa
-#?P #?S ?P ?O
-where {
- ?EqCh a imp:Equation.
- ?EqCh imp:arguments ?AL2.
- ?AL2 rdf:rest*/rdf:first ?AO2.
-# ?AO2 imp:descriptorName ?Arg2.
- ?AO2 imp:augmentedType ?Type2.
- ?Type2 imp:constraints ?CL2.
- ?CL2 rdf:rest*/rdf:first ?C2.
- ?C2 imp:gpSubject ?S2.
- ?C2 imp:gpPredicate ?P.
- ?C2 imp:gpObject ?O2.
- filter (?P != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>)
 
- ?EqPa a imp:Equation.
- ?EqPa imp:returnTypes ?AL1.
- ?AL1 rdf:rest*/rdf:first ?AO1.
- ?AO1 imp:descriptorName ?Arg1.
- ?AO1 imp:augmentedType ?Type1.
- ?Type1 imp:constraints ?CL1.
- ?CL1 rdf:rest*/rdf:first ?C1.
- ?C1 imp:gpSubject ?S1.
- ?C1 imp:gpPredicate ?P.
- ?C1 imp:gpObject ?O1.
- }
+insert {?EqCh dbn:parent ?EqPa} 
+#select distinct ?EqCh ?EqPa 
+where { 
+    ?EqCh a ?EqClass. 
+    ?EqClass rdfs:subClassOf imp:Equation. 
+    ?EqCh sci:input ?Arg. 
+    ?Arg sci:argType ?In. 
+    ?EqCh sci:output ?Oinst. 
+    ?Oinst a ?Out. 
+    
+    ?EqPa a ?EqClass1. 
+    ?EqClass1 rdfs:subClassOf imp:Equation. 
+    ?EqPa sci:output ?POinst. 
+    ?POinst a ?In. 
+}
+
+
+
+
+
+# Insert Equation graph
+prefix dbn:<http://aske.ge.com/dbn#>
+prefix imp:<http://sadl.org/sadlimplicitmodel#>
+prefix sci:<http://aske.ge.com/sciknow#>
+
+#insert {?EqCh dbn:parent ?EqPa} 
+select distinct ?EqCh ?EqPa 
+where { 
+    ?EqCh a imp:Equation. 
+    ?EqCh sci:input ?Arg. 
+    ?Arg sci:argType ?In. 
+    ?EqCh sci:output ?Oinst. 
+    ?Oinst a ?Out. 
+    
+    ?EqPa a imp:Equation. 
+    ?EqPa sci:output ?POinst. 
+    ?POinst a ?In. 
+}
+
+
+#construct { _:bn a dbn:Node. _:bn dbn:eqn ?Eq. _:bn dbn:uq ?Out. ?Out dbn:parent ?In.}
+insert {?EqCh dbn:parent ?EqPa}
+#select distinct ?EqCh ?In ?EqPa 
+where {
+ ?EqCh rdfs:subClassOf imp:Equation.
+ ?EqCh rdfs:subClassOf ?IB.
+ ?IB owl:onProperty imp:input.
+ ?IB owl:someValuesFrom ?In.
+
+ ?EqCh rdfs:subClassOf imp:Equation.
+ ?EqCh rdfs:subClassOf ?OB.
+ ?OB owl:onProperty imp:output.
+ ?OB owl:allValuesFrom ?Out.
+
+ ?EqPa rdfs:subClassOf imp:Equation.
+ ?EqPa rdfs:subClassOf ?OBP.
+ ?OBP owl:onProperty imp:output.
+ ?OBP owl:allValuesFrom ?In.
+}
+
+
+# Old Variable network
+prefix hyper:<http://aske.ge.com/hypersonics#>
+prefix dbn:<http://aske.ge.com/dbn#>
+prefix imp:<http://sadl.org/sadlimplicitmodel#>
+
+construct { ?Out dbn:parent ?In.}
+#select ?Eq ?In ?Out
+where {
+ ?Eq rdfs:subClassOf imp:Equation.
+ ?Eq rdfs:subClassOf ?IB.
+ ?IB owl:onProperty imp:input.
+ ?IB owl:someValuesFrom ?In.
+
+ ?Eq rdfs:subClassOf imp:Equation.
+ ?Eq rdfs:subClassOf ?OB.
+ ?OB owl:onProperty imp:output.
+ ?OB owl:allValuesFrom ?Out.
+}

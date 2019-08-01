@@ -36,6 +36,7 @@
 uri "http://aske.ge.com/hypersonics" alias hypersonics .
 
 import "http://aske.ge.com/sciknow". 
+import "http://sadl.org/ScientificConcepts2.sadl".
 
 Altitude is a type of UnittedQuantity.
 AtmosphericTemperature is a type of UnittedQuantity.
@@ -48,6 +49,11 @@ AirSpeed is a type of Speed.
 MachSpeed is a type of Speed.
 TotalTemperature is a type of AtmosphericTemperature.
 TotalPressure is a type of AtmosphericPressure.
+
+ altitude describes Air with values of type Length.
+
+
+
 
 //Air is a class
 //  described by altitude with values of type Altitude,
@@ -81,19 +87,31 @@ range of AirSpeedDBN always has value (a Range lower 0 upper 5000).
 
 //sciknow:sciknow:input of StaticTempEq always has value (a Argument argType Altitude argName "alt").
 ////sciknow:sciknow:input of StaticTempEq has at least one value of type Altitude. //No, because it may be sampled?
+
+
 StaticTemperatureEquation is a type of ^Equation.
 
 StaticTemperatureEq is a StaticTemperatureEquation
 sciknow:input (a Argument argType Altitude argName "altitude")
 sciknow:output (a StaticTemperature)
-//expression "518.6-3.56 * altitude /1000.0"
 assumption "altitude < 36152"
-expression (a Script with script "518.6-3.56 * altitude /1000.0", with language Text).
+expression (a Script with script "518.6-3.56 * altitude /1000.0"
+	                 with language Text).
 
 //StaticTemperatureEq2 is a StaticTemperatureEquation 
 //sciknow:input (a Argument argType Altitude argName "altitude")
 //sciknow:output (a StaticTemperature)
+//assumption "altitude > 36152 && altitude < 82000"
 //expression (a Script with script  "389.98", with language Text).
+
+
+//External stEq(double alt (altitude of some Air {ft}))
+//	returns double (staticTemperature of the Air) : "http://url_of_code".
+
+//STEq is a StaticTemperatureEquation
+	//arguments ( a DataDescriptor augmentedType (a AugmentedType semType Altitude) ) 
+//	.
+
 
 StaticTempDBN is a type of DBN.
 hasEquation of StaticTempDBN only has values of type StaticTemperatureEquation. //StaticTempEq. //or StaticTempEq2) .
