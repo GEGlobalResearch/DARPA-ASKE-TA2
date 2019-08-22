@@ -43,8 +43,10 @@ import "http://sadl.org/TableAndEquation.sadl".
 
 //what is the ^value of StaticTemperature when the ^value of Altitude is 30000?
 
+
 // Cut & Paste the model's ID inside the brackets
-//Ask ShowModelEquations: [CG_1554164425555].
+//Ask ShowModelEquations: [CG_1565277042899].
+
 
 //what is the ^value of StaticTemperature when the ^value of Altitude is 30000 and the ^value of AirSpeed is 1000?
 
@@ -61,6 +63,7 @@ import "http://sadl.org/TableAndEquation.sadl".
 
 
 //what is the ^value of TotalTemperature when the ^value of Altitude is 30000 and the ^value of AirSpeed is 5000?
+
 
 //what is the ^value of TotalTemperature when the ^value of Altitude is 30000?
 //CM: "'Model','Variable','Mean','StdDev'

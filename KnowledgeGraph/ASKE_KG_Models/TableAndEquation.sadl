@@ -40,8 +40,6 @@
  External tteq(double ts0 (StaticTemperature), double mach (MachSpeed)) returns double (TotalTemperature): "http://someequri".
  External tteq2(double ts02 (StaticTemperature), double mach2 (MachSpeed)) returns double (TotalTemperature): "http://someequri".
  
-// Doc3 is a table [double alt (alias "Alt") (Altitude {"ft"}), double u0 (AirSpeed {"mph"}), double tt (StaticTemperature {"R"})] with data located at "http://somewhere".
-// Doc4 is a table [double altitude (alias "Altitude") (Altitude {"ft"}), double u0 (AirSpeed {"mph"}), double tt1 (TotalTemperature {"R"})] with data located at "file://Data/hypothesis.csv".
  Doc4 is a table 
        [double altitude (alias "Altitude") (Altitude {"ft"}), 
  	    double u0 (AirSpeed {"mph"}),

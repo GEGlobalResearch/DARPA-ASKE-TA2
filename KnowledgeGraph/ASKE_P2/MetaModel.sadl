@@ -35,7 +35,7 @@
 ***********************************************************************/
 uri "http://aske.ge.com/metamodel" alias mm.
  
-import "http://aske.ge.com/sciknow".
+import "http://aske.ge.com/compgraphmodel".
 
 CCG is a type of ComputationalGraph
     described by subgraph with values of type SubGraph
@@ -63,7 +63,6 @@ CGExecution is a class
  	described by startTime with a single value of type dateTime
  	described by endTime with a single value of type dateTime
  	described by compGraph with values of type ComputationalGraph
- 	described by mm:output with values of type UnittedQuantity
  	described by accuracy with values of type decimal
 	.
 
@@ -85,19 +84,19 @@ CSVColumn is a type of Thing
 
 parent describes ^Equation with values of type ^Equation.
 
-
-Ask ShowModelEquations: 
-"select distinct  (?eq as ?Equation) ?Assumptions
- where {
-  ?CG a <CCG>.
-  values ?I { ? }.
-  filter (regex(str(?CG), strafter(str(?I),'#') )).
-  ?CG <subgraph> ?SG.
-  ?SG <cgraph> ?DBN.
-  ?DBN <hasEquation> ?eq. 
-  ?eq <expression> ?expr .
-  optional{?eq <assumption> ?Assumptions.}
- }".
+// Temp commented out because "assumption" property has been removed
+//Ask ShowModelEquations: 
+//"select distinct  (?eq as ?Equation) ?Assumptions
+// where {
+//  ?CG a <CCG>.
+//  values ?I { ? }.
+//  filter (regex(str(?CG), strafter(str(?I),'#') )).
+//  ?CG <subgraph> ?SG.
+//  ?SG <cgraph> ?DBN.
+//  ?DBN <hasEquation> ?eq. 
+//  ?eq <expression> ?expr .
+//  optional{?eq <assumption> ?Assumptions.}
+// }".
 
 //  ?CG <subgraph> ?SG.
 //  ?SG <cgraph> ?DBN.

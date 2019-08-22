@@ -1,0 +1,120 @@
+/**********************************************************************
+* Note: This license has also been called the "New BSD License" or
+* "Modified BSD License". See also the 2-clause BSD License.
+*
+* Copyright © 2018-2019 - General Electric Company, All Rights Reserved
+*
+* Project: KApEESH, developed with the support of the Defense Advanced
+* Research Projects Agency (DARPA) under Agreement  No.  HR00111990007.
+*
+* Redistribution and use in source and binary forms, with or without
+* modification, are permitted provided that the following conditions are met:
+* 1. Redistributions of source code must retain the above copyright notice,
+*    this list of conditions and the following disclaimer.
+*
+* 2. Redistributions in binary form must reproduce the above copyright notice,
+*    this list of conditions and the following disclaimer in the documentation
+*    and/or other materials provided with the distribution.
+*
+* 3. Neither the name of the copyright holder nor the names of its
+*    contributors may be used to endorse or promote products derived
+*    from this software without specific prior written permission.
+*
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+* ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+* LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+* SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+* CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+* ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+* THE POSSIBILITY OF SUCH DAMAGE.
+*
+***********************************************************************/
+uri "http://aske.ge.com/testdiag" alias testdiag.
+
+//import "http://aske.ge.com/hypersonics" .
+//import "http://aske.ge.com/metamodel" as mm.
+import "http://aske.ge.com/hypersonicsV2".
+
+
+
+//what is the totalTemperature of some Air when the altitude of the Air is 35000 ft and the airSpeed of the Air is 1000 mph?
+
+//The totalTemperature of the Air is 636 R.
+
+//import "http://sadl.org/TableAndEquation.sadl".
+
+//what is the ^value of TotalTemperature and the ^value of TotalPressure when the ^value of Altitude is 30000 and the ^value of AirSpeed is 1000?
+
+//what is the ^value of MachSpeed when the ^value of Altitude is 30000 and the ^value of AirSpeed is 2000?
+
+//what is the ^value of MachSpeed when the ^value of Altitude is 30000?
+
+//what is MachSpeed?
+
+//what is the ^value of StaticTemperature when the ^value of Altitude is 30000?
+
+
+//what is the ^value of TotalTemperature when the ^value of Altitude is 60000?
+
+//Ask ShowModelEquations: [CG_1554129733343].
+
+//Ask ShowEquationsReturningType: [TotalTemperature].
+
+//what is StaticTemperature?
+
+//Ask ShowEquationsReturningType: [StaticTemperature].
+
+
+//StaticTemperatureEqStratosphere is a StaticTemperatureEquation 
+//sciknow:input (a Argument argType Altitude argName "altitude")
+//sciknow:output (a StaticTemperature)
+//expression (a Script with script  "390", with language Text)
+//assumption "altitude > 36152 && altitude < 82000".
+
+//what is the ^value of TotalTemperature when the ^value of Altitude is 60000?
+
+//what is the ^value of TotalTemperature when the ^value of Altitude is 60000?
+
+
+//what is the ^value of TotalTemperature when the ^value of MachSpeed is 6?
+
+
+//what is the ^value of Altitude when the ^value of TotalTemperature is 500?
+
+
+//What is StaticTemperature?
+
+//Find a model for Doc4.
+
+
+
+
+
+//what is the ^value of MachSpeed when the ^value of Altitude is 10000?
+
+//what is the ^value of AirSpeed when the ^value of Altitude is 10000?
+
+
+//what is the ^value of StaticPressure when the ^value of Altitude is 10000?
+
+//what is the ^value of TotalPressure when the ^value of Altitude is 30000?
+
+//what is the ^value of TotalPressure when the ^value of StaticTemperature is 800?
+
+
+
+
+//what is ShowEquationReturningType?: 
+//CM: ShowEquationReturningType  (note 'takes 1 parameter, the Semantic type of the return value') is a NamedQuery.
+
+
+
+//ask "select ?p ?v where {<http://aske.ge.com/hypersonics#ShowEquationReturningType> ?p ?v}"?
+//CM: "'p','v'
+//'http://www.w3.org/2000/01/rdf-schema#comment','takes 1 parameter, the Semantic type of the return value'
+//'http://www.w3.org/1999/02/22-rdf-syntax-ns#type','http://sadl.org/sadlimplicitmodel#NamedQuery'".
+CM: "Unable to assemble a model with current knowledge or services are down".
