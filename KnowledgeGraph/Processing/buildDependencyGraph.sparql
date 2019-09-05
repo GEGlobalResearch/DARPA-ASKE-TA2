@@ -38,29 +38,25 @@ prefix dbn:<http://aske.ge.com/dbn#>
 prefix imp:<http://sadl.org/sadlimplicitmodel#>
 prefix sci:<http://aske.ge.com/sciknow#>
 
+#insert {?EqCh dbn:parent ?EqPa}
 select ?EqCh ?EqPa
-#?P #?S ?P ?O
 where {
  ?EqCh a imp:Equation.
  ?EqCh imp:arguments ?AL2.
  ?AL2 rdf:rest*/rdf:first ?AO2.
-# ?AO2 imp:descriptorName ?Arg2.
  ?AO2 imp:augmentedType ?Type2.
  ?Type2 imp:constraints ?CL2.
  ?CL2 rdf:rest*/rdf:first ?C2.
- ?C2 imp:gpSubject ?S2.
  ?C2 imp:gpPredicate ?P.
- ?C2 imp:gpObject ?O2.
  filter (?P != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>)
 
  ?EqPa a imp:Equation.
  ?EqPa imp:returnTypes ?AL1.
  ?AL1 rdf:rest*/rdf:first ?AO1.
- ?AO1 imp:descriptorName ?Arg1.
  ?AO1 imp:augmentedType ?Type1.
  ?Type1 imp:constraints ?CL1.
  ?CL1 rdf:rest*/rdf:first ?C1.
- ?C1 imp:gpSubject ?S1.
  ?C1 imp:gpPredicate ?P.
- ?C1 imp:gpObject ?O1.
- }
+ 
+ filter( ?EqPa != ?EqCh)
+}
