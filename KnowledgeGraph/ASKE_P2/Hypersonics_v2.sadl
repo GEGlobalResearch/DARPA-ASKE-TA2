@@ -174,7 +174,8 @@ st_pressure_eq_upperStrato has expression (a Script with script "51.97 * (((-205
 sos_eq is a SpeedOfSoundEquation.
 Equation sos_eq(double ts0 (staticTemperature of some Air {F,Rankine}),
 				double g (gamma of the Air),
-				double R (rgas of the Air) )
+				double R (rgas of the Air)
+				)
 	returns double (speedOfSound of the Air {"ft/sec"}) :
 	return sqrt(g * R * ts0) .
 

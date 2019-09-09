@@ -40,7 +40,7 @@ uri "http://aske.ge.com/testdiag" alias testdiag.
 import "http://aske.ge.com/hypersonicsV2".
 
 
-
+// what is the StaticTemperature 
 //what is the totalTemperature of some Air when the altitude of the Air is 35000 ft and the airSpeed of the Air is 1000 mph?
 
 //The totalTemperature of the Air is 636 R.
