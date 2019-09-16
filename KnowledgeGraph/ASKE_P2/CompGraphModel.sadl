@@ -35,37 +35,14 @@
 ***********************************************************************/
 uri "http://aske.ge.com/compgraphmodel" alias compgraphmodel .
 
-//^Equation is a class
-//	described by input with values of type UnittedQuantity
-//	described by output with values of type UnittedQuantity
-//	described by script with values of type string
-//	described by assumption with values of type Condition.
-//	
-//^ExternalEquation is a type of ^Equation
-//	described by externalURI with values of type anyURI
-//    described by location with values of type string  .
- 
-ComputationalGraph is a class.
-
-// AG: now using DataDescriptor from implicit model
-//Argument is a class.
-//argType describes Argument with a single value of type ScientificConcept.
-//argName describes Argument with a single value of type string.
-//sciknow:input describes ^Equation with values of type Argument.
-//sciknow:output describes ^Equation with values of type ScientificConcept.
-//
-//assumption describes ^Equation with values of type string.
-
 Thing is a class
 	described by name with values of type string
 	described by description with values of type string
 	.
 
-//Kelvin_Rankine is an ^Equation
-//sciknow:input (a Argument argType Temperature argName "K")
-//sciknow:output (a Temperature)
-//expression (a Script with script "(K - 273.15)* 1.8000 + 491.67" ).
+ComputationalGraph is a class.
 
+KChain is a type of ComputationalGraph.
 
 DBN is a type of ComputationalGraph
 	//described by input with values of type UnittedQuantity
@@ -79,7 +56,6 @@ DBN is a type of ComputationalGraph
 	described by distribution with a single value of type Distribution	
 	described by range with values of type Range 
 	.
-
 // Definition of a DBN
 //DBN is a type of Thing
 //	//described by element with values of type DBN_Node
@@ -98,20 +74,9 @@ DBN is a type of ComputationalGraph
 
 
 
+
 TaskType is a class, must be one of {prognosis,counterfactual,sensitivityAnalysis,riskAssessment,optimization}.
 
-// Use 
-//DBN_Node is a type of UnittedQuantity
-//	//described by variable with a single value of type UnittedQuantity //UnittedQuantity is in the "Science" ontology
-//	described by ntype with values of type NodeType
-//	described by distribution with a single value of type Distribution	
-//	//described by parent with values of type DBN_Node
-//	//described by children with values of type Node
-//	described by range with values of type Range 
-//	//described by distributionParameters with a single value of type DistributionParameters	
-//	described by model with values of type string //Equation
-//	described by ptable with a single value of type PTable
-//	.
 
 NodeType is a class, must be one of {equation,discrete,continuous,constant,deterministic,stochastic_transient,stochastic} .
 
@@ -124,19 +89,6 @@ Range is a class
 	described by lower with a single value of type float
 	described by upper with a single value of type float
 	.
-
-
-// Node models. Each node has a model.
-//DBN_Model is a type of Thing 
-//	described by modelType with values of type ModelType
-//	described by precondition with values of type Condition
-//	described by modelForm with a single value of type string //the actual equation expression
-//	described by functionName with a single value of type string //the name of the executable?
-//	.
-//
-//ModelType is a type of Thing, must be one of {equation, pythonFunction } .
-
-//Condition is a class. //We need rules to define condition instances? 
 
 //************* Model Execution Run ****************//
 

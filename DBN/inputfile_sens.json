@@ -1,0 +1,222 @@
+{
+  "taskName": "build",
+  "techniqueName": "dbn",
+  "modelName": "defaultModel",
+  "analyticSettings": {
+    "ObservationData": {
+    },
+    "ExpertKnowledge": {},
+    "PriorData": {},
+    "StateVariableDefinition": {},
+    "Models": {
+      "a0": {
+        "Input": [
+          "ts0"
+        ],
+        "Type": "Equation",
+        "FunctionName": "a0",
+        "ModelForm": "(1.4*1718.0*ts0)**0.5",
+        "Output": [
+          "mach"
+        ]
+      },
+      "mach": {
+        "Input": [
+          "u0",
+          "a0"
+        ],
+        "Type": "Equation",
+        "FunctionName": "mach",
+        "ModelForm": "u0/5280.0 * 3600.0 / a0",
+        "Output": [
+          "tt0"
+        ]
+      },
+      "tt0": {
+        "Input": [
+          "mach",
+          "ts0"
+        ],
+        "Type": "Equation",
+        "FunctionName": "tt0",
+        "ModelForm": "ts0*(1.0 + 0.5*(1.4-1.0)*mach*mach)",
+        "Output": []
+      },
+      "ts0": {
+        "Input": [
+          "altitude"
+        ],
+        "Type": "Equation",
+        "FunctionName": "ts0",
+        "ModelForm": "518.6-3.56 * altitude /1000.0",
+        "Output": [
+          "a0",
+          "tt0"
+        ]
+      }
+    },
+    "Nodes": {
+	  "time":{
+		"Type": "Stochastic_Transient",
+        "Tag": [],
+        "Distribution": "Uniform",
+        "DistributionParameters": {
+          "lower": 1,
+          "upper": 1000
+        },
+        "InitialChildren": [],
+        "Children": [
+          "altitude"
+        ],
+        "ObservationData": [
+		1,
+		2],
+        "Parents": [],
+        "Range": [
+          1,
+          1000
+        ],
+		"DistributionFixed": true
+		},
+      "altitude": {
+        "Type": "Stochastic",
+        "Tag": [],
+        "Distribution": "Uniform",
+        "DistributionParameters": {
+          "lower": 359,
+          "upper": 700
+        },
+        "InitialChildren": [],
+        "Children": [
+          "ts0"
+        ],
+        "ObservationData": [],
+        "Parents": [],
+        "Range": [
+          359,
+          700
+        ],
+		"DistributionFixed": true
+      },
+      "a0": {
+        "Type": "Deterministic",
+        "Tag": [],
+        "Distribution": "",
+        "DistributionParameters": {},
+        "ModelName": "a0",
+        "Parents": [
+          "ts0"
+        ],
+        "Children": [
+          "mach"
+        ]
+      },
+      "mach": {
+        "Type": "Deterministic",
+        "Tag": [],
+        "Distribution": "",
+        "DistributionParameters": {},
+        "ModelName": "mach",
+        "Parents": [
+          "u0",
+          "a0"
+        ],
+        "Children": [
+          "tt0"
+        ]
+      },
+      "tt0": {
+        "Type": "Deterministic",
+        "Tag": [],
+        "Distribution": "",
+        "DistributionParameters": {},
+        "ModelName": "tt0",
+        "Parents": [
+          "mach",
+          "ts0"
+        ],
+        "Children": []
+      },
+      "ts0": {
+        "Type": "Deterministic",
+        "Tag": [],
+        "Distribution": "",
+        "DistributionParameters": {},
+        "ModelName": "ts0",
+        "Parents": [
+          "altitude"
+        ],
+        "Children": [
+          "a0",
+          "tt0"
+        ]
+      },
+      "u0": {
+        "Type": "Stochastic",
+        "DistributionParameters": {
+          "lower": 0,
+          "upper": 20
+        },
+        "Parents": [],
+        "Distribution": "Uniform",
+        "Tag": [],
+        "Children": [
+          "mach"
+        ],
+        "ObservationData": [],
+        "InitialChildren": [],
+        "Range": [
+          0,
+          20
+        ],
+		"DistributionFixed": true
+      },
+	  "sensitivity_outputs": {
+		"Value": ["tt0,ts0,a0,mach"],
+		"Parents": [],
+		"Type": ""
+	  }
+    },
+    "DBNSetup": {
+      "WorkDir": "/tmp",
+      "ParticleFilterOptions": {
+        "NodeNamesNotRecorded": [],
+        "BackendKeepVectors": true,
+        "BackendFname": "C://Users//200019210//Documents//2019//Projects//ASKE-TA2//DBN-sensitivity-analysis/Results",
+        "BackendKeepScalars": true,
+        "ParallelProcesses": "5",
+        "ResampleThreshold": 0.4,
+        "Parallel": true,
+        "Backend": "RAM"
+      },
+      "NumberOfSamples": 500,
+      "PlotFlag": false,
+      "TrackingTimeSteps": 2,
+      "TaskName": "Prognosis"
+    },
+    "UT_node_init_data": {
+      "UT_node_names": []
+    },
+    "InspectionSchedule": {},
+    "riskRollup": {},
+    "observationDataSources": {},
+    "maintenanceLimits": [],
+    "fullNetwork": {}
+  },
+  "inputs": [],
+  "outputs": [],
+  "headerMappings": {},
+  "workDir": "C://Users//200019210//Documents//2019//Projects//ASKE-TA2//DBN-sensitivity-analysis",
+  "mapping": {
+    "ts0": "http://aske.ge.com/hypersonics#StaticTemperature",
+    "tt0": "http://aske.ge.com/hypersonics#TotalTemperature",
+    "altitude": "http://aske.ge.com/hypersonics#Altitude",
+    "mach": "http://aske.ge.com/hypersonics#MachSpeed",
+    "u0": "http://aske.ge.com/hypersonics#AirSpeed",
+    "a0": "http://aske.ge.com/hypersonics#SpeedOfSound"
+  },
+  "additionalFilesIds": {},
+  "dataSourcesInfo": {},
+  "dataSourceIds": {},
+  "dataSources": {}
+ }

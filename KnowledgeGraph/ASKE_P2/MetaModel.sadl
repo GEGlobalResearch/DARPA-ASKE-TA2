@@ -37,33 +37,32 @@ uri "http://aske.ge.com/metamodel" alias mm.
  
 import "http://aske.ge.com/compgraphmodel".
 
+//Composite CG
 CCG is a type of ComputationalGraph
-    described by subgraph with values of type SubGraph
-    described by modelError with values of type decimal
+    described by subgraph with values of type SubGraph //Multiple subgraphs
+    //described by modelError with values of type decimal
  	.
  
-KChain is a type of ComputationalGraph.
-
 SubGraph is a class
- 	described by cgraph with values of type ComputationalGraph
- 	described by mm:output with values of type UnittedQuantity
+ 	described by cgraph with a single value of type ComputationalGraph
+ 	described by output with values of type UnittedQuantity
  	.
 
-QueryType is a class must be one of {prognostic,calibration,explanation}.
+QueryType is a class must be one of {prognostic,calibration,explanation,sensitivity}.
  
 CGQuery is a class
 	described by queryType with a single value of type QueryType
- 	described by mm:input with values of type UnittedQuantity
- 	described by mm:output with values of type UnittedQuantity
+ 	described by input with values of type UnittedQuantity
  	described by machineGenerated with a single value of type boolean
- 	described by execution with values of type CGExecution
+ 	described by execution with values of type CGExecution //A query can result in multiple models and executions
  	.
  	
 CGExecution is a class
  	described by startTime with a single value of type dateTime
  	described by endTime with a single value of type dateTime
- 	described by compGraph with values of type ComputationalGraph
- 	described by accuracy with values of type decimal
+ 	described by compGraph with a single value of type CCG //A DBN in our case.
+ 	described by output with values of type UnittedQuantity
+ 	described by accuracy with a single value of type decimal
 	.
 
 Dataset is a type of Thing

@@ -38,8 +38,10 @@ uri "http://aske.ge.com/dbnnodes" alias dbnnodes .
 import "http://aske.ge.com/compgraphmodel".
 import "http://aske.ge.com/hypersonicsV2". 
 
-//Note: need implicitModel to have semType with value of type UnittedQuantity.
+// Hypersonics domain DBNs. The general DBN definitions are in CompGraphModel.sadl
 
+
+//Note: need implicitModel to have semType with value of type UnittedQuantity.
 		
 AltitudeDBN is a type of DBN.
 node of AltitudeDBN always has value (a DataDescriptor localDescriptorName "altitude" augmentedType (a SemanticType semType Altitude) ).
