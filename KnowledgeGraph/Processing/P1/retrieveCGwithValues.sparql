@@ -71,7 +71,8 @@ where {
     ?EQ imp:output ?O.
     ?O a ?Output.
     ?EQ imp:expression ?Expr.
-	 bind(str(?Expr) as ?Z_tooltip)   filter not exists {
+	 bind(str(?Expr) as ?Z_tooltip)
+   filter not exists {
     ?CCG mm:subgraph ?SG2.
     ?SG2 mm:cgraph ?CG2.
     ?CG2 sci:hasEquation ?EQ2.

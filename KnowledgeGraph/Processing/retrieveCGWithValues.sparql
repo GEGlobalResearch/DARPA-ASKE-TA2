@@ -1,0 +1,244 @@
+/**********************************************************************
+* Note: This license has also been called the "New BSD License" or
+* "Modified BSD License". See also the 2-clause BSD License.
+*
+* Copyright © 2018-2019 - General Electric Company, All Rights Reserved
+*
+* Project: KApEESH, developed with the support of the Defense Advanced
+* Research Projects Agency (DARPA) under Agreement  No.  HR00111990007.
+*
+* Redistribution and use in source and binary forms, with or without
+* modification, are permitted provided that the following conditions are met:
+* 1. Redistributions of source code must retain the above copyright notice,
+*    this list of conditions and the following disclaimer.
+*
+* 2. Redistributions in binary form must reproduce the above copyright notice,
+*    this list of conditions and the following disclaimer in the documentation
+*    and/or other materials provided with the distribution.
+*
+* 3. Neither the name of the copyright holder nor the names of its
+*    contributors may be used to endorse or promote products derived
+*    from this software without specific prior written permission.
+*
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+* ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+* LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+* SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+* CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+* ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+* THE POSSIBILITY OF SUCH DAMAGE.
+*
+***********************************************************************/
+prefix imp:<http://sadl.org/sadlimplicitmodel#>
+prefix sci:<http://aske.ge.com/sciknow#>
+prefix mm:<http://aske.ge.com/metamodel#>
+prefix cg:<http://aske.ge.com/compgraphmodel#>
+prefix rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+select ?X ?Y ?Z ?X_style ?X_color ?Z_shape ?Z_tooltip
+where {
+{select (?Input as ?X) (?EQ as ?Y) (?Output as ?Z) ?X_style ?X_color ('box' as ?Z_shape) ?Z_tooltip
+where {
+    ?CCG a mm:CCG.
+    filter (?CCG in (<http://aske.ge.com/metamodel#CG_1568732734394>)).
+    ?CCG mm:subgraph ?SG.
+    ?SG mm:cgraph ?CG.
+    ?CG cg:hasEquation ?EQ.
+
+     ?EQ imp:arguments ?EI1.
+     ?EI1 rdf:rest*/rdf:first ?EI2.
+     ?EI2 imp:augmentedType ?EI3. 
+     ?EI3 imp:constraints ?EI4.
+     ?EI4 rdf:rest*/rdf:first ?EI5.
+     ?EI5 imp:gpPredicate ?Input.
+       filter (?Input != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>)
+
+     ?EQ imp:returnTypes ?EO1.
+     ?EO1 rdf:rest*/rdf:first ?EO2.
+     ?EO2 imp:augmentedType ?EO3. 
+     ?EO3 imp:constraints ?EO4.
+     ?EO4 rdf:rest*/rdf:first ?EO5.
+     ?EO5 imp:gpPredicate ?Output.
+       filter (?Output != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>) 
+
+    # There's an eqn that outputs EQ's input (a parent Eqn)
+    ?CCG mm:subgraph ?SG1.
+    ?SG1 mm:cgraph ?CG1.
+    ?CG1 cg:hasEquation ?EQ1.
+    ?EQ1 imp:returnTypes ?E11.
+    ?E11 rdf:rest*/rdf:first ?E12.
+    ?E12 imp:augmentedType ?E13. 
+    ?E13 imp:constraints ?E14.
+    ?E14 rdf:rest*/rdf:first ?E15.
+    ?E15 imp:gpPredicate ?Input.
+
+    ?EQ imp:expression ?Scr.
+    ?Scr imp:script ?Expr.
+    ?Scr imp:language ?lang.
+       filter ( ?lang = <http://sadl.org/sadlimplicitmodel#Python> )
+    bind(str(?Expr) as ?Z_tooltip)
+    bind('solid' as ?X_style)
+    bind('black' as ?X_color)
+}}union
+{select (?Input as ?X) (?EQ as ?Y) (?Output as ?Z) ?X_style ?X_color ('box' as ?Z_shape) ?Z_tooltip
+where {
+    ?CCG a mm:CCG.
+    filter (?CCG in (<http://aske.ge.com/metamodel#CG_1568732734394>)).
+    ?CCG mm:subgraph ?SG.
+    ?SG mm:cgraph ?CG.
+    ?CG cg:hasEquation ?EQ.
+
+     ?EQ imp:arguments ?EI1.
+     ?EI1 rdf:rest*/rdf:first ?EI2.
+     ?EI2 imp:augmentedType ?EI3. 
+     ?EI3 imp:constraints ?EI4.
+     ?EI4 rdf:rest*/rdf:first ?EI5.
+     ?EI5 imp:gpPredicate ?Input.
+       filter (?Input != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>)
+
+     ?EQ imp:returnTypes ?EO1.
+     ?EO1 rdf:rest*/rdf:first ?EO2.
+     ?EO2 imp:augmentedType ?EO3. 
+     ?EO3 imp:constraints ?EO4.
+     ?EO4 rdf:rest*/rdf:first ?EO5.
+     ?EO5 imp:gpPredicate ?Output.
+       filter (?Output != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>) 
+
+    ?EQ imp:expression ?Scr.
+    ?Scr imp:script ?Expr.
+    ?Scr imp:language ?lang.
+       filter ( ?lang = <http://sadl.org/sadlimplicitmodel#Python> )
+     bind(str(?Expr) as ?Z_tooltip)
+
+    # EQ does not have a parent EQn
+    filter not exists {
+      ?CCG mm:subgraph ?SG2.
+      ?SG2 mm:cgraph ?CG2.
+      ?CG2 cg:hasEquation ?EQ2.
+      ?EQ2 imp:returnTypes ?E21.
+      ?E21 rdf:rest*/rdf:first ?E22.
+      ?E22 imp:augmentedType ?E23. 
+      ?E23 imp:constraints ?E24.
+      ?E24 rdf:rest*/rdf:first ?E25.
+      ?E25 imp:gpPredicate ?Input.
+    }
+      
+    bind('filled' as ?X_style)
+    bind('yellow' as ?X_color)
+}}union
+ {select (?Output as ?X) ?Y (?Value as ?Z) ?X_style ?X_color ('oval' as ?Z_shape) ('output value' as ?Z_tooltip)
+  where {
+    ?CCG mm:subgraph ?SG.
+    filter (?CCG in (<http://aske.ge.com/metamodel#CG_1568732734394>)).
+    ?SG mm:output ?Oinst.
+    ?Oinst a ?Output.
+    ?Oinst imp:value ?Value.
+    bind("value" as ?Y).
+    bind('solid' as ?X_style)
+    bind('black' as ?X_color)
+  }}
+}
+
+
+
+prefix hyper:<http://aske.ge.com/hypersonics#>
+prefix dbn:<http://aske.ge.com/dbn#>
+prefix imp:<http://sadl.org/sadlimplicitmodel#>
+select distinct ?Input ?EQ ?Output
+from <http://kd.ge.com/md>
+from <http://kd.ge.com/aske2>
+where {
+ ?CCG a <http://aske.ge.com/metamodel#CCG>.
+ filter (?CCG in (<http://aske.ge.com/metamodel#CG_1552416135454>)).
+ ?CCG <http://aske.ge.com/metamodel#subgraph> ?SG.
+ ?SG <http://aske.ge.com/metamodel#cgraph> ?CG.
+ ?CG <http://aske.ge.com/sciknow#hasEquation> ?EQ.
+ ?EQ <http://sadl.org/sadlimplicitmodel#input> ?I.
+ ?I <http://sadl.org/sadlimplicitmodel#argType> ?Input.
+ ?EQ <http://sadl.org/sadlimplicitmodel#output> ?O.
+ ?O a ?Output.
+} order by ?EQ
+
+
+## Get the CG and the values as well.
+prefix sci:<http://aske.ge.com/sciknow#>
+prefix mm:<http://aske.ge.com/metamodel#>
+prefix imp:<http://sadl.org/sadlimplicitmodel#>
+
+select distinct ?X ?Y ?Z
+from <http://kd.ge.com/md2>
+from <http://kd.ge.com/aske3>
+where {
+ {select ?Input as ?X ?EQ as ?Y ?Output as ?Z
+  where {
+    ?CCG a mm:CCG.
+    filter (?CCG in (<http://aske.ge.com/metamodel#CG_1552510529898>)).
+    ?CCG mm:subgraph ?SG.
+    ?SG mm:cgraph ?CG.
+    ?CG sci:hasEquation ?EQ.
+    ?EQ imp:input ?I.
+    ?I imp:argType ?Input.
+    ?EQ imp:output ?O.
+    ?O a ?Output.
+  }}union
+ {select ?Output as ?X ?Y ?Value as ?Z 
+  where {
+    ?CCG mm:subgraph ?SG.
+    filter (?CCG in (<http://aske.ge.com/metamodel#CG_1552510529898>)).
+    ?SG mm:output ?Oinst.
+    ?Oinst a ?Output.
+    ?Oinst imp:value ?Value.
+   bind("value" as ?Y).
+  }}
+} order by ?X
+
+
+
+
+prefix mm:<http://aske.ge.com/metamodel#>
+prefix sci:<http://aske.ge.com/sciknow#>
+prefix imp:<http://sadl.org/sadlimplicitmodel#>
+
+#construct {
+# ?EQ imp:input ?I.
+# ?I imp:argType ?Input.
+# ?EQ imp:output ?O.
+# ?O a ?Output.
+#}
+select distinct ?Input ?EQ ?Output
+from <http://kd.ge.com/md>
+from <http://kd.ge.com/aske2>
+where {
+ ?CCG a mm:CCG.
+  filter (?CCG in (<http://aske.ge.com/metamodel#CG_1552416135454>)).
+ ?CCG mm:subgraph ?SG.
+ ?SG mm:cgraph ?CG.
+ ?CG sci:hasEquation ?EQ.
+ ?EQ imp:input ?I.
+ ?I imp:argType ?Input.
+ ?EQ imp:output ?O.
+ ?O a ?Output.
+} order by ?EQ
+
+
+construct {
+ ?EQ <http://sadl.org/sadlimplicitmodel#input> ?I.
+ ?I <http://sadl.org/sadlimplicitmodel#argType> ?Input.
+ ?EQ <http://sadl.org/sadlimplicitmodel#output> ?O.
+ ?O a ?Output.
+}
+#select distinct ?EQ ?Input ?Output
+where {
+ ?CCG a <http://aske.ge.com/metamodel#CCG>.
+ ?CCG <http://aske.ge.com/metamodel#subgraph> ?SG.
+ ?SG <http://aske.ge.com/metamodel#cgraph> ?CG.
+ ?CG <http://aske.ge.com/sciknow#hasEquation> ?EQ.
+ ?EQ <http://sadl.org/sadlimplicitmodel#input> ?I.
+ ?I <http://sadl.org/sadlimplicitmodel#argType> ?Input.
+ ?EQ <http://sadl.org/sadlimplicitmodel#output> ?O.
+ ?O a ?Output.
+} order by ?EQ

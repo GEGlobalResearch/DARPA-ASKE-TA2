@@ -121,19 +121,14 @@ Equation st_temp_eq_tropo(double alt (altitude of some Air and alt < 36152 {ft})
 st_temp_eq_tropo has expression (a Script with script "59 - 0.00356 * alt" language Python).
 
 st_temp_eq_lowerStrato is a StaticTemperatureEquation.
-Equation st_temp_eq_lowerStrato(double alt (altitude of some Air 
-	                            //and unit of alt is "ft" 
-	                            and alt < 82345 
-	                            and alt >= 36152 {ft}))
+Equation st_temp_eq_lowerStrato(double alt (altitude of some Air and alt < 82345 and alt >= 36152 {m}))
 	returns double (staticTemperature of the Air {F}) : 
 	return -70 .
 
 st_temp_eq_lowerStrato has expression (a Script with script "-70" language Python).
 
 st_temp_eq_upperStrato is a StaticTemperatureEquation.
-Equation st_temp_eq_upperStrato(double alt (altitude of some Air 
-	                            //and unit of alt is "ft" 
-	                            and alt > 82345 ) )
+Equation st_temp_eq_upperStrato(double alt (altitude of some Air and alt > 82345 {ft}) )
 	returns double (staticTemperature of the Air {F}) : 
 	return -205.05 + .00164 * alt .
 
@@ -141,10 +136,8 @@ st_temp_eq_upperStrato has expression (a Script with script "-205.05 + .00164 * 
 
 
 st_pressure_eq_tropo is a StaticPressureEquation.
-Equation st_pressure_eq_tropo(double alt (altitude of some Air 
-	                            //and unit of alt is "ft" 
-	                             and alt < 36152) )
-	returns double (staticPressure of the Air {F}) : 
+Equation st_pressure_eq_tropo(double alt (altitude of some Air and alt < 36152 {ft}))
+	returns double (staticPressure of the Air {"force_pound/ft**2"}) : 
 	return -2116.0 * ((59 - 0.00356 * alt + 459.7) / 518.6)^5.256 .
 
 st_pressure_eq_tropo has expression (a Script with script "-2116.0 * ((59 - 0.00356 * alt + 459.7) / 518.6)**5.256" language Python).
@@ -152,27 +145,23 @@ st_pressure_eq_tropo has expression (a Script with script "-2116.0 * ((59 - 0.00
 
 
 st_pressure_eq_lowerStrato is a StaticPressureEquation.
-Equation st_pressure_eq_lowerStrato(double alt (altitude of some Air 
-	                            //and unit of alt is "ft" 
-	                            and alt < 82345 
-	                            and alt > 36152) )
-	returns double (staticPressure of the Air {F}) : 
+Equation st_pressure_eq_lowerStrato(double alt (altitude of some Air and alt < 82345 
+	                            and alt > 36152 {ft}) )
+	returns double (staticPressure of the Air {"force_pound/ft**2"}) : 
 	//return 473.1 * exp(1.73 - .000048 * alt) .
 	return 473.1 * e^(1.73 - .000048 * alt) .
 
 st_pressure_eq_lowerStrato has expression (a Script with script "473.1 * math.exp(1.73 - .000048 * alt)" language Python).
 
 st_pressure_eq_upperStrato is a StaticPressureEquation.
-Equation st_pressure_eq_upperStrato(double alt (altitude of some Air 
-	                            //and unit of alt is "ft" 
-	                            and alt > 82345 ) )
-	returns double (staticPressure of the Air {F}) : 
+Equation st_pressure_eq_upperStrato(double alt (altitude of some Air and alt > 82345 {ft}) )
+	returns double (staticPressure of the Air {"force_pound/ft**2"}) : 
 	return 51.97 * (((-205.05 + .00164 * alt) + 459.7)/ 389.98)^-11.388 .
 	
 st_pressure_eq_upperStrato has expression (a Script with script "51.97 * (((-205.05 + .00164 * alt) + 459.7)/ 389.98)**-11.388" language Python).
 	
 sos_eq is a SpeedOfSoundEquation.
-Equation sos_eq(double ts0 (staticTemperature of some Air {F,Rankine}),
+Equation sos_eq(double ts0 (staticTemperature of some Air {F}),
 				double g (gamma of the Air),
 				double R (rgas of the Air)
 				)
@@ -198,18 +187,18 @@ Equation mach_speed_eq(double u0 (airSpeed of some Air {"ft/sec"}),
 mach_speed_eq has expression (a Script with script "u0 / a0" language Python).
 			
 total_temp_eq is a TotalTemperatureEquation.
-Equation total_temp_eq(double ts0 (staticTemperature of some Air),
+Equation total_temp_eq(double ts0 (staticTemperature of some Air {F}),
 					   double mach (machSpeed of the Air) )
-			returns double (totalTemperature of the Air) :
+			returns double (totalTemperature of the Air {F}) :
 			return ts0*(1.0 + 0.5*(1.4-1.0)*mach*mach).
 
 total_temp_eq has expression (a Script with script "ts0*(1.0 + 0.5*(1.4-1.0)*mach*mach)" language Python).
 
 
 total_pressure_eq is a TotalTemperatureEquation.
-Equation total_pressure_eq(double ps0 (staticPressure of some Air),
+Equation total_pressure_eq(double ps0 (staticPressure of some Air {"force_pound/ft**2"}),
 					   double mach (machSpeed of the Air) )
-			returns double (totalPressure of the Air) :
+			returns double (totalPressure of the Air {"force_pound/ft**2"}) :
 			//return ps0*(1.0 + 0.5*(1.4-1.0)*mach*mach)^(1.4/(1.4-1.0)).
 			return ps0*(1.0 + 0.5*(1.4-1.0)*mach*mach)^(1.4*(1.4-1.0)).
 

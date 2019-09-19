@@ -1,0 +1,137 @@
+prefix hyper:<http://aske.ge.com/hypersonicsV2#>
+prefix dbn:<http://aske.ge.com/dbnnodes#>
+prefix imp:<http://sadl.org/sadlimplicitmodel#>
+prefix sci:<http://aske.ge.com/sciknow#>
+prefix mm:<http://aske.ge.com/metamodel#>
+prefix cg:<http://aske.ge.com/compgraphmodel#>
+prefix owl:<http://www.w3.org/2002/07/owl#>
+prefix rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+prefix rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+select distinct ?Node (str(?NUnits) as ?NodeOutputUnits) ?Child (str(?CUnits) as ?ChildInputUnits) ?Distribution ?Lower ?Upper ?Eq ?Value where {
+  {select distinct ?Node ?Child ?CUnits ?Distribution ?Lower ?Upper ?Eq  where { 
+     ?Eq imp:arguments ?EI1.
+     ?EI1 rdf:rest*/rdf:first ?EI2.
+     ?EI2 imp:augmentedType ?EI3. 
+     ?EI3 imp:constraints ?EI4.
+     ?EI4 rdf:rest*/rdf:first ?EI5.
+     ?EI5 imp:gpPredicate ?Node.
+       filter (?Node != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>)
+     ?EI2 imp:specifiedUnits/rdf:first ?CUnits.
+     # Doesn't return NUnits because this is an input node
+     # It's units come from the query
+   
+     ?Eq imp:returnTypes ?EO1.
+     ?EO1 rdf:rest*/rdf:first ?EO2.
+     ?EO2 imp:augmentedType ?EO3. 
+     ?EO3 imp:constraints ?EO4.
+     ?EO4 rdf:rest*/rdf:first ?EO5.
+     ?EO5 imp:gpPredicate ?Child.
+       filter (?Child != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>) 
+
+     filter (?Eq in ( EQNSLIST )) 
+
+     # The input node ?Node doesn't have an equation (it is a DBN input, e.g. altitude)
+     # so get its DBN by linking through node property.
+     ?DBN rdfs:subClassOf ?N1. 
+     ?N1 owl:onProperty cg:node. 
+     ?N1 owl:hasValue/imp:augmentedType/imp:semType ?Type. 
+     ?Node rdfs:range ?Type.
+		
+     ?DBN rdfs:subClassOf ?DB. 
+     ?DB owl:onProperty cg:distribution. 
+     ?DB owl:hasValue ?Distribution.
+
+     ?DBN rdfs:subClassOf ?RB. 
+     ?RB owl:onProperty cg:range. 
+     ?RB owl:hasValue ?Range.
+     ?Range cg:lower ?Lower.
+     ?Range cg:upper ?Upper.
+  }} 
+  union {
+  select distinct ?Node ?NUnits ?Child ?CUnits ?Distribution ?Lower ?Upper ?Eq where {
+     ?Eq imp:arguments ?EI1.
+     ?EI1 rdf:rest*/rdf:first ?EI2.
+     ?EI2 imp:augmentedType ?EI3. 
+     ?EI3 imp:constraints ?EI4.
+     ?EI4 rdf:rest*/rdf:first ?EI5.
+     ?EI5 imp:gpPredicate ?Node.
+       filter (?Node != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>)
+     ?EI2 imp:specifiedUnits/rdf:first ?CUnits.
+
+     ?Eq imp:returnTypes ?EO1.
+     ?EO1 rdf:rest*/rdf:first ?EO2.
+     ?EO2 imp:augmentedType ?EO3. 
+     ?EO3 imp:constraints ?EO4.
+     ?EO4 rdf:rest*/rdf:first ?EO5.
+     ?EO5 imp:gpPredicate ?Child.
+       filter (?Child != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>) 
+    
+     filter (?Eq in ( EQNSLIST )) 
+
+     ?DBN rdfs:subClassOf ?EB. 
+     ?EB owl:onProperty cg:hasEquation.  
+     ?EB owl:allValuesFrom ?EqC. 
+     ?Eq1 a ?EqC. 
+     ?Eq1 imp:returnTypes ?EqO1.
+     ?EqO1 rdf:rest*/rdf:first ?EqO2.
+     ?EqO2 imp:augmentedType ?EqO3. 
+     ?EqO3 imp:constraints ?EqO4.
+     ?EqO4 rdf:rest*/rdf:first ?EqO5.
+     ?EqO5 imp:gpPredicate ?Node.
+     ?EqO2 imp:specifiedUnits/rdf:first ?NUnits.
+
+
+     ?DBN rdfs:subClassOf ?DB. 
+     ?DB owl:onProperty cg:distribution. 
+     ?DB owl:hasValue ?Distribution. 
+			
+     ?DBN rdfs:subClassOf ?RB. 
+     ?RB owl:onProperty cg:range. 
+     ?RB owl:hasValue ?Range. 
+     ?Range cg:lower ?Lower. 
+     ?Range cg:upper ?Upper. 
+  }}
+  union {
+  select distinct ?Eq ?Node ?NUnits ?Distribution ?Lower ?Upper where { 
+     ?Eq imp:returnTypes ?EO1.
+     ?EO1 rdf:rest*/rdf:first ?EO2.
+     ?EO2 imp:augmentedType ?EO3. 
+     ?EO3 imp:constraints ?EO4.
+     ?EO4 rdf:rest*/rdf:first ?EO5.
+     ?EO5 imp:gpPredicate ?Node. 
+       filter (?Eq in ( EQNSLIST ))
+     ?EO2 imp:specifiedUnits/rdf:first ?NUnits.
+
+     # No children. This is a DBN output node
+     # No CUnits, for same reason
+     filter not exists { 
+	?Eq1 imp:arguments ?EI1.
+        ?EI1 rdf:rest*/rdf:first ?EI2.
+        ?EI2 imp:augmentedType ?EI3. 
+        ?EI3 imp:constraints ?EI4.
+        ?EI4 rdf:rest*/rdf:first ?EI5.
+        ?EI5 imp:gpPredicate ?Node.
+	  filter (?Eq1 in ( EQNSLIST ))
+      }
+     ?DBN rdfs:subClassOf ?EB. 
+     ?EB owl:onProperty cg:hasEquation.  
+     ?EB owl:allValuesFrom ?EqClass.
+     ?Eq a ?EqClass.
+
+     ?DBN rdfs:subClassOf ?DB. 
+     ?DB owl:onProperty cg:distribution. 
+     ?DB owl:hasValue ?Distribution.
+     ?DBN rdfs:subClassOf ?RB. 
+     ?RB owl:onProperty cg:range.        
+     ?RB owl:hasValue ?Range.
+     ?Range cg:lower ?Lower.
+     ?Range cg:upper ?Upper.
+ }}
+ ?Q mm:execution/mm:compGraph ?CG.
+   filter (?CG in (COMPGRAPH)).
+  optional{
+    ?Q mm:input ?Node.
+    ?Obj1 ?Node ?Obj2.
+    ?Obj2 imp:value ?Value.}  
+} order by ?Node

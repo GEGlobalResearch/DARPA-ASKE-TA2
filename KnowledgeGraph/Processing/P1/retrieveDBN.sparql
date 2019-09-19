@@ -83,7 +83,13 @@ where {
   ?Range sci:lower ?Lower.
   ?Range sci:upper ?Upper.
  }}
-}
+  ?Q mm:execution/mm:compGraph ?CG.
+  filter (?CG in (<http://aske.ge.com/metamodel#CG_1552404980768>)).
+     optional{
+     ?Q mm:input ?II.
+     ?II a ?Node.
+     ?II imp:value ?Value.}  
+} order by ?Node
 
 
 
