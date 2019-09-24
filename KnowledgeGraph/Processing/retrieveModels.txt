@@ -34,7 +34,6 @@
 *
 ***********************************************************************/
 prefix hyper:<http://aske.ge.com/hypersonicsV2#>
-prefix dbn:<http://aske.ge.com/dbnnodes#> 
 prefix imp:<http://sadl.org/sadlimplicitmodel#>
 prefix sci:<http://aske.ge.com/sciknow#> 
 prefix owl:<http://www.w3.org/2002/07/owl#> 

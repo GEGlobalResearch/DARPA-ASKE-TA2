@@ -39,6 +39,9 @@ prefix mm:<http://aske.ge.com/metamodel#>
 prefix cg:<http://aske.ge.com/compgraphmodel#>
 prefix rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
+http://aske.ge.com/metamodel#CG_1568663087879
+http://aske.ge.com/metamodel#CG_1568732734394
+
 select ?X ?Y ?Z ?X_style ?X_color ?Z_shape ?Z_tooltip
 where {
 {select (?Input as ?X) (?EQ as ?Y) (?Output as ?Z) ?X_style ?X_color ('box' as ?Z_shape) ?Z_tooltip
@@ -130,7 +133,8 @@ where {
     bind('filled' as ?X_style)
     bind('yellow' as ?X_color)
 }}union
- {select (?Output as ?X) ?Y (?Value as ?Z) ?X_style ?X_color ('oval' as ?Z_shape) ('output value' as ?Z_tooltip)
+ {select (?Output as ?X) ?Y (concat(concat(strbefore(?Value,'.'),'.'),substr(strafter(?Value,'.'),1,4)) as ?Z) ?X_style ?X_color ('oval' as ?Z_shape) ('output value' as ?Z_tooltip)\n" + 
+# {select (?Output as ?X) ?Y (?Value as ?Z) ?X_style ?X_color ('oval' as ?Z_shape) ('output value' as ?Z_tooltip)
   where {
     ?CCG mm:subgraph ?SG.
     filter (?CCG in (<http://aske.ge.com/metamodel#CG_1568732734394>)).

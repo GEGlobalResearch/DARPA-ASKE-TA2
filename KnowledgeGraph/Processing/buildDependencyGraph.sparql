@@ -34,12 +34,12 @@
 *
 ***********************************************************************/
 
-prefix dbn:<http://aske.ge.com/dbn#>
+prefix cg:<http://aske.ge.com/compgraphmodel#>
 prefix imp:<http://sadl.org/sadlimplicitmodel#>
 prefix sci:<http://aske.ge.com/sciknow#>
 
-#insert {?EqCh dbn:parent ?EqPa}
-select ?EqCh ?EqPa
+#insert {?EqCh cg:parent ?EqPa}
+select distinct ?EqCh ?EqPa
 where {
  ?EqCh a imp:Equation.
  ?EqCh imp:arguments ?AL2.

@@ -34,38 +34,46 @@
 *
 ***********************************************************************/
 
-
 prefix hyper:<http://aske.ge.com/hypersonicsV2#>
-prefix dbn:<http://aske.ge.com/dbnnodes#>
 prefix imp:<http://sadl.org/sadlimplicitmodel#> 
 prefix owl:<http://www.w3.org/2002/07/owl#> 
 prefix rdfs:<http://www.w3.org/2000/01/rdf-schema#>
-prefix sci:<http://aske.ge.com/sciknow#>
+prefix rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>prefix sci:<http://aske.ge.com/sciknow#>
 prefix cg:<http://aske.ge.com/compgraphmodel#>
 
 select distinct ?DBN ?Out ?Eq where { 
-  {select distinct ?Eq ?Out where { 
+  {select distinct ?Eq where { 
      ?EqOut a imp:Equation. 
      ?EqOut imp:returnTypes ?EO1. 
      ?EO1 rdf:rest*/rdf:first ?EO2.
      ?EO2 imp:augmentedType ?EO3. 
      ?EO3 imp:constraints ?EO4.
      ?EO4 rdf:rest*/rdf:first ?EO5.
-     ?EO5 imp:gpPredicate ?Out.
-     filter (?Out = <http://aske.ge.com/hypersonicsV2#staticTemperature <http://aske.ge.com/hypersonicsV2#staticTemperature> > ).
+     ?EO5 imp:gpPredicate ?Op.
+     filter (?Op in ( <http://aske.ge.com/hypersonicsV2#totalTemperature> )).
 
-     ?EqOut dbn:parent* ?EqIn. 
+     ?EqOut cg:parent* ?EqIn. 
      ?EqIn imp:arguments ?EI1.
      ?EI1 rdf:rest*/rdf:first ?EI2.
      ?EI2 imp:augmentedType ?EI3. 
      ?EI3 imp:constraints ?EI4.
      ?EI4 rdf:rest*/rdf:first ?EI5.
-     ?EI5 imp:gpPredicate ?In.
-     filter (?In = <http://aske.ge.com/hypersonicsV2#altitude <http://aske.ge.com/hypersonicsV2#altitude> > ). 
+     ?EI5 imp:gpPredicate ?Ip.
+     filter (?Ip in ( <http://aske.ge.com/hypersonicsV2#altitude> )). 
 
-     ?EqOut dbn:parent* ?Eq. 
-     ?Eq dbn:parent* ?EqIn. 
+     ?EqOut cg:parent* ?Eq. 
+     ?Eq cg:parent* ?EqIn. 
   }} 
+
+  ?Eq imp:returnTypes ?O1. 
+  ?O1 rdf:rest*/rdf:first ?O2.
+  ?O2 imp:augmentedType ?O3. 
+  ?O3 imp:constraints ?O4.
+  ?O4 rdf:rest*/rdf:first ?O5.
+  ?O5 imp:gpPredicate ?Out.
+  filter (?Out != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>) 
+
+
   ?DBN rdfs:subClassOf ?EQR. 
   ?EQR owl:onProperty cg:hasEquation.
   ?EQR owl:allValuesFrom ?EqClass.
