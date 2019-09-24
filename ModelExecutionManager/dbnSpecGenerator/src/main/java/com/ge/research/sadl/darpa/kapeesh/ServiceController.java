@@ -103,7 +103,8 @@ public class ServiceController {
 
 		generator.updateObservationData(Utility.getJsonFromMap((LinkedHashMap)sadlResultSet.get("data")));
 
-		generator.createNodeObject(Utility.getJsonFromMap((LinkedHashMap)sadlResultSet.get("nodes")));
+		generator.createNodeObject(Utility.getJsonFromMap((LinkedHashMap)sadlResultSet.get("nodes")),
+					   Utility.getJsonFromMap((LinkedHashMap)sadlResultSet.get("models")));
 
 		generator.createMapObject();
 

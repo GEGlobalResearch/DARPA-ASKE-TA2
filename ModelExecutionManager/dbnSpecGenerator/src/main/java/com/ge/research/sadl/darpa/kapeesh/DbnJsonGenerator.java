@@ -277,9 +277,11 @@ public class DbnJsonGenerator {
 		return dbnModels;
 	}
 
-	public JSONObject createNodeObject (JSONObject nodes) throws Exception {
+	public JSONObject createNodeObject (JSONObject nodes, JSONObject models) throws Exception {
 
 		Table table = Table.fromJson(nodes);
+		Table modelsTable = Table.fromJson(models);
+		JSONObject analyticSettings = (JSONObject) dbn_all.get("analyticSettings");
 
 		JSONObject dbnNodes = new JSONObject();
 
@@ -329,8 +331,19 @@ public class DbnJsonGenerator {
 			Table filteredtable = table.getSubsetWhereMatches("Child", nodeName);
 			String[] parentNames = filteredtable.getColumnUniqueValues("Node");
 			JSONArray parentJsonArr = new JSONArray();
-			for (String parentName : parentNames)
+			HashMap<String ,String> modelFilterMap = new HashMap<String, String>();
+			HashMap<String ,String> nodeFilterMap = new HashMap<String, String>();
+			for (String parentName : parentNames) {
 				parentJsonArr.add(variableShortNameMap.get(parentName));
+				nodeFilterMap.put("Node", parentName);
+				nodeFilterMap.put("Child", nodeName);
+				Table nodesTable = filteredtable.getSubsetBySubstring(nodeFilterMap);
+				System.out.println(nodesTable.getCellAsString(0, "NodeOutputUnits"));
+				System.out.println(nodesTable.getCellAsString(0, "ChildInputUnits"));
+				modelFilterMap.put("Input", parentName);
+				modelFilterMap.put("Output", nodeName);
+				Table eqnsTable = modelsTable.getSubsetBySubstring(modelFilterMap);
+			}
 			nodeObject.put("Parents", parentJsonArr);
 
 			filteredtable = table.getSubsetWhereMatches("Node", nodeName);
@@ -420,7 +433,6 @@ public class DbnJsonGenerator {
 		    }
 		}
 
-		JSONObject analyticSettings = (JSONObject) dbn_all.get("analyticSettings");
 		analyticSettings.put("Nodes", dbnNodes);
 		dbn_all.put("analyticSettings", analyticSettings);
 
