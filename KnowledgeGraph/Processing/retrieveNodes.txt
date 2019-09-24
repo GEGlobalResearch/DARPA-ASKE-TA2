@@ -1,5 +1,4 @@
 prefix hyper:<http://aske.ge.com/hypersonicsV2#>
-prefix dbn:<http://aske.ge.com/dbnnodes#>
 prefix imp:<http://sadl.org/sadlimplicitmodel#>
 prefix sci:<http://aske.ge.com/sciknow#>
 prefix mm:<http://aske.ge.com/metamodel#>
@@ -9,7 +8,7 @@ prefix rdfs:<http://www.w3.org/2000/01/rdf-schema#>
 prefix rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 select distinct ?Node (str(?NUnits) as ?NodeOutputUnits) ?Child (str(?CUnits) as ?ChildInputUnits) ?Distribution ?Lower ?Upper ?Eq ?Value where {
-  {select distinct ?Node ?Child ?CUnits ?Distribution ?Lower ?Upper ?Eq  where { 
+  {select distinct ?Node ?NUnits ?Child ?CUnits ?Distribution ?Lower ?Upper ?Eq  where { 
      ?Eq imp:arguments ?EI1.
      ?EI1 rdf:rest*/rdf:first ?EI2.
      ?EI2 imp:augmentedType ?EI3. 
@@ -17,9 +16,14 @@ select distinct ?Node (str(?NUnits) as ?NodeOutputUnits) ?Child (str(?CUnits) as
      ?EI4 rdf:rest*/rdf:first ?EI5.
      ?EI5 imp:gpPredicate ?Node.
        filter (?Node != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>)
-     ?EI2 imp:specifiedUnits/rdf:first ?CUnits.
-     # Doesn't return NUnits because this is an input node
-     # It's units come from the query
+     optional{?EI2 imp:specifiedUnits/rdf:first ?CUnits.}
+     
+     # This is an input node, it's units come from the query
+     # Get NUnits from current model via the property (?Node)
+     optional{
+       ?Var ?Node ?UQNode.
+       ?UQNode imp:unit ?NUnits.
+     }
    
      ?Eq imp:returnTypes ?EO1.
      ?EO1 rdf:rest*/rdf:first ?EO2.
@@ -37,7 +41,7 @@ select distinct ?Node (str(?NUnits) as ?NodeOutputUnits) ?Child (str(?CUnits) as
      ?N1 owl:onProperty cg:node. 
      ?N1 owl:hasValue/imp:augmentedType/imp:semType ?Type. 
      ?Node rdfs:range ?Type.
-		
+
      ?DBN rdfs:subClassOf ?DB. 
      ?DB owl:onProperty cg:distribution. 
      ?DB owl:hasValue ?Distribution.
@@ -57,7 +61,7 @@ select distinct ?Node (str(?NUnits) as ?NodeOutputUnits) ?Child (str(?CUnits) as
      ?EI4 rdf:rest*/rdf:first ?EI5.
      ?EI5 imp:gpPredicate ?Node.
        filter (?Node != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>)
-     ?EI2 imp:specifiedUnits/rdf:first ?CUnits.
+     optional{?EI2 imp:specifiedUnits/rdf:first ?CUnits}.
 
      ?Eq imp:returnTypes ?EO1.
      ?EO1 rdf:rest*/rdf:first ?EO2.
@@ -79,7 +83,7 @@ select distinct ?Node (str(?NUnits) as ?NodeOutputUnits) ?Child (str(?CUnits) as
      ?EqO3 imp:constraints ?EqO4.
      ?EqO4 rdf:rest*/rdf:first ?EqO5.
      ?EqO5 imp:gpPredicate ?Node.
-     ?EqO2 imp:specifiedUnits/rdf:first ?NUnits.
+     optional{?EqO2 imp:specifiedUnits/rdf:first ?NUnits.}
 
 
      ?DBN rdfs:subClassOf ?DB. 
@@ -101,7 +105,7 @@ select distinct ?Node (str(?NUnits) as ?NodeOutputUnits) ?Child (str(?CUnits) as
      ?EO4 rdf:rest*/rdf:first ?EO5.
      ?EO5 imp:gpPredicate ?Node. 
        filter (?Eq in ( EQNSLIST ))
-     ?EO2 imp:specifiedUnits/rdf:first ?NUnits.
+     optional{?EO2 imp:specifiedUnits/rdf:first ?NUnits.}
 
      # No children. This is a DBN output node
      # No CUnits, for same reason

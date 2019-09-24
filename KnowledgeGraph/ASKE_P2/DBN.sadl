@@ -42,6 +42,18 @@ import "http://aske.ge.com/hypersonicsV2".
 
 
 //Note: need implicitModel to have semType with value of type UnittedQuantity.
+
+GammaDBN is a type of DBN.
+node of GammaDBN always has value (a DataDescriptor localDescriptorName "gamma" augmentedType (a SemanticType semType GammaConstant) ).
+distribution of GammaDBN always has value uniform.
+range of GammaDBN always has value (a Range lower 1.4 upper 1.4).
+
+RgasDBN is a type of DBN.
+node of RgasDBN always has value (a DataDescriptor localDescriptorName "gamma" augmentedType (a SemanticType semType RgasConstant) ).
+distribution of RgasDBN always has value uniform.
+range of RgasDBN always has value (a Range lower 1718 upper 1718).
+
+
 		
 AltitudeDBN is a type of DBN.
 node of AltitudeDBN always has value (a DataDescriptor localDescriptorName "altitude" augmentedType (a SemanticType semType Altitude) ).

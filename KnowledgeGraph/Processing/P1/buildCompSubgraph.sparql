@@ -48,8 +48,8 @@ select distinct ?DBN ?Out ?Eq where {
     ?EqOut a ?EqClass. 
     ?EqClass rdfs:subClassOf imp:Equation.
      ?EqOut sci:output ?Oinst.
-     ?Oinst a ?Out.
-     filter (?Out in ( <http://aske.ge.com/hypersonics#TotalPressure> )).
+     ?Oinst a ?Output.
+     filter (?Output in ( <http://aske.ge.com/hypersonics#TotalPressure> )).
      ?EqOut dbn:parent* ?EqIn.
     ?EqIn sci:input/sci:argType ?In.
     filter (?In in (<http://aske.ge.com/hypersonics#Altitude>)).
@@ -57,30 +57,8 @@ select distinct ?DBN ?Out ?Eq where {
     ?EqOut dbn:parent* ?Eq.
     ?Eq dbn:parent* ?EqIn.
   }}
-    union {
-   select distinct ?Eq where {
-    ?EqOut a ?EqClass. 
-    ?EqClass rdfs:subClassOf imp:Equation.
-     ?EqOut sci:output ?Oinst.
-     ?Oinst a ?Out.
-     filter (?Out in ( <http://aske.ge.com/hypersonics#TotalPressure> )).
-     ?EqOut dbn:parent* ?EqIn.
-    ?EqIn sci:input/sci:argType ?In.
 
-    ?EqOut dbn:parent* ?EqInPath.
-    ?EqInPath dbn:parent* ?EqIn.
-
-    ?EqInPath dbn:parent ?Eq.
-    filter not exists {
-       ?Eq dbn:parent* ?EqIn.
-    }
-    filter not exists{
-      ?Eq sci:input/sci:argType ?In1.
-      filter (?In1 in (<http://aske.ge.com/hypersonics#Altitude>)).
-    }
-    filter (?In in (<http://aske.ge.com/hypersonics#Altitude>)).
-  }}
-   ?Eq sci:output ?Oi.
+ ?Eq sci:output ?Oi.
  ?Oi a ?Out.
  ?DBN rdfs:subClassOf ?EQR.
  ?EQR owl:onProperty sci:hasEquation.
