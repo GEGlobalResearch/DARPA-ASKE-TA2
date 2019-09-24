@@ -41,6 +41,8 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -284,6 +286,37 @@ public class DbnJsonGenerator {
 		String[] nodeNames = table.getColumnUniqueValues("Node");
 		String[] nodesWithParent = table.getColumnUniqueValues("Child");	// includes ""
 
+		if (dbnExecMode.equals("sensitivity")) {
+			JSONObject nodeObject = new JSONObject();
+			nodeObject.put("Type", "Stochastic_Transient");
+			nodeObject.put("Tag", new JSONArray());
+			nodeObject.put("Distribution", "Uniform");
+			JSONObject distParams = new JSONObject();
+			distParams.put("lower", 1);
+			distParams.put("upper", 1000);
+			nodeObject.put("DistributionParameters", distParams);
+			nodeObject.put("InitialChildren", new JSONArray());	// TODO: Confirm if this is ok
+			JSONArray obsDataArr = new JSONArray();
+			obsDataArr.add(1);
+			obsDataArr.add(2);
+			nodeObject.put("ObservationData", obsDataArr);
+			nodeObject.put("Parents", new JSONArray());
+			nodeObject.put("Children", new JSONArray());
+			// JSONArray children = new JSONArray();
+			// children.add(variableShortNameMap.get(nodeNames[0]));
+			// nodeObject.put("Children", children);  // Removed Children as per Natarajan's input 
+			nodeObject.put("DistributionFixed", true);
+			dbnNodes.put("time", nodeObject);
+
+			nodeObject = new JSONObject();
+			nodeObject.put("Parents", new JSONArray());
+			JSONArray value = new JSONArray();
+			value.add(StringUtils.join(nodeNames, ","));
+			nodeObject.put("Value", value);
+			nodeObject.put("Type", "");
+			dbnNodes.put("sensitivity_outputs", nodeObject);
+		}
+
 		for (String nodeName : nodesWithParent) {
 		    if (!nodeName.isEmpty() && nodeName != "") {
 			JSONObject nodeObject = new JSONObject();
@@ -338,6 +371,9 @@ public class DbnJsonGenerator {
 		    if (!dbnNodes.containsKey(variableShortNameMap.get(nodeName))) {
 			JSONObject nodeObject = new JSONObject();
 			nodeObject.put("Type", "Stochastic_Transient");
+			if (dbnExecMode.equals("sensitivity")) {
+				nodeObject.put("Type", "Stochastic");
+			}
 			nodeObject.put("Tag", new JSONArray());
 			nodeObject.put("InitialChildren", new JSONArray());	// TODO: Confirm if this is ok
 			
@@ -369,8 +405,12 @@ public class DbnJsonGenerator {
 			range.add(Double.parseDouble(upper[0]));
 			nodeObject.put("Range", range);
 			JSONArray values = new JSONArray();
-			if (!hypothesis)
-				nodeObject.put("IsDistributionFixed", true);
+			if (!hypothesis) {
+				if (dbnExecMode.equals("sensitivity"))
+					nodeObject.put("DistributionFixed", true);
+				else
+					nodeObject.put("IsDistributionFixed", true);
+			}
 			if (!value[0].isEmpty() && value[0] != "") {
 				values.add(Double.parseDouble(value[0]));
 			} else if (dbnExecMode.equals("calibration") && !hypothesis) {
