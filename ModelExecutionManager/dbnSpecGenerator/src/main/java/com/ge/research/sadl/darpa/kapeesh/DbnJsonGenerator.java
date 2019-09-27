@@ -206,8 +206,10 @@ public class DbnJsonGenerator {
 
 		variableShortNameMap = new HashMap<String, String>();
 
-		for (int count = 0; count < inputs.length; count++) 
-			variableShortNameMap.put(inputs[count], labels[count]);
+		for (int count = 0; count < inputs.length; count++) {
+			if (!variableShortNameMap.containsKey(inputs[count]))
+				variableShortNameMap.put(inputs[count], labels[count]);
+		}
 
 		return;
 	}
