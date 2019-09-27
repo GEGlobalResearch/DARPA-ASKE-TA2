@@ -229,9 +229,14 @@ public class DbnJsonGenerator {
 			String inputLabel = table.getCellAsString(rowNum, "InputLabel");
 			if (!inputLabel.equals(variableShortNameMap.get(input))) {
 				table.setCell(rowNum, table.getColumnIndex("InputLabel"), variableShortNameMap.get(input));
-				String modelForm = table.getCellAsString(rowNum, "ModelForm");
-				table.setCell(rowNum, table.getColumnIndex("ModelForm"), 
+				String model = table.getCellAsString(rowNum, "Model");
+				for (int row = 0; row < table.getNumRows(); row++) {
+				    if (model.equals(table.getCellAsString(row, "Model"))) {
+					String modelForm = table.getCellAsString(row, "ModelForm");
+					table.setCell(row, table.getColumnIndex("ModelForm"), 
 							modelForm.replace(inputLabel, variableShortNameMap.get(input)));
+				    }
+				}
 			}
 		}
 
