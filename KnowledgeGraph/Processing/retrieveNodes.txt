@@ -22,7 +22,7 @@ select distinct ?Node (str(?NUnits) as ?NodeOutputUnits) ?Child (str(?CUnits) as
      # Get NUnits from current model via the property (?Node)
      optional{
        ?Var ?Node ?UQNode.
-       ?UQNode imp:unit ?NUnits.
+       ?UQNode imp:unit ?InputUnitsQuery.
      }
    
      ?Eq imp:returnTypes ?EO1.
@@ -39,7 +39,8 @@ select distinct ?Node (str(?NUnits) as ?NodeOutputUnits) ?Child (str(?CUnits) as
      # so get its DBN by linking through node property.
      ?DBN rdfs:subClassOf ?N1. 
      ?N1 owl:onProperty cg:node. 
-     ?N1 owl:hasValue/imp:augmentedType/imp:semType ?Type. 
+     ?N1 owl:hasValue ?TypeIns.
+     ?TypeIns a ?Type. 
      ?Node rdfs:range ?Type.
 
      ?DBN rdfs:subClassOf ?DB. 
@@ -51,6 +52,9 @@ select distinct ?Node (str(?NUnits) as ?NodeOutputUnits) ?Child (str(?CUnits) as
      ?RB owl:hasValue ?Range.
      ?Range cg:lower ?Lower.
      ?Range cg:upper ?Upper.
+
+     optional {?DBN rdfs:subClassOf/owl:hasValue/imp:specifiedUnits/sl:first ?DBNUnits.}
+     bind( if(bound(?InputUnitsQuery), ?InputUnitsQuery, ?DBNUnits) as ?NUnits ). 
   }} 
   union {
   select distinct ?Node ?NUnits ?Child ?CUnits ?Distribution ?Lower ?Upper ?Eq where {
@@ -135,7 +139,8 @@ select distinct ?Node (str(?NUnits) as ?NodeOutputUnits) ?Child (str(?CUnits) as
  ?Q mm:execution/mm:compGraph ?CG.
    filter (?CG in (COMPGRAPH)).
   optional{
-    ?Q mm:input ?Node.
-    ?Obj1 ?Node ?Obj2.
-    ?Obj2 imp:value ?Value.}  
+    ?Q mm:input ?Inp.
+    ?Inp a ?IType.
+    ?Node rdfs:range ?IType.
+    ?Inp imp:value ?Value.}  
 } order by ?Node

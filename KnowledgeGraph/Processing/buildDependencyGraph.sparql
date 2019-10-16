@@ -41,7 +41,7 @@ prefix sci:<http://aske.ge.com/sciknow#>
 #insert {?EqCh cg:parent ?EqPa}
 select distinct ?EqCh ?EqPa
 where {
- ?EqCh a imp:Equation.
+ #?EqCh a imp:Equation.
  ?EqCh imp:arguments ?AL2.
  ?AL2 rdf:rest*/rdf:first ?AO2.
  ?AO2 imp:augmentedType ?Type2.
@@ -50,7 +50,7 @@ where {
  ?C2 imp:gpPredicate ?P.
  filter (?P != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>)
 
- ?EqPa a imp:Equation.
+ #?EqPa a imp:Equation.
  ?EqPa imp:returnTypes ?AL1.
  ?AL1 rdf:rest*/rdf:first ?AO1.
  ?AO1 imp:augmentedType ?Type1.

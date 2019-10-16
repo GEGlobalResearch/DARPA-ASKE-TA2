@@ -35,17 +35,41 @@
 ***********************************************************************/
 uri "http://aske.ge.com/testdiag" alias testdiag.
 
-import "http://aske.ge.com/metamodel".
+import "http://aske.ge.com/metamodel" as mm.
 import "http://aske.ge.com/hypersonicsV2".
 import "http://aske.ge.com/dbnnodes".
+import "http://sadl.org/TableAndEquation.sadl".
+//import "http://aske.ge.com/Model_Q_1571170505850".
 
 
-//what is the staticTemperature of some Air when the altitude of the Air is 35000?
+//what is the staticTemperature of some Air when the altitude of the Air is 38000 ft? 
 
-//what is StaticTemperature?CM: StaticTemperature is a type of AtmosphericTemperature.
+//what is the staticTemperature of some Air when the altitude of the Air is 38000 ft and the airSpeed of the Air is 1000 "ft/sec"?
 
-//what is the speedOfSound of some Air when the altitude of the Air is 35000?
+//what is StaticTemperature?
 
-//what is the totalTemperature of some Air when the altitude of the Air is 35000?
+//what is the speedOfSound of some Air when the altitude of the Air is 35000 ft?
 
-//what is the staticTemperature of some Air when the altitude of the Air is 35000 ft? 
+//what is the totalTemperature of some Air when the altitude of the Air is 38000 ft?
+
+//what is the staticTemperature of some Air when the altitude of the Air is 10000 m? 
+
+ //what is the machSpeed of some Air when the altitude of the Air is 35000 ft? 
+ 
+// what is the altitude of some Air when the staticTemperature of the Air is -80 degF?
+
+//what is the machSpeed of some Air when the airSpeed of the Air is 1000 "ft/sec" ? 
+
+//what is the machSpeed of some Air when the airSpeed of the Air is 1000 ?
+
+//Find a model for Doc4. 
+
+//what is the engineTemperatureRatio of some RamJet when the afterburner of the RamJet is false and the burnerTemperature of the RamJet is 4000 defF and the totalTemperature of some Air is 400 defF?
+
+//what is the machSpeed of some Air when the altitude of the Air is 30000 ft and the airSpeed of the Air is 500 mph? 
+  
+//what is the sensitivity of CG_1571148941810?CM: "Failed to evaluate answer".
+ 
+//what is the staticTemperature of some Air when the altitude of the Air is 30000 ft?
+
+//what is the rayleighflow of a RamJet when the burnerTemperature of the RamJet is 4000 defF?

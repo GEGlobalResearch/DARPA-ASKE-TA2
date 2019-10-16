@@ -35,8 +35,24 @@
 ***********************************************************************/
 uri "http://aske.ge.com/hypersonicsV2" alias hypersonicsV2 .
 
-//import "http://aske.ge.com/compgraph". 
 import "http://aske.ge.com/sciknow".
+
+Engine is a class.
+RamJet is a type of Engine
+	described by afterburner with a single value of type boolean.
+
+BurnerTemperature is a type of Temperature.
+burnerTemperature describes Engine with values of type BurnerTemperature.
+Ratio is a type of UnittedQuantity.
+EngineTemperatureRatio is a type of Ratio.
+engineTemperatureRatio describes Engine with values of type EngineTemperatureRatio.
+EngineTemperatureRatioEquation is a type of ^Equation.
+EnginePressureRatio is a type of Ratio.
+enginePressureRatio describes Engine with values of type EnginePressureRatio.
+EnginePressureRatioEquation is a type of ^Equation.
+Rayleighflow is a type of Flow.
+rayleighflow describes Engine with values of type Rayleighflow.
+RayleighflowEquation is a type of ExternalEquation.
 
 Altitude is a type of UnittedQuantity.
 AtmosphericTemperature is a type of Temperature.
@@ -50,6 +66,7 @@ AirSpeed is a type of Speed.
 MachSpeed is a type of Speed.
 GammaConstant is a type of UnittedQuantity.
 RgasConstant is a type of UnittedQuantity.
+Flow is a type of UnittedQuantity.
 
 StaticTemperatureEquation is a type of ^Equation.
 StaticPressureEquation is a type of ^Equation.
@@ -80,11 +97,8 @@ gamma describes Air with values of type GammaConstant.
 rgas describes Air with values of type RgasConstant.
 
 
-//tropo_c1 describes Air with values of type double.
-//tropo_c2 describes Air with values of type double.
-
 ////Troposphere Constants
-//Equation tropo_C1_Eq() returns double (tropo_c1 of some Air {F}) : return 59.0 .
+//Equation tropo_C1_Eq() returns double (tropo_c1 of some Air {degF}) : return 59.0 .
 //Equation tropo_C2_Eq() returns double (tropo_c2 of some Air {"1/ft"}) : return .00356 .
 
 gamma_const is a GammaConstEquation.
@@ -97,45 +111,28 @@ Equation rgas_const() returns double (rgas of some Air): return 1718 . //ft*lb/s
 //ft*lb/slug/Rankine = ft^2/sec^2/Rankine
 rgas_const has expression (a Script script "1718" language Python).
 
-//Equation farenheitToRankine(double f (temperature of some PhysicalThing {F}))
-//		returns double (temperature of the PhysicalThing {Rankine}) : f + 459.67. 
-
 Equation mphToftpersec(double s (speed of a PhysicalThing {mph}))
 		returns double (speed of the PhysicalThing {"ft/sec"}):
 		return s*5280/3600.
-// Code expression if using Pint for unit conversion.
 mphToftpersec has expression (a Script script "s * 5280/3600" language Python).
 
-//air is an Air with altitude alt.
-//alt is an Altitude.
-
-
-//Equation st_temp_eq(Altitude alt (altitude of some Air 
-//	                            and unit of alt is "ft" 
-//	                            and ^value of alt < 36152 ) )
-//	returns StaticTemperature (staticTemperature of the Air {F}) : 
-//	return (a StaticTemperature with ^value (59 - 0.00356 * ^value of alt) unit "F") .
-
-//Equation foo(double alt (Altitude)) //altitude of some Air))
-//	returns double (Altitude) :
-//	return alt.
 
 st_temp_eq_tropo is a StaticTemperatureEquation.
 
 Equation st_temp_eq_tropo(double alt (altitude of some Air and alt < 36152 {ft}) )
-	returns double (staticTemperature of the Air {F}) : 
+	returns double (staticTemperature of the Air {degF,degR}) : 
 	return 59 - 0.00356 * alt .
 st_temp_eq_tropo has expression (a Script with script "59 - 0.00356 * alt" language Python).
 
 //st_temp_eq_lowerStrato is a StaticTemperatureEquation.
-//Equation st_temp_eq_lowerStrato(double alt (altitude of some Air and alt < 82345 and alt >= 36152 {m}))
-//	returns double (staticTemperature of the Air {F}) : 
+//Equation st_temp_eq_lowerStrato(double alt (altitude of some Air and alt < 82345 and alt >= 36152 {ft}))
+//	returns double (staticTemperature of the Air {degF}) : 
 //	return -70 .
 //st_temp_eq_lowerStrato has expression (a Script with script "-70" language Python).
 //
 //st_temp_eq_upperStrato is a StaticTemperatureEquation.
 //Equation st_temp_eq_upperStrato(double alt (altitude of some Air and alt > 82345 {ft}) )
-//	returns double (staticTemperature of the Air {F}) : 
+//	returns double (staticTemperature of the Air {degF}) : 
 //	return -205.05 + .00164 * alt .
 //st_temp_eq_upperStrato has expression (a Script with script "-205.05 + .00164 * alt" language Python).
 
@@ -166,7 +163,7 @@ Equation st_pressure_eq_upperStrato(double alt (altitude of some Air and alt > 8
 st_pressure_eq_upperStrato has expression (a Script with script "51.97 * (((-205.05 + .00164 * alt) + 459.7)/ 389.98)**-11.388" language Python).
 	
 sos_eq is a SpeedOfSoundEquation.
-Equation sos_eq(double ts0 (staticTemperature of some Air {F}),
+Equation sos_eq(double ts0 (staticTemperature of some Air {degF}),
 				double g (gamma of the Air),
 				double R (rgas of the Air)
 				)
@@ -184,7 +181,7 @@ mach_speed_eq is a MachSpeedEquation.
 //			// 
 //			return u0*5280.0 * 3600.0 * a0 .
 
-Equation mach_speed_eq(double u0 (airSpeed of some Air {"ft/sec"}),
+Equation mach_speed_eq(double u0 (airSpeed of some Air {"mph"}),
 					double a0 (speedOfSound of the Air {"ft/sec"}) )
 			returns double (machSpeed of the Air) :
 			return u0 / a0 .
@@ -192,19 +189,73 @@ Equation mach_speed_eq(double u0 (airSpeed of some Air {"ft/sec"}),
 mach_speed_eq has expression (a Script with script "u0 / a0" language Python).
 			
 total_temp_eq is a TotalTemperatureEquation.
-Equation total_temp_eq(double ts0 (staticTemperature of some Air {F}),
+Equation total_temp_eq(double ts1 (staticTemperature of some Air {degF}),
 					   double mach (machSpeed of the Air) )
-			returns double (totalTemperature of the Air {F}) :
-			return ts0*(1.0 + 0.5*(1.4-1.0)*mach*mach).
+			returns double (totalTemperature of the Air {degF}) :
+			return ts1*(1.0 + 0.5*(1.4-1.0)*mach*mach).
 
-total_temp_eq has expression (a Script with script "ts0*(1.0 + 0.5*(1.4-1.0)*mach*mach)" language Python).
+total_temp_eq has expression (a Script with script "ts1*(1.0 + 0.5*(1.4-1.0)*mach*mach)" language Python).
 
 
 total_pressure_eq is a TotalPressureEquation.
 Equation total_pressure_eq(double ps0 (staticPressure of some Air {"force_pound/ft**2"}),
 					   double mach (machSpeed of the Air) )
 			returns double (totalPressure of the Air {"force_pound/ft**2"}) :
-			//return ps0*(1.0 + 0.5*(1.4-1.0)*mach*mach)^(1.4/(1.4-1.0)).
-			return ps0*(1.0 + 0.5*(1.4-1.0)*mach*mach)^(1.4*(1.4-1.0)).
+			return ps0*(1.0 + 0.5*(1.4-1.0)*mach*mach)^(1.4/(1.4-1.0)).
 
 total_pressure_eq has expression (a Script with script "ps0*(1.0 + 0.5*(1.4-1.0)*mach*mach)**(1.4*(1.4-1.0))" language Python).
+
+
+
+
+engineTemperatureRatioEq1 is a EngineTemperatureRatioEquation.
+Equation engineTemperatureRatioEq1(boolean ab (afterburner of some RamJet and ab = false),
+								double tt4 (burnerTemperature of the RamJet {defF}),
+								double tt3 (totalTemperature of some Air {defF}) )
+		returns double (engineTemperatureRatio of the RamJet) :
+		return tt4/tt3.
+engineTemperatureRatioEq1 has expression (a Script with script "tt4/tt3" language Python).
+
+engineTemperatureRatioEq2 is a EngineTemperatureRatioEquation.
+Equation engineTemperatureRatioEq2(boolean ab (afterburner of some RamJet and ab = true),
+								double tt4 (burnerTemperature of the RamJet {defF}),
+								double tt3 (totalTemperature of some Air {defF}) )
+		returns double (engineTemperatureRatio of the RamJet) :
+		return 4000.0/tt3.
+engineTemperatureRatioEq2 has expression (a Script with script "tt4/tt3" language Python).
+
+
+
+enginePressureRatioEq1 is a EnginePressureRatioEquation.
+Equation enginePressureRatioEq1( boolean ab (afterburner of some RamJet and ab = false),
+								double rf (rayleighflow of the RamJet ) ) 
+		returns double (enginePressureRatio of the RamJet) :
+		return 1.0.
+enginePressureRatioEq1 has expression (a Script with script "1.0" language Python).
+
+enginePressureRatioEq2 is a EnginePressureRatioEquation.
+Equation enginePressureRatioEq2( boolean ab (afterburner of some RamJet and ab = true),
+								double rf (rayleighflow of the RamJet ) ) 
+		returns double (enginePressureRatio of the RamJet) :
+		return rf.
+enginePressureRatioEq2 has expression (a Script with script "rf" language Python).
+
+
+rayleighflowEq is a RayleighflowEquation.
+External  rayleighflowEq( double mach (machSpeed of some Air),
+						  double tt4 (burnerTemperature of some RamJet))
+		  returns double (rayleighflow of the RamJet):
+		  "rayleighflow.py".
+//rayleighflowEq has expression (a Script with script
+		  
+
+//// getThermo
+//       cpair = getCp(tt[0],gamopt);              /*BTU/lbm R */
+//  getCP:          a*temp*temp*temp + b*temp*temp + c*temp +d ;
+
+
+//                 /* engine press ratio EPR*/
+//       epr = prat[7]*prat[15]*prat[5]*prat[4]*prat[3]*prat[13];
+//              /* engine temp ratio ETR */
+//       etr = trat[7]*trat[15]*trat[5]*trat[4]*trat[3]*trat[13];
+

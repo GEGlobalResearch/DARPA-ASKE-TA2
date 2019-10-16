@@ -41,7 +41,7 @@ prefix cg:<http://aske.ge.com/compgraphmodel#>
 prefix rdfs:<http://www.w3.org/2000/01/rdf-schema#>
 prefix rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-select distinct ?Model ?Input (str(?EI2Label) as ?InputLabel) ?UniqueInputLabel ?Output (str(?expr) as ?ModelForm) where { 
+select distinct ?Model ?Input (str(?EI2Label) as ?InputLabel) ?UniqueInputLabel ?Output (str(?expr) as ?ModelForm) (str(?Fun) as ?Function) where { 
 	  ?Model rdfs:subClassOf cg:DBN.
 	  ?Model rdfs:subClassOf ?BN.
 	  ?BN owl:onProperty cg:hasEquation.
@@ -68,11 +68,15 @@ select distinct ?Model ?Input (str(?EI2Label) as ?InputLabel) ?UniqueInputLabel 
           ?EO5 imp:gpPredicate ?Output.
               filter (?Output != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>)
 
-	  ?Eq imp:expression ?Scr.
-	  ?Scr imp:script ?expr.
-          ?Scr imp:language ?lang.
+	  optional{
+  	    ?Eq imp:expression ?Scr.
+	    ?Scr imp:script ?expr.
+            ?Scr imp:language ?lang.
                filter ( ?lang = <http://sadl.org/sadlimplicitmodel#Python> )
-
+	  }
+	  optional {
+	    ?Eq imp:externalURI ?Fun.
+	  }
     
 } 
 order by ?Model

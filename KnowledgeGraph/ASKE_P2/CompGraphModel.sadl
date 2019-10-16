@@ -46,7 +46,7 @@ KChain is a type of ComputationalGraph.
 
 DBN is a type of ComputationalGraph
 	//described by input with values of type UnittedQuantity
-	described by node with a single value of type DataDescriptor //was Argument
+	described by node with a single value of type UnittedQuantity  // DataDescriptor //was Argument
 	// 'script' is a string containing python code for the computation
 	//described by script with values of type string
 	described by hasEquation with a single value of type ^Equation
