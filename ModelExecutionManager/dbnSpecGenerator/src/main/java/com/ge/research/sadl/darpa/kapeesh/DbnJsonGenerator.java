@@ -206,8 +206,10 @@ public class DbnJsonGenerator {
 
 		variableShortNameMap = new HashMap<String, String>();
 
-		for (int count = 0; count < inputs.length; count++) 
-			variableShortNameMap.put(inputs[count], labels[count]);
+		for (int count = 0; count < inputs.length; count++) {
+			if (!variableShortNameMap.containsKey(inputs[count]))
+				variableShortNameMap.put(inputs[count], labels[count]);
+		}
 
 		return;
 	}
@@ -220,6 +222,23 @@ public class DbnJsonGenerator {
 		JSONObject dbnModels = new JSONObject();
 
 		initializeShortNames(table);
+
+		String[] inputNames = table.getColumnUniqueValues("Input");
+		for (int rowNum = 0; rowNum < table.getNumRows(); rowNum++) {
+			String input = table.getCellAsString(rowNum, "Input");
+			String inputLabel = table.getCellAsString(rowNum, "InputLabel");
+			if (!inputLabel.equals(variableShortNameMap.get(input))) {
+				table.setCell(rowNum, table.getColumnIndex("InputLabel"), variableShortNameMap.get(input));
+				String model = table.getCellAsString(rowNum, "Model");
+				for (int row = 0; row < table.getNumRows(); row++) {
+				    if (model.equals(table.getCellAsString(row, "Model"))) {
+					String modelForm = table.getCellAsString(row, "ModelForm");
+					table.setCell(row, table.getColumnIndex("ModelForm"), 
+							modelForm.replace(inputLabel, variableShortNameMap.get(input)));
+				    }
+				}
+			}
+		}
 
 		String[] outputNames = table.getColumnUniqueValues("Output");
 		for (String outputName : outputNames) {
@@ -277,9 +296,11 @@ public class DbnJsonGenerator {
 		return dbnModels;
 	}
 
-	public JSONObject createNodeObject (JSONObject nodes) throws Exception {
+	public JSONObject createNodeObject (JSONObject nodes, JSONObject models) throws Exception {
 
 		Table table = Table.fromJson(nodes);
+		Table modelsTable = Table.fromJson(models);
+		JSONObject analyticSettings = (JSONObject) dbn_all.get("analyticSettings");
 
 		JSONObject dbnNodes = new JSONObject();
 
@@ -288,14 +309,14 @@ public class DbnJsonGenerator {
 
 		if (dbnExecMode.equals("sensitivity")) {
 			JSONObject nodeObject = new JSONObject();
-			nodeObject.put("Type", "Stochastic_Transient");
+			nodeObject.put("Type", "Time_Index"); //"Stochastic_Transient");
 			nodeObject.put("Tag", new JSONArray());
-			nodeObject.put("Distribution", "Uniform");
-			JSONObject distParams = new JSONObject();
-			distParams.put("lower", 1);
-			distParams.put("upper", 1000);
-			nodeObject.put("DistributionParameters", distParams);
-			nodeObject.put("InitialChildren", new JSONArray());	// TODO: Confirm if this is ok
+			//nodeObject.put("Distribution", "Uniform");
+			//JSONObject distParams = new JSONObject();
+			//distParams.put("lower", 1);
+			//distParams.put("upper", 1000);
+			//nodeObject.put("DistributionParameters", distParams);
+			//nodeObject.put("InitialChildren", new JSONArray());	// TODO: Confirm if this is ok
 			JSONArray obsDataArr = new JSONArray();
 			obsDataArr.add(1);
 			obsDataArr.add(2);
@@ -305,7 +326,7 @@ public class DbnJsonGenerator {
 			// JSONArray children = new JSONArray();
 			// children.add(variableShortNameMap.get(nodeNames[0]));
 			// nodeObject.put("Children", children);  // Removed Children as per Natarajan's input 
-			nodeObject.put("DistributionFixed", true);
+			//nodeObject.put("DistributionFixed", true);
 			dbnNodes.put("time", nodeObject);
 
 			nodeObject = new JSONObject();
@@ -329,8 +350,34 @@ public class DbnJsonGenerator {
 			Table filteredtable = table.getSubsetWhereMatches("Child", nodeName);
 			String[] parentNames = filteredtable.getColumnUniqueValues("Node");
 			JSONArray parentJsonArr = new JSONArray();
-			for (String parentName : parentNames)
+			HashMap<String ,String> modelFilterMap = new HashMap<String, String>();
+			HashMap<String ,String> nodeFilterMap = new HashMap<String, String>();
+			for (String parentName : parentNames) {
 				parentJsonArr.add(variableShortNameMap.get(parentName));
+				nodeFilterMap.put("Node", parentName);
+				nodeFilterMap.put("Child", nodeName);
+				Table nodesTable = filteredtable.getSubsetBySubstring(nodeFilterMap);
+				String providedUnit = nodesTable.getCellAsString(0, "NodeOutputUnits");
+				String expectedUnit = nodesTable.getCellAsString(0, "ChildInputUnits");
+				if (!providedUnit.isEmpty() && providedUnit != "" &&
+				    !expectedUnit.isEmpty() && expectedUnit != "" && 
+				    !providedUnit.equals(expectedUnit)) {
+					System.out.println("Changing unit for " + parentName + " from " + providedUnit + " to " + expectedUnit);
+					modelFilterMap.put("Input", parentName);
+					modelFilterMap.put("Output", nodeName);
+					Table eqnsTable = modelsTable.getSubsetBySubstring(modelFilterMap);
+					String inputLabel = eqnsTable.getCellAsString(0, "InputLabel");
+					String modelForm = eqnsTable.getCellAsString(0, "ModelForm");
+					String newModelForm = modelForm.replace(inputLabel,
+										convertUnit(inputLabel, providedUnit, expectedUnit));
+					//System.out.println(newModelForm);
+
+					JSONObject changeModel = (JSONObject)((JSONObject) analyticSettings.get("Models"))
+										  .get(variableShortNameMap.get(nodeName));
+					changeModel.put("ModelForm", newModelForm);
+					//System.out.println(model.get("ModelForm"));
+				}
+			}
 			nodeObject.put("Parents", parentJsonArr);
 
 			filteredtable = table.getSubsetWhereMatches("Node", nodeName);
@@ -371,9 +418,9 @@ public class DbnJsonGenerator {
 		    if (!dbnNodes.containsKey(variableShortNameMap.get(nodeName))) {
 			JSONObject nodeObject = new JSONObject();
 			nodeObject.put("Type", "Stochastic_Transient");
-			if (dbnExecMode.equals("sensitivity")) {
-				nodeObject.put("Type", "Stochastic");
-			}
+			//if (dbnExecMode.equals("sensitivity")) {
+			//	nodeObject.put("Type", "Stochastic");
+			//}
 			nodeObject.put("Tag", new JSONArray());
 			nodeObject.put("InitialChildren", new JSONArray());	// TODO: Confirm if this is ok
 			
@@ -405,12 +452,13 @@ public class DbnJsonGenerator {
 			range.add(Double.parseDouble(upper[0]));
 			nodeObject.put("Range", range);
 			JSONArray values = new JSONArray();
-			if (!hypothesis) {
-				if (dbnExecMode.equals("sensitivity"))
-					nodeObject.put("DistributionFixed", true);
-				else
-					nodeObject.put("IsDistributionFixed", true);
-			}
+			//if (!hypothesis) {
+			//	if (dbnExecMode.equals("sensitivity"))
+			//		nodeObject.put("DistributionFixed", true);
+			//	else
+			//		nodeObject.put("IsDistributionFixed", true);
+			//}
+			nodeObject.put("IsDistributionFixed", true);
 			if (!value[0].isEmpty() && value[0] != "") {
 				values.add(Double.parseDouble(value[0]));
 			} else if (dbnExecMode.equals("calibration") && !hypothesis) {
@@ -420,7 +468,6 @@ public class DbnJsonGenerator {
 		    }
 		}
 
-		JSONObject analyticSettings = (JSONObject) dbn_all.get("analyticSettings");
 		analyticSettings.put("Nodes", dbnNodes);
 		dbn_all.put("analyticSettings", analyticSettings);
 
@@ -443,6 +490,10 @@ public class DbnJsonGenerator {
 		System.out.println(dbn_all.toString());
 
 		// TODO: Provide some pretty-print capability
+	}
+
+        public String convertUnit(String label, String inUnit, String outUnit) {
+		return label + " * (__import__('pint').UnitRegistry().parse_expression('" + inUnit + "').to('" + outUnit + "').magnitude)";
 	}
 
 	public static void main (String[] args) {
