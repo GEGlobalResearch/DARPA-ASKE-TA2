@@ -203,6 +203,16 @@ public class DbnJsonGenerator {
 		return dbnSetup;
 	}
 
+	public void updateNumberOfSamples(int numSamples) {
+		JSONObject settings = (JSONObject) dbn_all.get("analyticSettings");
+
+		JSONObject dbnSetup = (JSONObject) settings.get("DBNSetup");
+		dbnSetup.put("NumberOfSamples", numSamples);
+
+		settings.put("DBNSetup", dbnSetup);
+		dbn_all.put("analyticSettings", settings);
+	}
+
 	public void initializeShortNames(Table table) {
 
 		String[] inputs = table.getColumn("Input");
@@ -292,6 +302,7 @@ public class DbnJsonGenerator {
 				modelObject.put("Type", "PythonFunction");
 				modelObject.put("FunctionName", filteredtable.getColumnUniqueValues("Function")[0]);
 				modelObject.put("ModelForm", filteredtable.getColumnUniqueValues("Function")[0]);
+				updateNumberOfSamples(20);
 			}
 			
 			if (!modelFormNames[0].isEmpty() && modelFormNames[0] != "") {
