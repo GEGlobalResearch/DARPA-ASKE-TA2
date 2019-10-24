@@ -95,9 +95,9 @@ public class ServiceController {
 
 	        DbnJsonGenerator generator = new DbnJsonGenerator();
 
-                generator.initializeJSON(prop);
-
                 generator.setExecutionMode((String)sadlResultSet.get("mode"));
+
+                generator.initializeJSON(prop);
 
 		generator.createModelObject(Utility.getJsonFromMap((LinkedHashMap)sadlResultSet.get("models")));
 
