@@ -49,16 +49,14 @@ where {
     ?Oinst imp:stddev ?StdDev. 
     #?Oinst imp:varError ?VarError.
    } union {
-    ?CCG mm:subgraph ?SG.
     filter (?CCG in (COMPGRAPH)).
     ?CCG mm:modelError ?ModelAccuracy.
-    ?Q mm:execution ?CE.
     ?CE mm:compGraph ?CCG.
-    ?Q mm:output ?Vinst.
     ?Vinst a ?Var.
     ?Vinst imp:value ?Mean.
     ?Vinst imp:stddev ?StdDev.
     #?Vinst imp:varError ?VarError.
    }
 }
+
 

@@ -46,7 +46,7 @@ import "http://aske.ge.com/hypersonicsV2".
 BurnerTemperatureDBN is a type of DBN.
 node of BurnerTemperatureDBN always has value (a BurnerTemperature with unit "defF").
 distribution of BurnerTemperatureDBN always has value uniform.
-range of BurnerTemperatureDBN always has value (a Range lower 2500 upper 10000).
+range of BurnerTemperatureDBN always has value (a Range lower 2500 upper 6000).
 
 RgasDBN is a type of DBN.
 node of RgasDBN always has value (a RgasConstant).
@@ -70,9 +70,9 @@ distribution of AltitudeDBN always has value uniform.
 range of AltitudeDBN always has value (a Range lower 0 upper 100000).
 
 AirSpeedDBN is a type of DBN.
-node of AirSpeedDBN always has value (a AirSpeed with unit "ft/sec").
+node of AirSpeedDBN always has value (a AirSpeed with unit "mph").
 distribution of AirSpeedDBN always has value uniform.
-range of AirSpeedDBN always has value (a Range lower 0 upper 5000).
+range of AirSpeedDBN always has value (a Range lower 0 upper 1000).
 
 
 StaticTempDBN is a type of DBN.
@@ -98,7 +98,7 @@ distribution of SpeedOfSoundDBN always has value uniform.
 MachSpeedDBN is a type of DBN.
 node of MachSpeedDBN always has value (a MachSpeed).
 hasEquation of  MachSpeedDBN only has values of type MachSpeedEquation.
-range of MachSpeedDBN always has value (a Range with lower 0 with upper 20).
+range of MachSpeedDBN always has value (a Range with lower 0 with upper 10).
 distribution of MachSpeedDBN always has value uniform.
 
 
@@ -121,7 +121,7 @@ range of EngineTemperatureRatioDBN always has value (a Range with lower 1 with u
 distribution of EngineTemperatureRatioDBN always has value uniform.
 
 EnginePressureRatioDBN is a type of DBN.
-node of EnginePressureRatioDBN always has value (a EngineTemperatureRatio).
+node of EnginePressureRatioDBN always has value (a EnginePressureRatio).
 hasEquation of EnginePressureRatioDBN only has values of type EnginePressureRatioEquation.
 range of EnginePressureRatioDBN always has value (a Range with lower 1 with upper 10).
 distribution of EnginePressureRatioDBN always has value uniform.
@@ -129,7 +129,7 @@ distribution of EnginePressureRatioDBN always has value uniform.
 RayleighflowEquationDBN is a type of DBN.
 node of RayleighflowEquationDBN always has value (a Rayleighflow).
 hasEquation of RayleighflowEquationDBN only has values of type RayleighflowEquation.
-range of RayleighflowEquationDBN always has value (a Range with lower 0 with upper 2).
+range of RayleighflowEquationDBN always has value (a Range with lower 0 with upper 10).
 distribution of RayleighflowEquationDBN always has value uniform.
 
 

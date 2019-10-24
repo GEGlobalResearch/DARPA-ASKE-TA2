@@ -40,6 +40,7 @@ prefix owl:<http://www.w3.org/2002/07/owl#>
 prefix cg:<http://aske.ge.com/compgraphmodel#>
 prefix rdfs:<http://www.w3.org/2000/01/rdf-schema#>
 prefix rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix list:<http://sadl.org/sadllistmodel#>
 
 select distinct ?Model ?Input (str(?EI2Label) as ?InputLabel) ?UniqueInputLabel ?Output (str(?expr) as ?ModelForm) (str(?Fun) as ?Function) where { 
 	  ?Model rdfs:subClassOf cg:DBN.
@@ -50,7 +51,7 @@ select distinct ?Model ?Input (str(?EI2Label) as ?InputLabel) ?UniqueInputLabel 
 	     filter (?Eq in ( EQNSLIST )) .
 
 	  ?Eq imp:arguments ?EI1.
-          ?EI1 rdf:rest*/rdf:first ?EI2.
+          ?EI1 list:rest*/list:first ?EI2.
           ?EI2 imp:localDescriptorName ?EI2Label.
           ?EI2 imp:descriptorVariable ?UniqueInputLabel.
           ?EI2 imp:augmentedType ?EI3. 
@@ -61,7 +62,7 @@ select distinct ?Model ?Input (str(?EI2Label) as ?InputLabel) ?UniqueInputLabel 
           ?EI5 imp:gpObject ?Label.
 	  
 	  ?Eq imp:returnTypes ?EO1. 
-          ?EO1 rdf:rest*/rdf:first ?EO2.
+          ?EO1 list:rest*/list:first ?EO2.
           ?EO2 imp:augmentedType ?EO3. 
           ?EO3 imp:constraints ?EO4.
           ?EO4 rdf:rest*/rdf:first ?EO5.

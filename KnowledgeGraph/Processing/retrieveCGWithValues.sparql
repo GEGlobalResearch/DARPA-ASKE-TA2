@@ -39,8 +39,6 @@ prefix mm:<http://aske.ge.com/metamodel#>
 prefix cg:<http://aske.ge.com/compgraphmodel#>
 prefix rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-http://aske.ge.com/metamodel#CG_1568663087879
-http://aske.ge.com/metamodel#CG_1568732734394
 
 select ?X ?Y ?Z ?X_style ?X_color ?Z_shape ?Z_tooltip
 where {
@@ -79,11 +77,13 @@ where {
     ?E14 rdf:rest*/rdf:first ?E15.
     ?E15 imp:gpPredicate ?Input.
 
-    ?EQ imp:expression ?Scr.
-    ?Scr imp:script ?Expr.
-    ?Scr imp:language ?lang.
-       filter ( ?lang = <http://sadl.org/sadlimplicitmodel#Python> )
-    bind(str(?Expr) as ?Z_tooltip)
+   optional{
+      ?EQ imp:expression ?Scr.
+      ?Scr imp:script ?Expr.
+      ?Scr imp:language ?lang.
+         filter ( ?lang = <http://sadl.org/sadlimplicitmodel#Python> )
+      bind(str(?Expr) as ?Z_tooltip)
+    }
     bind('solid' as ?X_style)
     bind('black' as ?X_color)
 }}union

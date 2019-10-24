@@ -37,6 +37,34 @@
 prefix cg:<http://aske.ge.com/compgraphmodel#>
 prefix imp:<http://sadl.org/sadlimplicitmodel#>
 prefix sci:<http://aske.ge.com/sciknow#>
+prefix list:<http://sadl.org/sadllistmodel#>
+
+#insert {?EqCh cg:parent ?EqPa}
+select distinct ?EqCh ?P  #?EqPa
+where {
+ #?EqCh a imp:Equation.
+ ?EqCh imp:arguments ?AL2.
+ ?AL2 list:rest*/list:first ?AO2.
+ ?AO2 imp:augmentedType ?Type2.
+ ?Type2 imp:constraints ?CL2.
+ ?CL2 rdf:rest*/rdf:first ?C2.
+ ?C2 imp:gpPredicate ?P.
+ filter (?P != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>)
+
+ ?EqPa a imp:Equation.
+ ?EqPa imp:returnTypes ?AL1.
+ ?AL1 list:rest*/list:first ?AO1.
+ ?AO1 imp:augmentedType ?Type1.
+ ?Type1 imp:constraints ?CL1.
+ ?CL1 rdf:rest*/rdf:first ?C1.
+ ?C1 imp:gpPredicate ?P.
+ 
+ filter( ?EqPa != ?EqCh)
+}
+
+prefix cg:<http://aske.ge.com/compgraphmodel#>
+prefix imp:<http://sadl.org/sadlimplicitmodel#>
+prefix sci:<http://aske.ge.com/sciknow#>
 
 #insert {?EqCh cg:parent ?EqPa}
 select distinct ?EqCh ?EqPa
