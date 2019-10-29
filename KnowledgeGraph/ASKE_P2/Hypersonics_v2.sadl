@@ -120,7 +120,7 @@ mphToftpersec has expression (a Script script "s * 5280/3600" language Python).
 st_temp_eq_tropo is a StaticTemperatureEquation.
 
 Equation st_temp_eq_tropo(double alt (altitude of some Air and alt < 36152 {ft}) )
-	returns double (staticTemperature of the Air {degF,degR}) : 
+	returns double (staticTemperature of the Air {degF}) : 
 	return 59 - 0.00356 * alt .
 st_temp_eq_tropo has expression (a Script with script "59 - 0.00356 * alt" language Python).
 
