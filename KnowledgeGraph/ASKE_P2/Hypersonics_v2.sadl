@@ -124,17 +124,17 @@ Equation st_temp_eq_tropo(double alt (altitude of some Air and alt < 36152 {ft})
 	return 59 - 0.00356 * alt .
 st_temp_eq_tropo has expression (a Script with script "59 - 0.00356 * alt" language Python).
 
-st_temp_eq_lowerStrato is a StaticTemperatureEquation.
-Equation st_temp_eq_lowerStrato(double alt (altitude of some Air and alt < 82345 and alt >= 36152 {ft}))
-	returns double (staticTemperature of the Air {degF}) : 
-	return -70 .
-st_temp_eq_lowerStrato has expression (a Script with script "-70" language Python).
-
-st_temp_eq_upperStrato is a StaticTemperatureEquation.
-Equation st_temp_eq_upperStrato(double alt (altitude of some Air and alt > 82345 {ft}) )
-	returns double (staticTemperature of the Air {degF}) : 
-	return -205.05 + .00164 * alt .
-st_temp_eq_upperStrato has expression (a Script with script "-205.05 + .00164 * alt" language Python).
+//st_temp_eq_lowerStrato is a StaticTemperatureEquation.
+//Equation st_temp_eq_lowerStrato(double alt (altitude of some Air and alt < 82345 and alt >= 36152 {ft}))
+//	returns double (staticTemperature of the Air {degF}) : 
+//	return -70 .
+//st_temp_eq_lowerStrato has expression (a Script with script "-70" language Python).
+//
+//st_temp_eq_upperStrato is a StaticTemperatureEquation.
+//Equation st_temp_eq_upperStrato(double alt (altitude of some Air and alt > 82345 {ft}) )
+//	returns double (staticTemperature of the Air {degF}) : 
+//	return -205.05 + .00164 * alt .
+//st_temp_eq_upperStrato has expression (a Script with script "-205.05 + .00164 * alt" language Python).
 
 
 st_pressure_eq_tropo is a StaticPressureEquation.
@@ -210,16 +210,16 @@ total_pressure_eq has expression (a Script with script "ps0*(1.0 + 0.5*(1.4-1.0)
 
 engineTemperatureRatioEq1 is a EngineTemperatureRatioEquation.
 Equation engineTemperatureRatioEq1(int ab (afterburner of some RamJet and ab = 0),
-								double tt4 (burnerTemperature of the RamJet {defF}),
-								double tt3 (totalTemperature of some Air {defF}) )
+								double tt4 (burnerTemperature of the RamJet {degF}),
+								double tt3 (totalTemperature of some Air {degF}) )
 		returns double (engineTemperatureRatio of the RamJet) :
 		return tt4/tt3.
 engineTemperatureRatioEq1 has expression (a Script with script "tt4/tt3" language Python).
 
 engineTemperatureRatioEq2 is a EngineTemperatureRatioEquation.
 Equation engineTemperatureRatioEq2(int ab (afterburner of some RamJet and ab = 1),
-								double tt4 (burnerTemperature of the RamJet {defF}),
-								double tt3 (totalTemperature of some Air {defF}) )
+								double tt4 (burnerTemperature of the RamJet {degF}),
+								double tt3 (totalTemperature of some Air {degF}) )
 		returns double (engineTemperatureRatio of the RamJet) :
 		return 4000.0/tt3.
 engineTemperatureRatioEq2 has expression (a Script with script "tt4/tt3" language Python).
@@ -243,7 +243,7 @@ enginePressureRatioEq2 has expression (a Script with script "rf" language Python
 
 rayleighflowEq is a RayleighflowEquation.
 External  rayleighflowEq( double mach (machSpeed of some Air),
-						  double tt4 (burnerTemperature of some RamJet {degR}))
+						  double tt4 (burnerTemperature of some RamJet {degF}))
 		  returns double (rayleighflow of the RamJet):
 		  "rayleighflow".
 
