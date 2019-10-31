@@ -68,6 +68,8 @@ public class DbnJsonGenerator {
 
 	public String dbnExecMode;
 	public boolean hypothesis;
+	public boolean hasUnitConversion;
+	public boolean hasExternalFunction;
 
 	/**
 	 * Constructors
@@ -108,6 +110,8 @@ public class DbnJsonGenerator {
 
 		initializeAnalyticSettings(prop);
 		hypothesis = false;
+		hasUnitConversion = false;
+		hasExternalFunction = false;
 	}
 
 	/**
@@ -181,7 +185,7 @@ public class DbnJsonGenerator {
 		JSONObject dbnSetup = new JSONObject();
 
 		dbnSetup.put("WorkDir", (String)dbn_all.get("workDir"));
-		dbnSetup.put("NumberOfSamples", 500);
+		dbnSetup.put("NumberOfSamples", 1000);
 		dbnSetup.put("PlotFlag", false);
 		dbnSetup.put("TrackingTimeSteps", 1);
                 if (dbnExecMode.equals("sensitivity"))
@@ -302,7 +306,7 @@ public class DbnJsonGenerator {
 				modelObject.put("Type", "PythonFunction");
 				modelObject.put("FunctionName", filteredtable.getColumnUniqueValues("Function")[0]);
 				modelObject.put("ModelForm", filteredtable.getColumnUniqueValues("Function")[0]);
-				updateNumberOfSamples(20);
+				hasExternalFunction = true;
 			}
 			
 			if (!modelFormNames[0].isEmpty() && modelFormNames[0] != "") {
@@ -400,18 +404,23 @@ public class DbnJsonGenerator {
 				    !expectedUnit.isEmpty() && expectedUnit != "" && 
 				    !providedUnit.equals(expectedUnit)) {
 					System.out.println("Changing unit for " + parentName + " from " + providedUnit + " to " + expectedUnit);
+					hasUnitConversion = true;
 					modelFilterMap.put("Input", parentName);
 					modelFilterMap.put("Output", nodeName);
 					Table eqnsTable = modelsTable.getSubsetBySubstring(modelFilterMap);
 					String inputLabel = eqnsTable.getCellAsString(0, "InputLabel");
 					String modelForm = eqnsTable.getCellAsString(0, "ModelForm");
-					String newModelForm = modelForm.replace(inputLabel,
-										convertUnit(inputLabel, providedUnit, expectedUnit));
-					//System.out.println(newModelForm);
+					if (!modelForm.isEmpty() && modelForm != "") {
+						String newModelForm = modelForm.replace(inputLabel,
+											convertUnit(inputLabel, providedUnit, expectedUnit));
+						//System.out.println(newModelForm);
 
-					JSONObject changeModel = (JSONObject)((JSONObject) analyticSettings.get("Models"))
-										  .get(variableShortNameMap.get(nodeName));
-					changeModel.put("ModelForm", newModelForm);
+						JSONObject changeModel = (JSONObject)((JSONObject) analyticSettings.get("Models"))
+											  .get(variableShortNameMap.get(nodeName));
+						changeModel.put("ModelForm", newModelForm);
+					} else {
+						// wait to hear back from Natarajan about substituting new units inside Python function
+					}
 					//System.out.println(model.get("ModelForm"));
 				}
 			}
@@ -428,7 +437,7 @@ public class DbnJsonGenerator {
 			dbnNodes.put(variableShortNameMap.get(nodeName), nodeObject);
 
 			String[] value = filteredtable.getColumnUniqueValues("Value");
-			if (value.length > 0 && !value[0].isEmpty() && value[0] != "") {
+			if (value.length > 0 && !value[0].isEmpty() && value[0] != "" && !dbnExecMode.equals("sensitivity")) {
 				// Possibly, a calibration task
 				JSONObject obsNodeObject = new JSONObject();
 				obsNodeObject.put("Type", "Stochastic_Transient_Observation");
@@ -527,6 +536,12 @@ public class DbnJsonGenerator {
 			map.put(variableShortNameMap.get((String)name), (String)name);
 		
 		dbn_all.put("mapping", map);
+
+		if (hasExternalFunction)
+			updateNumberOfSamples(20);
+		else if (hasUnitConversion && dbnExecMode.equals("sensitivity"))
+			updateNumberOfSamples(500);
+			
 		return;
 	}
 
