@@ -44,7 +44,7 @@ import "http://aske.ge.com/hypersonicsV2".
 //Note: need implicitModel to have semType with value of type UnittedQuantity.
 
 BurnerTemperatureDBN is a type of DBN.
-node of BurnerTemperatureDBN always has value (a BurnerTemperature with unit "defF").
+node of BurnerTemperatureDBN always has value (a BurnerTemperature with unit "degF").
 distribution of BurnerTemperatureDBN always has value uniform.
 range of BurnerTemperatureDBN always has value (a Range lower 2500 upper 6000).
 
