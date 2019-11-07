@@ -70,7 +70,7 @@ distribution of AltitudeDBN always has value uniform.
 range of AltitudeDBN always has value (a Range lower 0 upper 100000).
 
 AirSpeedDBN is a type of DBN.
-node of AirSpeedDBN always has value (a AirSpeed with unit "mph").
+node of AirSpeedDBN always has value (a AirSpeed with unit "ft/sec").
 distribution of AirSpeedDBN always has value uniform.
 range of AirSpeedDBN always has value (a Range lower 0 upper 3000).
 
