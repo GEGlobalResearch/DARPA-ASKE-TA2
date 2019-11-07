@@ -553,7 +553,8 @@ public class DbnJsonGenerator {
 	}
 
         public String convertUnit(String label, String inUnit, String outUnit) {
-		return label + " * (__import__('pint').UnitRegistry().parse_expression('" + inUnit + "').to('" + outUnit + "').magnitude)";
+		//return label + " * (__import__('pint').UnitRegistry().parse_expression('" + inUnit + "').to('" + outUnit + "').magnitude)";
+		return " __import__('pint').UnitRegistry().Quantity(" + label + ",'" + inUnit + "').to('" + outUnit + "').magnitude";
 	}
 
 	public static void main (String[] args) {
