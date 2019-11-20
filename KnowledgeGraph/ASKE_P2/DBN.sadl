@@ -86,13 +86,13 @@ distribution of StaticTempDBN always has value uniform. //should be default valu
 StaticPressureDBN is a type of DBN.
 node of StaticPressureDBN always has value (a StaticPressure with unit "force_pound/ft**2").
 hasEquation of  StaticPressureDBN only has values of type StaticPressureEquation.
-range of StaticPressureDBN always has value (a Range with lower 0 with upper 30000).
+range of StaticPressureDBN always has value (a Range with lower 0 with upper 2200). //100 ft -> 2110, 100000ft -> 23
 distribution of StaticPressureDBN always has value uniform.
 
 SpeedOfSoundDBN is a type of DBN.
 node of SpeedOfSoundDBN always has value (a SpeedOfSound with unit "ft/sec").
 hasEquation of  SpeedOfSoundDBN only has values of type SpeedOfSoundEquation.
-range of SpeedOfSoundDBN always has value (a Range with lower 270 with upper 350).
+range of SpeedOfSoundDBN always has value (a Range with lower 950 with upper 1200).
 distribution of SpeedOfSoundDBN always has value uniform.
 
 MachSpeedDBN is a type of DBN.
@@ -111,7 +111,7 @@ distribution of TotalTemperatureDBN always has value uniform.
 TotalPressureDBN is a type of DBN.
 node of TotalPressureDBN always has value (a TotalPressure with unit "force_pound/ft**2").
 hasEquation of  TotalPressureDBN only has values of type TotalPressureEquation.
-range of TotalPressureDBN always has value (a Range with lower 0 with upper 50000).
+range of TotalPressureDBN always has value (a Range with lower 0 with upper 20000).
 distribution of TotalPressureDBN always has value uniform.
 
 EngineTemperatureRatioDBN is a type of DBN.

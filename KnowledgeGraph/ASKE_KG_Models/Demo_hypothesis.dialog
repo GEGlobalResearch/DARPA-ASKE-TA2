@@ -53,6 +53,6 @@ import "http://sadl.org/TableAndEquation.sadl".
 //expression (a Script with script  "389.98", with language Text).
 
 // Find models to explain the document.
-Find a model for Doc4.
+//Find a model for Doc4.
 
 

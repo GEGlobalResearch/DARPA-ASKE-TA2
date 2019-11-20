@@ -144,11 +144,8 @@ Equation st_pressure_eq_tropo(double alt (altitude of some Air and alt < 36152 {
 
 st_pressure_eq_tropo has expression (a Script with script "2116.0 * ((59 - 0.00356 * alt + 459.7) / 518.6)**5.256" language Python).
 
-
-
 st_pressure_eq_lowerStrato is a StaticPressureEquation.
-Equation st_pressure_eq_lowerStrato(double alt (altitude of some Air and alt < 82345 
-	                            and alt > 36152 {ft}) )
+Equation st_pressure_eq_lowerStrato(double alt (altitude of some Air and alt < 82345 and alt > 36152 {ft}) )
 	returns double (staticPressure of the Air {"force_pound/ft**2"}) : 
 	//return 473.1 * exp(1.73 - .000048 * alt) .
 	return 473.1 * e^(1.73 - .000048 * alt) .
