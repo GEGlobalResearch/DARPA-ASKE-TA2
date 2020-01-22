@@ -68,6 +68,9 @@ GammaConstant is a type of UnittedQuantity.
 RgasConstant is a type of UnittedQuantity.
 Flow is a type of UnittedQuantity.
 
+CP is a type of UnittedQuantity.
+SpecificNetThrust is a type of UnittedQuantity.
+
 StaticTemperatureEquation is a type of ^Equation.
 StaticPressureEquation is a type of ^Equation.
 SpeedOfSoundEquation is a type of ^Equation.
@@ -96,6 +99,10 @@ machSpeed describes Air with values of type MachSpeed.
 gamma describes Air with values of type GammaConstant.
 rgas describes Air with values of type RgasConstant.
 
+cp describes Air with values of type CP.
+
+specificNetThrust describes Engine with values of type SpecificNetThrust.
+
 
 ////Troposphere Constants
 //Equation tropo_C1_Eq() returns double (tropo_c1 of some Air {degF}) : return 59.0 .
@@ -118,7 +125,6 @@ mphToftpersec has expression (a Script script "s * 5280/3600" language Python).
 
 
 st_temp_eq_tropo is a StaticTemperatureEquation.
-
 Equation st_temp_eq_tropo(double alt (altitude of some Air and alt < 36152 {ft}) )
 	returns double (staticTemperature of the Air {degF}) : 
 	return 59 - 0.00356 * alt .
@@ -168,6 +174,28 @@ Equation sos_eq(double ts0 (staticTemperature of some Air {degR}),
 	return sqrt(g * R * ts0) .
 
 sos_eq has expression (a Script with script "math.sqrt(g * R * ts0)" language Python).
+				
+
+//Extracted equations				
+//External equation_1 (alias "a") (decimal R (rgas of a Gas), 
+//	                             decimal T (temperature of the Gas), 
+//	                             decimal g (gamma of the Gas)) 
+//	returns decimal: "http://com.ge.research.sadl.darpa.aske.answer/Sound_txt#equation_1".
+//
+//equation_1 has expression (a Script with language Text, with script "a^2 = R * T * gamma"), 
+//           has expression (a Script with language Python, with script "math.pow(R * T * gamma, 1/2)").
+//
+//External equation_2 (alias "a") (decimal R (rgas of a Gas),
+//	                             decimal T (temperature of the Gas),
+//	                             decimal g (gamma of the Gas),
+//	                             decimal theta (Theta)) 
+//	returns decimal: "http://com.ge.research.sadl.darpa.aske.answer/Sound_txt#equation_2".
+//
+//equation_2 has expression (a Script with language Text, with script "a^2 = R * T * {1 + (gamma - 1) / ( 1 + (gamma-1) * [(theta/T)^2 * e^(theta/T) /(e^(theta/T) -1)^2]) }"),
+//           has expression (a Script with language Python, with script
+//"a = math.pow(R * T *  (  1 + ( gamma-1 ) / ( 1 + ( gamma-1 ) *  ( math.pow( theta/T,2) *  math.exp( theta/T ) /  math.pow( math.exp( theta/T ) - 1,2 ))  ) ), 1/2)").
+
+
 				
 mach_speed_eq is a MachSpeedEquation.
 //Equation mach_speed_eq(double u0 (airSpeed of some Air {"mph"}),
@@ -243,17 +271,32 @@ External  rayleighflowEq( double mach (machSpeed of some Air),
 						  double tt4 (burnerTemperature of some RamJet {degF}))
 		  returns double (rayleighflow of the RamJet):
 		  "rayleighflow".
-
 //rayleighflowEq has expression (a Script with script
-		  
 
-//// getThermo
-//       cpair = getCp(tt[0],gamopt);              /*BTU/lbm R */
-//  getCP:          a*temp*temp*temp + b*temp*temp + c*temp +d ;
+//Specific Heat at Constant Pressure
+
+setDefaults is a ExternalEquation
+  implicitOutput (a ImplicitDataDescriptor localDescriptorName "trat" declaration (a Script script "trat = [0]*20" language Python))
+  implicitOutput (a ImplicitDataDescriptor localDescriptorName "altmt" declaration (a Script script "altmt=.0" language Python))
+  implicitOutput (a ImplicitDataDescriptor localDescriptorName "tt" declaration (a Script script "tt = [0]*20" language Python)) . 
+External setDefaults() returns boolean: "setDefaults".
 
 
-//                 /* engine press ratio EPR*/
-//       epr = prat[7]*prat[15]*prat[5]*prat[4]*prat[3]*prat[13];
-//              /* engine temp ratio ETR */
-//       etr = trat[7]*trat[15]*trat[5]*trat[4]*trat[3]*trat[13];
+loadCF6 is a ExternalEquation dependsOn setDefaults.
+External loadCF6() returns boolean: "loadCF6".
+loadCF6 implicitInput (a ImplicitDataDescriptor localDescriptorName "trat"  augmentedType Altitude).
+loadCF6 implicitInput (a ImplicitDataDescriptor localDescriptorName "altmax").
+loadCF6 implicitInput (a ImplicitDataDescriptor localDescriptorName "tt").
+loadCF6 implicitOutput (a ImplicitDataDescriptor localDescriptorName "tt" 
+												declaration (a Script script "tt = [0]*20" language Python)
+												augmentedType TotalTemperature ). 
 
+getCP is a ExternalEquation dependsOn loadCF6.		  
+External getCP( double temp (temperature of some Air),
+				integer opt)
+		returns double (cp of the Air): "getCP".
+		
+getPerform is a ExternalEquation dependsOn getCP.
+
+External getPerform()
+	returns double (specificNetThrust of some Engine) : "getPerform".
