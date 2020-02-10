@@ -743,6 +743,119 @@ public class Table {
 	}
 	
 	/**
+	 * Retrieve a subset of the table, where the given columns have a non-null value
+	 * @param matchColNames the names of the columns to match
+	 * @return
+	 * @throws Exception 
+	 */
+	public Table getSubsetWhereNonEmpty(String[] matchColNames) throws Exception {
+		return getSubsetWhereNonEmpty(matchColNames, this.getColumnNames());
+	}
+	
+	/**
+	 * Retrieve a subset of the table, where the given columns have a non-null value.
+	 * @param matchColNames the names of the columns to match
+	 * @param returnColNames the names of the columns to return
+	 * @return
+	 * @throws Exception 
+	 */
+	public Table getSubsetWhereNonEmpty(String[] matchColNames, String[] returnColNames) throws Exception {
+
+		for(String s : returnColNames){
+			if(!this.hasColumn(s)){
+				throw new Exception("Requested return column \"" + s + "\" does not exist in the table");
+			}
+		}
+		
+		// get column types
+		ArrayList<String> returnColTypesList = new ArrayList<String>();
+		for(String s : returnColNames){
+			returnColTypesList.add(getColumnType(s));
+		}
+		String[] returnColTypes = (String[]) returnColTypesList.toArray(new String[returnColTypesList.size()]);
+		
+		// create table
+		Table ret = new Table(returnColNames, returnColTypes, null);
+		
+		// add rows to the table
+		for(ArrayList<String> row : getRows()){
+		    	boolean match = true;
+		    	for (String matchColName : matchColNames) {
+				int matchColIndex = getColumnIndex(matchColName);  // get the index of the column we need to match
+				if(row.get(matchColIndex) == null || row.get(matchColIndex).isEmpty()) {
+					match = false;
+					break;
+				}
+		    	}
+			if(match == true) {
+				ArrayList<String> newRow = new ArrayList<String>();  // assemble only the columns requested
+				for(String retCol : returnColNames){
+					newRow.add(row.get(getColumnIndex(retCol)));
+				}
+				ret.addRow(newRow);
+			}
+		}
+		return ret;
+	}	
+	
+	/**
+	 * Retrieve a subset of the table, where the given columns ALL have a null value
+	 * @param matchColNames the names of the columns to match
+	 * @return
+	 * @throws Exception 
+	 */
+	public Table getSubsetWhereAllEmpty(String[] matchColNames) throws Exception {
+		return getSubsetWhereAllEmpty(matchColNames, this.getColumnNames());
+	}
+	
+	/**
+	 * Retrieve a subset of the table, where the given columns ALL have a null value.
+	 * @param matchColNames the names of the columns to match
+	 * @param returnColNames the names of the columns to return
+	 * @return
+	 * @throws Exception 
+	 */
+	public Table getSubsetWhereAllEmpty(String[] matchColNames, String[] returnColNames) throws Exception {
+
+		for(String s : returnColNames){
+			if(!this.hasColumn(s)){
+				throw new Exception("Requested return column \"" + s + "\" does not exist in the table");
+			}
+		}
+		
+		// get column types
+		ArrayList<String> returnColTypesList = new ArrayList<String>();
+		for(String s : returnColNames){
+			returnColTypesList.add(getColumnType(s));
+		}
+		String[] returnColTypes = (String[]) returnColTypesList.toArray(new String[returnColTypesList.size()]);
+		
+		// create table
+		Table ret = new Table(returnColNames, returnColTypes, null);
+		
+		// add rows to the table
+		for(ArrayList<String> row : getRows()){
+		    	boolean match = true;
+		    	for (String matchColName : matchColNames) {
+				int matchColIndex = getColumnIndex(matchColName);  // get the index of the column we need to match
+				//if(row.get(matchColIndex) != null || !row.get(matchColIndex).isEmpty()) {
+				if(!row.get(matchColIndex).isEmpty()) {
+					match = false;
+					break;
+				}
+		    	}
+			if(match == true) {
+				ArrayList<String> newRow = new ArrayList<String>();  // assemble only the columns requested
+				for(String retCol : returnColNames){
+					newRow.add(row.get(getColumnIndex(retCol)));
+				}
+				ret.addRow(newRow);
+			}
+		}
+		return ret;
+	}	
+
+	/**
 	 * Check that all columns in other are in this table, with the same types
 	 * @param other
 	 * @return {String} error messages or ""

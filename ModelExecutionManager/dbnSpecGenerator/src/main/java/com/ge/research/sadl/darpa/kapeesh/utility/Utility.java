@@ -40,7 +40,10 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -70,6 +73,33 @@ public abstract class Utility {
 
                 return new Table(cols, colTypes, rowsList);
         }
+
+	public static Table createTable(JSONArray array) throws Exception {
+		
+		Set<String> colsSet = new HashSet<String>();
+		for (Object o : array) {
+			JSONObject jsonObject = (JSONObject) o;
+			colsSet = jsonObject.keySet();
+		}
+		String[] cols = colsSet.toArray(new String[colsSet.size()]);
+		String[] colTypes = new String[cols.length];
+		Arrays.fill(colTypes, "string");
+
+		ArrayList<ArrayList<String> > rowsList = new ArrayList<ArrayList<String> >();
+		for (Object o : array) {
+			JSONObject jsonObject = (JSONObject) o;
+			if (jsonObject instanceof JSONObject) {
+				ArrayList<String> row = new ArrayList<String>();
+				for(Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
+    					String key = (String) iterator.next();
+					row.add((String)jsonObject.get(key));
+				}
+				rowsList.add(row);
+			}
+		}
+
+                return new Table(cols, colTypes, rowsList);
+	}
 
 	private static String decode(String s) throws UnsupportedEncodingException {
 		// Include all other special encoding cases here
@@ -108,4 +138,24 @@ public abstract class Utility {
                 return jsonData;
         }
 
+	public static JSONArray expandBindings(JSONArray bindings, JSONArray cols) throws Exception {
+                JSONArray rows = new JSONArray();
+
+                for (Object o : bindings) {
+                        JSONObject dstRow = new JSONObject();
+                        for (Object col : cols) {
+                                dstRow.put((String) col, "");
+                        }
+
+                        JSONObject srcRow = (JSONObject) o;
+                        Set<String> colsThisRow = srcRow.keySet();
+                        for(Iterator iterator = colsThisRow.iterator(); iterator.hasNext();) {
+                                String key = (String) iterator.next();
+                                dstRow.put(key, (String) ((JSONObject) srcRow.get(key)).get("value"));
+                        }
+                        rows.add(dstRow);
+                }
+
+		return rows;
+	}
 }
