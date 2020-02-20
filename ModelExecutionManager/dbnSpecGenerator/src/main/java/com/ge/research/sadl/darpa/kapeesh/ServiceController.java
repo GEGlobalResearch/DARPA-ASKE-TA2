@@ -118,6 +118,11 @@ public class ServiceController {
 		bindings = (JSONArray)((JSONObject)nodes.get("results")).get("bindings");
 		resultSetJSON.put("nodes", Utility.createTable(Utility.decipherValueList(Utility.expandBindings(bindings, cols))).toJson());
 
+		JSONObject expressions = Utility.getJsonFromMap((LinkedHashMap)sadlResultSetJson.get("expressions"));
+		cols = (JSONArray)((JSONObject)expressions.get("head")).get("vars");
+		bindings = (JSONArray)((JSONObject)expressions.get("results")).get("bindings");
+		resultSetJSON.put("expressions", Utility.createTable(Utility.decipherValueList(Utility.expandBindings(bindings, cols))).toJson());
+
 		resultSetJSON.put("computeLayer", "kchain");
 
 		return resultSetJSON;
@@ -156,12 +161,16 @@ public class ServiceController {
 
                 	generator.initializeJSON(prop);
 
-			generator.createInputVariablesObject(Utility.getJsonFromMap((LinkedHashMap)sadlResultSet.get("models")));
-			generator.createOutputVariablesObject(Utility.getJsonFromMap((LinkedHashMap)sadlResultSet.get("models")));
+			generator.createInputVariablesObject(Utility.getJsonFromMap((LinkedHashMap)sadlResultSet.get("models")),
+							     Utility.getJsonFromMap((LinkedHashMap)sadlResultSet.get("nodes")));
+			generator.createOutputVariablesObject(Utility.getJsonFromMap((LinkedHashMap)sadlResultSet.get("models")),
+							      Utility.getJsonFromMap((LinkedHashMap)sadlResultSet.get("nodes")));
 			generator.createEquationModelObject(Utility.getJsonFromMap((LinkedHashMap)sadlResultSet.get("models")),
-							    Utility.getJsonFromMap((LinkedHashMap)sadlResultSet.get("models")));
-			payload = generator.kchain_all;
+							    Utility.getJsonFromMap((LinkedHashMap)sadlResultSet.get("nodes")),
+							    Utility.getJsonFromMap((LinkedHashMap)sadlResultSet.get("expressions")));
 
+			payload.put("build", generator.createArtifact("build"));
+			payload.put("eval", generator.createArtifact("eval"));
 		}
 
 		return payload;
