@@ -123,6 +123,9 @@ public class ServiceController {
 		bindings = (JSONArray)((JSONObject)expressions.get("results")).get("bindings");
 		resultSetJSON.put("expressions", Utility.createTable(Utility.decipherValueList(Utility.expandBindings(bindings, cols))).toJson());
 
+		resultSetJSON.put("context", sadlResultSetJson.get("context"));
+		resultSetJSON.put("numOfModels", sadlResultSetJson.get("numOfModels"));
+		resultSetJSON.put("modelIndex", sadlResultSetJson.get("modelNum"));
 		resultSetJSON.put("computeLayer", "kchain");
 
 		return resultSetJSON;
@@ -167,10 +170,13 @@ public class ServiceController {
 							      Utility.getJsonFromMap((LinkedHashMap)sadlResultSet.get("nodes")));
 			generator.createEquationModelObject(Utility.getJsonFromMap((LinkedHashMap)sadlResultSet.get("models")),
 							    Utility.getJsonFromMap((LinkedHashMap)sadlResultSet.get("nodes")),
-							    Utility.getJsonFromMap((LinkedHashMap)sadlResultSet.get("expressions")));
+							    Utility.getJsonFromMap((LinkedHashMap)sadlResultSet.get("expressions")),
+							    (String)sadlResultSet.get("context"));
 
-			payload.put("build", generator.createArtifact("build"));
-			payload.put("eval", generator.createArtifact("eval"));
+			payload.put("build", generator.createArtifact("build", (String)sadlResultSet.get("context"), "", ""));
+			payload.put("eval", generator.createArtifact("eval", (String)sadlResultSet.get("context"), "", ""));
+			payload.put("visualize", generator.createArtifact("visualize", (String)sadlResultSet.get("context"),
+									  (String)sadlResultSet.get("numOfModels"), (String)sadlResultSet.get("modelIndex")));
 		}
 
 		return payload;

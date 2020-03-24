@@ -52,6 +52,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.ge.research.sadl.darpa.kapeesh.utility.Table;
+import com.ge.research.sadl.darpa.kapeesh.utility.TopologicalSort;
 
 /**
  * Class to enable translation of SADL-generated
@@ -69,12 +70,14 @@ public class KchainJsonGenerator {
 	public JSONObject kchain_nodes;
 
 	public HashMap<String, String> variableShortNameMap;
+	public HashMap<String, String> inputVarMap = new HashMap<String, String>();
 
 	public String kchainExecMode;
 	public boolean hypothesis;
 	public boolean hasUnitConversion;
 	public boolean hasExternalFunction;
 
+	public int VIZSTARTPORT = 35700;
 	/**
 	 * Constructors
 	 */
@@ -181,32 +184,59 @@ public class KchainJsonGenerator {
 
 		JSONArray kchainInputs = new JSONArray();
 
-                ArrayList<String> inputVarNames = new ArrayList<String>();
                 HashSet<String> childNodes = new HashSet<String>(Arrays.asList(nodeTable.getColumnUniqueValues("Child")));
                 HashSet<String> parentNodes = new HashSet<String>(Arrays.asList(nodeTable.getColumnUniqueValues("Node")));
                 parentNodes.removeAll(childNodes);
                 for (String parentNode : parentNodes) {
-                        Table filteredTable = nodeTable.getSubsetWhereMatches("Node", parentNode, new String[]{"Node", "Eq"});
+                        Table filteredTable = nodeTable.getSubsetWhereMatches("Node", parentNode, new String[]{"Node", "Eq", "InlineEq"});
+			String inlineEq = filteredTable.getCell(0, "InlineEq");
                         HashMap<String, String> filterMap = new HashMap<String, String>();
                         filterMap.put("Model", filteredTable.getCell(0, "Eq"));
-                        filterMap.put("ImpInputAugType", filteredTable.getCell(0, "Node"));
+			if (!inlineEq.isEmpty() && inlineEq != "") {
+                        	filterMap.put("Input", filteredTable.getCell(0, "Node"));
+			} else {
+                         	filterMap.put("ImpInputAugType", filteredTable.getCell(0, "Node"));
+			}
                         filteredTable = table.getSubsetBySubstring(filterMap);
-                        inputVarNames.add(filteredTable.getColumnUniqueValues("ImpInput")[0]);
-                }
+			String inputVarName = "";
+			String aliasName = "";
+			if (!inlineEq.isEmpty() && inlineEq != "") {
+                        	inputVarName = filteredTable.getColumnUniqueValues("InputLabel")[0];
+                        	aliasName = filteredTable.getColumnUniqueValues("Input")[0];
+			} else {
+                        	inputVarName = filteredTable.getColumnUniqueValues("ImpInput")[0];
+                        	aliasName = filteredTable.getColumnUniqueValues("ImpInputAugType")[0];
+			}
 
-		for (String inputVarName : inputVarNames) {
 			JSONObject inputVar = new JSONObject();
 			inputVar.put("name", inputVarName);
 			inputVar.put("type", "float");
-			Table joinTable = table.getSubsetWhereMatches("ImpInput",inputVarName,new String[]{"ImpInputAugType"});
-			String[] joinIds = joinTable.getColumnUniqueValues("ImpInputAugType");
+			inputVar.put("alias", aliasName.substring(aliasName.indexOf("#")+1));
+			
+			String[] joinIds;
+			if (!inlineEq.isEmpty() && inlineEq != "") {
+				Table joinTable = table.getSubsetWhereMatches("InputLabel",inputVarName,new String[]{"Input"});
+				joinIds = joinTable.getColumnUniqueValues("Input");
+			} else {
+				Table joinTable = table.getSubsetWhereMatches("ImpInput",inputVarName,new String[]{"ImpInputAugType"});
+				joinIds = joinTable.getColumnUniqueValues("ImpInputAugType");
+			}
 
 			// TODO: Add checks
-			Table filteredNodeTable = nodeTable.getSubsetWhereMatches("Node", joinIds[0], new String[]{"Value"});
+			Table filteredNodeTable = nodeTable.getSubsetWhereMatches("Node", joinIds[0], new String[]{"Value","Lower","Upper"});
 			String[] values = filteredNodeTable.getColumnUniqueValues("Value");
+			String[] lowers = filteredNodeTable.getColumnUniqueValues("Lower");
+			String[] uppers = filteredNodeTable.getColumnUniqueValues("Upper");
 
-			if (values.length > 0 && values[0] != "" && !values[0].isEmpty())
+			if (values.length > 0 && values[0] != "" && !values[0].isEmpty()) {
 				inputVar.put("value", values[0]);
+			}
+			if (lowers.length > 0 && lowers[0] != "" && !lowers[0].isEmpty()) {
+				inputVar.put("minValue", filteredNodeTable.getCell(0, "Lower"));
+			}
+			if (uppers.length > 0 && uppers[0] != "" && !uppers[0].isEmpty()) {
+				inputVar.put("maxValue", filteredNodeTable.getCell(0, "Upper"));
+			}
 
 			kchainInputs.add(inputVar);
 		}
@@ -221,28 +251,51 @@ public class KchainJsonGenerator {
 
 		JSONArray kchainOutputs = new JSONArray();
 
-                Table subTable = nodesTable.getSubsetWhereAllEmpty(new String[]{"Child"}, new String[]{"Node", "Eq"});
-                ArrayList<String> outputVarNames = new ArrayList<String>();
+                Table subTable = nodesTable.getSubsetWhereAllEmpty(new String[]{"Child"}, new String[]{"Node", "Eq", "InlineEq", "NodeOutputUnits"});
                 for (int i = 0; i < subTable.getNumRows(); i++) {
                         HashMap<String, String> filterMap = new HashMap<String, String>();
                         filterMap.put("Model", subTable.getCell(i, "Eq"));
-                        filterMap.put("ImpOutputAugType", subTable.getCell(i, "Node"));
+			String inlineEq = subTable.getCell(i, "InlineEq");
+			if (!inlineEq.isEmpty() && inlineEq != "") {
+                        	filterMap.put("Output", subTable.getCell(i, "Node"));
+			} else {
+                        	filterMap.put("ImpOutputAugType", subTable.getCell(i, "Node"));
+			}
                         Table filteredTable = table.getSubsetBySubstring(filterMap);
-                        outputVarNames.add(filteredTable.getColumnUniqueValues("ImpOutput")[0]);
-                }
+			String outputVarName ="";
+			String aliasName = "";
+			if (!inlineEq.isEmpty() && inlineEq != "") {
+                        	//outputVarName = filteredTable.getColumnUniqueValues("ImpOutput")[0];
+                        	aliasName = filteredTable.getColumnUniqueValues("Output")[0];
+			} else {
+                        	outputVarName = filteredTable.getColumnUniqueValues("ImpOutput")[0];
+                        	aliasName = filteredTable.getColumnUniqueValues("ImpOutputAugType")[0];
+			}
 
-		for (String outputVarName : outputVarNames) {
-			JSONObject outputVar = new JSONObject();
-			outputVar.put("name", outputVarName);
-			outputVar.put("type", "float");
+			if (!inlineEq.isEmpty() && inlineEq != "") {
+				String[] inlineEqComponents = inlineEq.split("=");
+				JSONObject outputVar = new JSONObject();
+				outputVar.put("name", inlineEqComponents[0]);
+				outputVar.put("type", "float");
+				outputVar.put("alias", aliasName.substring(aliasName.indexOf("#")+1));
+				//outputVar.put("unit", subTable.getCell(i, "NodeOutputUnits"));
 
-			kchainOutputs.add(outputVar);
+				kchainOutputs.add(outputVar);
+			} else {
+				JSONObject outputVar = new JSONObject();
+				outputVar.put("name", outputVarName);
+				outputVar.put("type", "float");
+				outputVar.put("alias", aliasName.substring(aliasName.indexOf("#")+1));
+				outputVar.put("unit", subTable.getCell(i, "NodeOutputUnits"));
+
+				kchainOutputs.add(outputVar);
+			}
 		}
 
 		kchain_all.put("outputVariables", kchainOutputs);
 	}
 
-	public void createEquationModelObject (JSONObject models, JSONObject nodes, JSONObject expressions) throws Exception {
+	public void createEquationModelObject (JSONObject models, JSONObject nodes, JSONObject expressions, String context) throws Exception {
 
 		String eqnModel = "";
 		Table table = Table.fromJson(models);
@@ -273,7 +326,7 @@ public class KchainJsonGenerator {
 		for (String URI : methodNameURIs)
 			eqnModel += addMethod(URI, models, expressions) + "\n";
 
-		eqnModel += addGetResponseMethod(models, nodes, expressions);
+		eqnModel += addGetResponseMethod(models, nodes, expressions, context);
 
 System.out.println(eqnModel);
 		kchain_all.put("equationModel", eqnModel);
@@ -285,7 +338,14 @@ System.out.println(eqnModel);
 		String eqnModel = "";
 		Table table = Table.fromJson(models);
 
-		Table subTable = table.getSubsetWhereMatches("Model", modelURI, new String[]{"ImpInput", "InpDeclaration", "ImpOutput", "OutpDeclaration"});
+		Table subTable = table.getSubsetWhereMatches("Model", modelURI, new String[]{"ImpInput", "InpDeclaration", "ImpOutput", "OutpDeclaration", "Input", "InputLabel"});
+
+		String input = subTable.getCell(0, "Input");
+		String inputLabel = subTable.getCell(0, "InputLabel");
+		if (!input.isEmpty() && input != "" && !inputLabel.isEmpty() && inputLabel != "") {
+			// non-empty input implying inline equation
+			return "";
+		}
 
 		HashMap<String, String> filterMap = new HashMap<String, String>();
 		filterMap.put("InpDeclaration", "= 0");
@@ -320,7 +380,7 @@ System.out.println(eqnModel);
 	}
 
 
-	public String addGetResponseMethod (JSONObject models, JSONObject nodes, JSONObject expressions) throws Exception {
+	public String addGetResponseMethod (JSONObject models, JSONObject nodes, JSONObject expressions, String context) throws Exception {
 
 		StringBuffer eqnModel = new StringBuffer();
 		eqnModel.append("\n");
@@ -328,14 +388,24 @@ System.out.println(eqnModel);
 		Table table = Table.fromJson(models);
 		Table nodesTable = Table.fromJson(nodes);
 
-		Table subTable = nodesTable.getSubsetWhereAllEmpty(new String[]{"Child"}, new String[]{"Node", "Eq"});
+		Table subTable = nodesTable.getSubsetWhereAllEmpty(new String[]{"Child"}, new String[]{"Node", "Eq", "InlineEq"});
 		ArrayList<String> outputVarNames = new ArrayList<String>();
 		for (int i = 0; i < subTable.getNumRows(); i++) {
 			HashMap<String, String> filterMap = new HashMap<String, String>();
 			filterMap.put("Model", subTable.getCell(i, "Eq"));
-			filterMap.put("ImpOutputAugType", subTable.getCell(i, "Node"));
+			String inlineEq = subTable.getCell(i, "InlineEq");
+			if (!inlineEq.isEmpty() && inlineEq != "") {
+                        	filterMap.put("Output", subTable.getCell(i, "Node"));
+			} else {
+				filterMap.put("ImpOutputAugType", subTable.getCell(i, "Node"));
+			}
 			Table filteredTable = table.getSubsetBySubstring(filterMap);
-			outputVarNames.add(filteredTable.getColumnUniqueValues("ImpOutput")[0]);
+			if (!inlineEq.isEmpty() && inlineEq != "") {
+				String[] inlineEqComponents = inlineEq.split("=");
+				outputVarNames.add(inlineEqComponents[0]);
+			} else {
+				outputVarNames.add(filteredTable.getColumnUniqueValues("ImpOutput")[0]);
+			}
 		}
 		String[] nodesWithNoChildren = subTable.getColumnUniqueValues("Node");
 		
@@ -344,27 +414,35 @@ System.out.println(eqnModel);
 		HashSet<String> parentNodes = new HashSet<String>(Arrays.asList(nodesTable.getColumnUniqueValues("Node")));
 		parentNodes.removeAll(childNodes);
 		for (String parentNode : parentNodes) {
-			Table filteredTable = nodesTable.getSubsetWhereMatches("Node", parentNode, new String[]{"Node", "Eq"});
+			Table filteredTable = nodesTable.getSubsetWhereMatches("Node", parentNode, new String[]{"Node", "Eq", "InlineEq"});
 			HashMap<String, String> filterMap = new HashMap<String, String>();
 			filterMap.put("Model", filteredTable.getCell(0, "Eq"));
-			filterMap.put("ImpInputAugType", filteredTable.getCell(0, "Node"));
+			String inlineEq = filteredTable.getCell(0, "InlineEq");
+			if (!inlineEq.isEmpty() && inlineEq != "") {
+                        	filterMap.put("Input", filteredTable.getCell(0, "Node"));
+			} else {
+				filterMap.put("ImpInputAugType", filteredTable.getCell(0, "Node"));
+			}
 			filteredTable = table.getSubsetBySubstring(filterMap);
-			inputVarNames.add(filteredTable.getColumnUniqueValues("ImpInput")[0]);
+			if (!inlineEq.isEmpty() && inlineEq != "") {
+				inputVarNames.add(filteredTable.getColumnUniqueValues("InputLabel")[0]);
+			} else {
+				inputVarNames.add(filteredTable.getColumnUniqueValues("ImpInput")[0]);
+			}
 		}
 
 		//Table filteredTable = table.getSubsetWhereNonEmpty(new String[]{"ImpInputAugType"},new String[]{"ImpInput"});
                 //String[] inputVarNames = filteredTable.getColumnUniqueValues("ImpInput");
-		HashMap<String, String> inputVarMap = new HashMap<String, String>();
 		for (String inputVarName : inputVarNames)
 			inputVarMap.put(inputVarName, inputVarName + "_val");
-		eqnModel.append("def getResponse(" + String.join(",",inputVarMap.values()) + "):\n");
+		eqnModel.append("def getResponse" + context + "(" + String.join(",",inputVarMap.values()) + "):\n");
 
 		if (! inputVarMap.keySet().isEmpty() ) {
 			eqnModel.append("    global " + String.join(",",inputVarMap.keySet()) + "\n");
 		}
 
 		eqnModel.append("\n");
-		subTable = table.getSubsetWhereAllEmpty(new String[]{"Initializer","Dependency","ImpInput"},new String[]{"Model"});
+		subTable = table.getSubsetWhereAllEmpty(new String[]{"Initializer","Dependency","ImpInput","InputLabel"},new String[]{"Model"});
 		String[] setterURIs = subTable.getColumnUniqueValues("Model");
 		for (String setterURI : setterURIs) {
 			String setterMethod = setterURI.substring(setterURI.lastIndexOf(".") + 1);
@@ -388,27 +466,79 @@ System.out.println(eqnModel);
 //System.out.println(table.toCSVString());
 //System.out.println(subTable.toCSVString());
 		
+		ArrayList<String> nodesNoChildren = new ArrayList<String>(Arrays.asList(nodesWithNoChildren));
+		ArrayList<String> finalOrderedNodes = new ArrayList<String>();
+		for (String parentNode : parentNodes) {
+		    TopologicalSort tSort = new TopologicalSort();
+		    String[] allNodes = nodesTable.getColumnUniqueValues("Node");
+		    HashMap<String, TopologicalSort.Node> tMap = new HashMap<String, TopologicalSort.Node>();
+		    for (String node : allNodes) {
+		        TopologicalSort.Node tNode = new TopologicalSort.Node(node);
+		        tMap.put(node, tNode);
+		    }
+		    for (String node : allNodes) {
+		        Table childTable = nodesTable.getSubsetWhereMatches("Node", node, new String[]{"Child"});
+		        String[] tChildren = childTable.getColumnUniqueValues("Child");
+		        TopologicalSort.Node tNode = tMap.get(node);
+		        for (String tChild : tChildren) {
+			    if (!tChild.isEmpty() && tChild != "") {
+				tNode.addneighbours(tMap.get(tChild));
+				//System.out.println("Adding child: " + tChild + " to parent: " + node);
+			    }
+		        }
+		    //System.out.println(tNode + " : " + tNode.getNeighbours());
+		    }
+//				System.out.println(tMap.toString());
+		    tSort.topologicalSort(tMap.get(parentNode));
+
+		    ArrayList<String> orderedNodes = new ArrayList<String>();
+                    while (tSort.stack.empty()==false) {
+			String popped = tSort.stack.pop().toString();
+			if (nodesNoChildren.contains(popped))
+			    orderedNodes.add(popped);
+                      	//System.out.print(tSort.stack.pop() + " ");
+                    }
+		    if (finalOrderedNodes.size() < orderedNodes.size()) 
+			finalOrderedNodes = orderedNodes;
+		}
+
+//System.out.println(">>>>>>>>>>>>>>>");
+//System.out.println(finalOrderedNodes);
+
 		ArrayList<String> methods = new ArrayList<String>();
-		ArrayList<String> nodesThisRound = new ArrayList<String>(Arrays.asList(nodesWithNoChildren));
+		ArrayList<String> nodesThisRound = finalOrderedNodes; //new ArrayList<String>(Arrays.asList(nodesWithNoChildren));
 		while (!nodesThisRound.isEmpty()) {
 			String node = nodesThisRound.get(0);
-			Table roundTable = nodesTable.getSubsetWhereMatches("Child", node, new String[]{"Node", "Eq"});
+			Table roundTable = nodesTable.getSubsetWhereMatches("Child", node, new String[]{"Node", "Eq", "InlineEq"});
 			if (roundTable.getNumRows() > 0) {
-				String[] eq = roundTable.getColumnUniqueValues("Eq");
-				methods.add(eq[0]);
+				String[] inlineEq = roundTable.getColumnUniqueValues("InlineEq");
+				if (!inlineEq[0].isEmpty() && inlineEq[0] != "") {
+					if (!methods.contains(inlineEq[0])) {
+						methods.add(inlineEq[0]);
+					}
+				} else {
+					String[] eq = roundTable.getColumnUniqueValues("Eq");
+					if (!methods.contains(eq[0])) {
+						methods.add(eq[0]);
+					}
+				}
 				String[] parents = roundTable.getColumnUniqueValues("Node");	
 				for (String parent : parents) {
 					nodesThisRound.add(parent);
 				}
 			}
-			System.out.println("Removing: " + node);
+//			System.out.println("Removing: " + node);
 			nodesThisRound.remove(0);
 		}
 		//String mainMethodURI = subTable.getColumnUniqueValues("Model")[0];
 		Collections.reverse(methods);
 		for (String method : methods) {
-			String mainMethod = method.substring(method.lastIndexOf(".") + 1);
-			eqnModel.append("    " + mainMethod + "()\n");
+			if (method.contains("=")) 
+				eqnModel.append("    " + method + "\n");
+			else {
+				String mainMethod = method.substring(method.lastIndexOf(".") + 1);
+				eqnModel.append("    " + mainMethod + "()\n");
+			}
 		}
 		eqnModel.append("\n");
 
@@ -418,12 +548,13 @@ System.out.println(eqnModel);
 	}
 
 
-        public JSONObject createArtifact(String mode) {
+        public JSONObject createArtifact(String mode, String context, String numOfModels, String modelIndex) {
 		
 		JSONObject payload = new JSONObject();
 
 		payload.put("outputVariables", (JSONArray) kchain_all.get("outputVariables"));
-		payload.put("modelName", (String) kchain_all.get("modelName"));
+		payload.put("modelName", (String) kchain_all.get("modelName") + context);
+		payload.put("CGType", "python");
 
 		if (mode.equals("build")) {
 			JSONArray inputVars = (JSONArray) kchain_all.get("inputVariables");
@@ -431,14 +562,49 @@ System.out.println(eqnModel);
 			for (Object o : inputVars) {
 				JSONObject inputVar = (JSONObject) o;
 				JSONObject newInputVar = new JSONObject();
-				newInputVar.put("name", (String) inputVar.get("name"));
+				newInputVar.put("name", inputVarMap.get((String) inputVar.get("name")));
 				newInputVar.put("type", (String) inputVar.get("type"));
+				newInputVar.put("alias", (String) inputVar.get("alias"));
 				newInputVars.add(newInputVar);
 			}
 			payload.put("inputVariables", newInputVars);
 			payload.put("equationModel", (String) kchain_all.get("equationModel"));
 		} else if (mode.equals("eval")) {
-			payload.put("inputVariables", (JSONArray) kchain_all.get("inputVariables"));
+			JSONArray inputVars = (JSONArray) kchain_all.get("inputVariables");
+			JSONArray newInputVars = new JSONArray();
+			for (Object o : inputVars) {
+				JSONObject inputVar = (JSONObject) o;
+				JSONObject newInputVar = new JSONObject();
+				newInputVar.put("name", inputVarMap.get((String) inputVar.get("name")));
+				newInputVar.put("type", (String) inputVar.get("type"));
+				newInputVar.put("alias", (String) inputVar.get("alias"));
+				newInputVar.put("value", (String) inputVar.get("value"));
+				if (inputVar.containsKey("minValue"))
+					newInputVar.put("minValue", (String) inputVar.get("minValue"));
+				if (inputVar.containsKey("maxValue"))
+					newInputVar.put("maxValue", (String) inputVar.get("maxValue"));
+				newInputVars.add(newInputVar);
+			}
+			payload.put("inputVariables", newInputVars);
+		} else if (mode.equals("visualize")) {
+			JSONArray inputVars = (JSONArray) kchain_all.get("inputVariables");
+			JSONArray newInputVars = new JSONArray();
+			for (Object o : inputVars) {
+				JSONObject inputVar = (JSONObject) o;
+				JSONObject newInputVar = new JSONObject();
+				newInputVar.put("name", inputVarMap.get((String) inputVar.get("name")));
+				newInputVar.put("type", (String) inputVar.get("type"));
+				newInputVar.put("alias", (String) inputVar.get("alias"));
+				newInputVar.put("value", (String) inputVar.get("value"));
+				if (inputVar.containsKey("minValue"))
+					newInputVar.put("minValue", (String) inputVar.get("minValue"));
+				if (inputVar.containsKey("maxValue"))
+					newInputVar.put("maxValue", (String) inputVar.get("maxValue"));
+				newInputVars.add(newInputVar);
+			}
+			payload.put("inputVariables", newInputVars);
+			payload.put("plotType", "2");
+			payload.put("portNum", VIZSTARTPORT + Integer.parseInt(modelIndex));
 		}
 
 		return payload;
