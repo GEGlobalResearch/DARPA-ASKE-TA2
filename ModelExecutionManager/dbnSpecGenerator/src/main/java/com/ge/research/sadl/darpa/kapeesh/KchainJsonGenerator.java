@@ -197,10 +197,21 @@ public class KchainJsonGenerator {
 			} else {
                          	filterMap.put("ImpInputAugType", filteredTable.getCell(0, "Node"));
 			}
-                        filteredTable = table.getSubsetBySubstring(filterMap);
+
+			// Accounting for the special case where an user-defined equation gets represented as a Python function in the KG
+			boolean isUserDefEquation = false;
+			if (table.getSubsetBySubstring(filterMap).getNumRows() == 0) {
+				isUserDefEquation = true;
+				filterMap.remove("ImpInputAugType");
+                        	filterMap.put("Input", filteredTable.getCell(0, "Node"));
+                        	filteredTable = table.getSubsetBySubstring(filterMap);
+			} else {	
+                        	filteredTable = table.getSubsetBySubstring(filterMap);
+			}
+				
 			String inputVarName = "";
 			String aliasName = "";
-			if (!inlineEq.isEmpty() && inlineEq != "") {
+			if ((!inlineEq.isEmpty() && inlineEq != "") || isUserDefEquation) {
                         	inputVarName = filteredTable.getColumnUniqueValues("InputLabel")[0];
                         	aliasName = filteredTable.getColumnUniqueValues("Input")[0];
 			} else {
@@ -214,7 +225,7 @@ public class KchainJsonGenerator {
 			inputVar.put("alias", aliasName.substring(aliasName.indexOf("#")+1));
 			
 			String[] joinIds;
-			if (!inlineEq.isEmpty() && inlineEq != "") {
+			if ((!inlineEq.isEmpty() && inlineEq != "") || isUserDefEquation) {
 				Table joinTable = table.getSubsetWhereMatches("InputLabel",inputVarName,new String[]{"Input"});
 				joinIds = joinTable.getColumnUniqueValues("Input");
 			} else {
@@ -262,9 +273,19 @@ public class KchainJsonGenerator {
                         	filterMap.put("ImpOutputAugType", subTable.getCell(i, "Node"));
 			}
                         Table filteredTable = table.getSubsetBySubstring(filterMap);
+
+			// Accounting for the special case where an user-defined equation gets represented as a Python function in the KG
+			boolean isUserDefEquation = false;
+			if (filteredTable.getNumRows() == 0) {
+				isUserDefEquation = true;
+				filterMap.remove("ImpOutputAugType");
+                        	filterMap.put("Output", subTable.getCell(i, "Node"));
+                        	filteredTable = table.getSubsetBySubstring(filterMap);
+			}
+				
 			String outputVarName ="";
 			String aliasName = "";
-			if (!inlineEq.isEmpty() && inlineEq != "") {
+			if ((!inlineEq.isEmpty() && inlineEq != "") || isUserDefEquation) {
                         	//outputVarName = filteredTable.getColumnUniqueValues("ImpOutput")[0];
                         	aliasName = filteredTable.getColumnUniqueValues("Output")[0];
 			} else {
@@ -272,10 +293,14 @@ public class KchainJsonGenerator {
                         	aliasName = filteredTable.getColumnUniqueValues("ImpOutputAugType")[0];
 			}
 
-			if (!inlineEq.isEmpty() && inlineEq != "") {
-				String[] inlineEqComponents = inlineEq.split("=");
+			if ((!inlineEq.isEmpty() && inlineEq != "") || isUserDefEquation) {
 				JSONObject outputVar = new JSONObject();
-				outputVar.put("name", inlineEqComponents[0]);
+				if (!isUserDefEquation) {
+					String[] inlineEqComponents = inlineEq.split("=");
+					outputVar.put("name", inlineEqComponents[0]);
+				} else {
+					outputVar.put("name", filteredTable.getColumnUniqueValues("OutputLabel")[0]);
+				}
 				outputVar.put("type", "float");
 				outputVar.put("alias", aliasName.substring(aliasName.indexOf("#")+1));
 				//outputVar.put("unit", subTable.getCell(i, "NodeOutputUnits"));
@@ -324,7 +349,7 @@ public class KchainJsonGenerator {
 
 		String[] methodNameURIs = table.getColumnUniqueValues("Model");
 		for (String URI : methodNameURIs)
-			eqnModel += addMethod(URI, models, expressions) + "\n";
+			eqnModel += addMethod(URI, models, expressions).trim() + "\n\n";
 
 		eqnModel += addGetResponseMethod(models, nodes, expressions, context);
 
@@ -337,14 +362,23 @@ System.out.println(eqnModel);
 
 		String eqnModel = "";
 		Table table = Table.fromJson(models);
+		Table exprTable = Table.fromJson(expressions);
 
 		Table subTable = table.getSubsetWhereMatches("Model", modelURI, new String[]{"ImpInput", "InpDeclaration", "ImpOutput", "OutpDeclaration", "Input", "InputLabel"});
+                Table subExprTable = exprTable.getSubsetWhereMatches("Model", modelURI, new String[]{"ModelForm"});
+		String modelForm = subExprTable.getCellAsString(0, "ModelForm").replaceAll("\\r$","");
 
+		boolean isUserDefEquation = false;
 		String input = subTable.getCell(0, "Input");
 		String inputLabel = subTable.getCell(0, "InputLabel");
-		if (!input.isEmpty() && input != "" && !inputLabel.isEmpty() && inputLabel != "") {
-			// non-empty input implying inline equation
-			return "";
+		if (!input.isEmpty() && input != "" && !inputLabel.isEmpty() && inputLabel != "") { 
+			if (modelForm.trim().startsWith("def ")) {
+				// special case: User defined equation turned into a Python-numpy method
+				isUserDefEquation = true;
+			} else {
+				// non-empty input implying inline equation
+				return "";
+			}
 		}
 
 		HashMap<String, String> filterMap = new HashMap<String, String>();
@@ -367,12 +401,11 @@ System.out.println(eqnModel);
 			insertString += "    global " + String.join(", ", list) + "\n";
 		}
 
-		Table exprTable = Table.fromJson(expressions);
-                Table subExprTable = exprTable.getSubsetWhereMatches("Model", modelURI, new String[]{"ModelForm"});
-		String modelForm = subExprTable.getCellAsString(0, "ModelForm").replaceAll("\\r$","");
 		String[] lines = modelForm.split("\n");
 		list = new ArrayList<String>(Arrays.asList(lines));
-		list.add(1, insertString);
+		if (!isUserDefEquation) {
+			list.add(1, insertString);
+		}
 		
 		eqnModel = String.join("\n", list);
 		
@@ -400,9 +433,20 @@ System.out.println(eqnModel);
 				filterMap.put("ImpOutputAugType", subTable.getCell(i, "Node"));
 			}
 			Table filteredTable = table.getSubsetBySubstring(filterMap);
+			// Accounting for the special case where an user-defined equation gets represented as a Python function in the KG
+			boolean isUserDefEquation = false;
+			if (filteredTable.getNumRows() == 0) {
+				isUserDefEquation = true;
+				filterMap.remove("ImpOutputAugType");
+                        	filterMap.put("Output", subTable.getCell(i, "Node"));
+                        	filteredTable = table.getSubsetBySubstring(filterMap);
+			}
+				
 			if (!inlineEq.isEmpty() && inlineEq != "") {
 				String[] inlineEqComponents = inlineEq.split("=");
 				outputVarNames.add(inlineEqComponents[0]);
+			} else if (isUserDefEquation) {
+				outputVarNames.add(filteredTable.getColumnUniqueValues("OutputLabel")[0]);
 			} else {
 				outputVarNames.add(filteredTable.getColumnUniqueValues("ImpOutput")[0]);
 			}
@@ -423,8 +467,19 @@ System.out.println(eqnModel);
 			} else {
 				filterMap.put("ImpInputAugType", filteredTable.getCell(0, "Node"));
 			}
-			filteredTable = table.getSubsetBySubstring(filterMap);
-			if (!inlineEq.isEmpty() && inlineEq != "") {
+
+			// Accounting for the special case where an user-defined equation gets represented as a Python function in the KG
+			boolean isUserDefEquation = false;
+			if (table.getSubsetBySubstring(filterMap).getNumRows() == 0) {
+				isUserDefEquation = true;
+				filterMap.remove("ImpInputAugType");
+                        	filterMap.put("Input", filteredTable.getCell(0, "Node"));
+                        	filteredTable = table.getSubsetBySubstring(filterMap);
+			} else {	
+                        	filteredTable = table.getSubsetBySubstring(filterMap);
+			}
+				
+			if ((!inlineEq.isEmpty() && inlineEq != "") || isUserDefEquation) {
 				inputVarNames.add(filteredTable.getColumnUniqueValues("InputLabel")[0]);
 			} else {
 				inputVarNames.add(filteredTable.getColumnUniqueValues("ImpInput")[0]);
@@ -536,8 +591,19 @@ System.out.println(eqnModel);
 			if (method.contains("=")) 
 				eqnModel.append("    " + method + "\n");
 			else {
-				String mainMethod = method.substring(method.lastIndexOf(".") + 1);
-				eqnModel.append("    " + mainMethod + "()\n");
+				subTable = table.getSubsetWhereMatches("Model", method, new String[]{"InputLabel", "OutputLabel"});
+				String[] inputs = subTable.getColumnUniqueValues("InputLabel");
+				String[] outputs = subTable.getColumnUniqueValues("OutputLabel");
+				String fullMethodName = method.substring(method.lastIndexOf("#") + 1);
+				String mainMethod = fullMethodName.substring(fullMethodName.lastIndexOf(".") + 1);
+
+				if (outputs.length > 0 && !outputs[0].isEmpty() && outputs[0] != "") {
+					Arrays.sort(outputs);
+					Arrays.sort(inputs);
+					eqnModel.append("    " + String.join(",", outputs) + " = " + mainMethod + "(" + String.join(",", inputs) + ")\n");
+				} else {
+					eqnModel.append("    " + mainMethod + "()\n");
+				}
 			}
 		}
 		eqnModel.append("\n");
