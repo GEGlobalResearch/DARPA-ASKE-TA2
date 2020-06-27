@@ -200,13 +200,13 @@ public class KchainJsonGenerator {
 
 			// Accounting for the special case where an user-defined equation gets represented as a Python function in the KG
 			boolean isUserDefEquation = false;
-			if (table.getSubsetBySubstring(filterMap).getNumRows() == 0) {
+			if (table.getSubsetByString(filterMap).getNumRows() == 0) {
 				isUserDefEquation = true;
 				filterMap.remove("ImpInputAugType");
                         	filterMap.put("Input", filteredTable.getCell(0, "Node"));
-                        	filteredTable = table.getSubsetBySubstring(filterMap);
+                        	filteredTable = table.getSubsetByString(filterMap);
 			} else {	
-                        	filteredTable = table.getSubsetBySubstring(filterMap);
+                        	filteredTable = table.getSubsetByString(filterMap);
 			}
 				
 			String inputVarName = "";
@@ -494,13 +494,13 @@ System.out.println(eqnModel);
 
 			// Accounting for the special case where an user-defined equation gets represented as a Python function in the KG
 			boolean isUserDefEquation = false;
-			if (table.getSubsetBySubstring(filterMap).getNumRows() == 0) {
+			if (table.getSubsetByString(filterMap).getNumRows() == 0) {
 				isUserDefEquation = true;
 				filterMap.remove("ImpInputAugType");
                         	filterMap.put("Input", filteredTable.getCell(0, "Node"));
-                        	filteredTable = table.getSubsetBySubstring(filterMap);
+                        	filteredTable = table.getSubsetByString(filterMap);
 			} else {	
-                        	filteredTable = table.getSubsetBySubstring(filterMap);
+                        	filteredTable = table.getSubsetByString(filterMap);
 			}
 				
 			if ((!inlineEq.isEmpty() && inlineEq != "") || isUserDefEquation) {
@@ -737,7 +737,10 @@ System.out.println(eqnModel);
 				newInputVars.add(newInputVar);
 			}
 			payload.put("inputVariables", newInputVars);
-			payload.put("plotType", "2");
+			if (context.trim().contains("WindTurbine"))
+				payload.put("plotType", "1");
+			else
+				payload.put("plotType", "2");
 			payload.put("portNum", VIZSTARTPORT + Integer.parseInt(modelIndex));
 		}
 
