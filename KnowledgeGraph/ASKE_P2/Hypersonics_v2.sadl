@@ -35,32 +35,31 @@
 ***********************************************************************/
 uri "http://aske.ge.com/hypersonicsV2" alias hypersonicsV2 .
 
-//import "http://aske.ge.com/sciknow".
+import "http://aske.ge.com/sciknow".
 
-Temperature is a type of UnittedQuantity.
-Pressure is a type of UnittedQuantity.
-
-Speed is a type of UnittedQuantity.
-Mass is a type of UnittedQuantity.
-Volume is a type of UnittedQuantity.
-Density is a type of UnittedQuantity.
-Length is a type of UnittedQuantity.
-Time is a type of UnittedQuantity.
-
-Altitude is a type of UnittedQuantity.
+//Temperature is a type of UnittedQuantity.
+//Pressure is a type of UnittedQuantity.
+//
+//Speed is a type of UnittedQuantity.
+//Mass is a type of UnittedQuantity.
+//Volume is a type of UnittedQuantity.
+//Density is a type of UnittedQuantity.
+//Length is a type of UnittedQuantity.
+//Time is a type of UnittedQuantity.
+//Altitude is a type of UnittedQuantity.
 	
-PhysicalThing is a class,
-	described by mass with values of type Mass
-	described by volume with values of type Volume
-	described by density with values of type Density
-	described by temperature with values of type Temperature
-	described by altitude with values of type Altitude
-	described by speed with values of type Speed
-   .
+//PhysicalThing is a class,
+//	described by mass with values of type Mass
+//	described by volume with values of type Volume
+//	described by density with values of type Density
+//	described by temperature with values of type Temperature
+//	described by altitude with values of type Altitude
+//	described by speed with values of type Speed
+//   .
 
-Gas is a type of PhysicalThing
-	described by pressure with values of type Pressure.
-Air is a type of Gas.
+//Gas is a type of PhysicalThing
+//	described by pressure with values of type Pressure.
+//Air is a type of Gas.
 //Engine is a class.
 //RamJet is a type of Engine
 //	described by afterburner with a single value of type boolean.
@@ -73,17 +72,18 @@ Aircraft is a type of PhysicalThing
 
 AircraftEngine is a type of PhysicalThing
 	described by machSpeed with values of type MachSpeed
-	described by sfc (alias "specific fuel consumption") with values of type SpecificFuelConsumption
+	described by sfc with values of type SpecificFuelConsumption
 	described by thrust with values of type Thrust
-	described by netThrust with values of type SpecificNetThrust
-	described by fireflag with values of type FireFlag
+	described by specificNetThrust with values of type SpecificNetThrust
+	described by fireflag with values of type TemperatureLimitViolationFlag
+	described by massFlowRate with values of type MassFlowRate
 	.
                     
 {CF6, F100, J85, RamJet} are types of AircraftEngine.
 
-FireFlag is a type of UnittedQuantity.
+TemperatureLimitViolationFlag (alias "temperature limit violation flag") is a type of UnittedQuantity.
 
-NumOfEngines is a type of UnittedQuantity.
+NumOfEngines (alias "number of engines") is a type of UnittedQuantity.
 
 BurnerTemperature is a type of Temperature.
 burnerTemperature describes AircraftEngine with values of type BurnerTemperature.
@@ -94,8 +94,8 @@ EngineTemperatureRatioEquation is a type of ^Equation.
 EnginePressureRatio is a type of Ratio.
 enginePressureRatio describes AircraftEngine with values of type EnginePressureRatio.
 EnginePressureRatioEquation is a type of ^Equation.
-Rayleighflow is a type of Flow.
-rayleighflow describes AircraftEngine with values of type Rayleighflow.
+RayleighFlow (alias "Rayleigh loss") is a type of Flow.
+rayleighFlow describes AircraftEngine with values of type RayleighFlow.
 RayleighflowEquation is a type of ExternalEquation.
 
 AtmosphericTemperature is a type of Temperature.
@@ -105,67 +105,97 @@ StaticPressure is a type of AtmosphericPressure.
 TotalTemperature is a type of AtmosphericTemperature.
 TotalPressure is a type of AtmosphericPressure.
 SpeedOfSound is a type of UnittedQuantity.
-AirSpeed is a type of Speed.
-MachSpeed is a type of Speed.
-GammaConstant is a type of UnittedQuantity.
-RgasConstant is a type of UnittedQuantity.
+Airspeed is a type of Speed.
+MachSpeed (alias "mach number") is a type of Speed.
+Gamma (alias "specific heats ratio") is a type of UnittedQuantity.
+GasConstant (alias "Gas constant R") is a type of UnittedQuantity.
 Flow is a type of UnittedQuantity.
 
 CP is a type of UnittedQuantity.
-Thrust is a type of UnittedQuantity.
+Thrust (alias "thrust") is a type of UnittedQuantity.
+
+MassFlowRate (alias "mass flow rate") is a type of UnittedQuantity.
+
+SpecificNetThrust (alias "specific net thrust") is a type of UnittedQuantity.
+SpecificFuelConsumption (alias "specific fuel consumption") is a type of UnittedQuantity.
+
+//StaticTemperatureEquation is a type of ^Equation.
+//StaticPressureEquation is a type of ^Equation.
+//SpeedOfSoundEquation is a type of ^Equation.
+//MachSpeedEquation is a type of ^Equation.
+//TotalTemperatureEquation is a type of ^Equation.
+//TotalPressureEquation is a type of ^Equation.
+//TotalThrustEquation is a type of ^Equation.
+//
+//GammaConstEquation is a type of ^Equation.
+//RgasConstEquation is a type of ^Equation.
+
+//staticTemperature describes Air with values of type StaticTemperature.
+//totalTemperature describes Air with values of type TotalTemperature.
+//staticPressure describes Air with values of type StaticPressure.
+//totalPressure describes Air with values of type TotalPressure.
+
+staticTemperature describes PhysicalThing with values of type StaticTemperature.
+totalTemperature describes PhysicalThing with values of type TotalTemperature.
+staticPressure describes PhysicalThing with values of type StaticPressure.
+totalPressure describes PhysicalThing with values of type TotalPressure.
 
 
 
-SpecificNetThrust is a type of UnittedQuantity.
-SpecificFuelConsumption is a type of UnittedQuantity.
-
-StaticTemperatureEquation is a type of ^Equation.
-StaticPressureEquation is a type of ^Equation.
-SpeedOfSoundEquation is a type of ^Equation.
-MachSpeedEquation is a type of ^Equation.
-TotalTemperatureEquation is a type of ^Equation.
-TotalPressureEquation is a type of ^Equation.
-TotalThrustEquation is a type of ^Equation.
-
-GammaConstEquation is a type of ^Equation.
-RgasConstEquation is a type of ^Equation.
-
-altitude of Air only has values of type Altitude.
-//altitude describes Air with values of type Altitude.
-staticTemperature is a type of temperature.
-staticTemperature describes Air with values of type StaticTemperature.
-totalTemperature is a type of temperature.
-totalTemperature describes Air with values of type TotalTemperature.
-staticPressure is a type of pressure.
-staticPressure describes Air with values of type StaticPressure.
-totalPressure is a type of pressure.
-totalPressure describes Air with values of type TotalPressure.
-
-//speed describes PhysicalThing with values of type Speed.
 speedOfSound describes Air with values of type SpeedOfSound.
-airSpeed describes Air with values of type AirSpeed.
-machSpeed describes Air with values of type MachSpeed.
+//airspeed describes Air with values of type Airspeed.
 
-gamma describes Air with values of type GammaConstant.
-rgas describes Air with values of type RgasConstant.
+gamma describes Air with values of type Gamma.
+rgas describes Air with values of type GasConstant.
 
 cp describes Air with values of type CP.
 
+//TotalThrust is a type of UnittedQuantity.
+//totalThrust describes Aircraft with values of type TotalThrust.
+//Equation func_totThrust (alias "totThrust") (double ne (NumOfEngines), double engThrust (Thrust)) returns double (TotalThrust): ne*engThrust.
+//func_totThrust
+//     has expression (a Script with language Python, with script "
+//def func_totThrust(engThrust,ne):
+//    totThrust = ne*engThrust
+//    return totThrust
+//
+//"), 
+//     has expression (a Script with language Python-TF, with script "
+//def func_totThrust(engThrust,ne):
+//    totThrust = ne*engThrust
+//    return totThrust
+//
+//"), 
+//     has expression (a Script with language Python-NumPy, with script "
+//def func_totThrust(engThrust,ne):
+//    totThrust = ne*engThrust
+//    return totThrust
+//
+//"), 
+//     has expression (a Script with language Text, with script "totThrust = ne*engThrust").
+//     
+//Equation func_tThrust (alias "tThrust") (double ne (NumOfEngines), double nThrust (SpecificNetThrust)) returns double (TotalThrust): ne*nThrust.
+//func_tThrust
+//     has expression (a Script with language Text, with script "tThrust = ne*nThrust"), 
+//     has expression (a Script with language Python, with script "
+//def func_tThrust(ne,nThrust):
+//    tThrust = ne*nThrust
+//    return tThrust
+//
+//"), 
+//     has expression (a Script with language Python-TF, with script "
+//def func_tThrust(ne,nThrust):
+//    tThrust = ne*nThrust
+//    return tThrust
+//
+//"), 
+//     has expression (a Script with language Python-NumPy, with script "
+//def func_tThrust(ne,nThrust):
+//    tThrust = ne*nThrust
+//    return tThrust
+//
+//").
 
-TotalThrust is a type of UnittedQuantity.
-totalThrust describes Aircraft with values of type TotalThrust.
-
-totalThrustFunc is a TotalThrustEquation.
-Equation totalThrustFunc (double ne (numEngines of an Aircraft), double fnlb (thrust of engine of the Aircraft))
-  returns double (totalThrust of the Aircraft): ne*fnlb.
-
-//calc_totalThrust has expression (a Script with script "totalThrust=ne*fnlb" language Python-NumPy).
-
-totalThrustFunc has expression (a Script with script 
-"def totalThrustFunc(ne, fnlb):
-    totalThrust=ne*fnlb
-    return totalThrust"
-language Python-NumPy).
 
 ////Troposphere Constants
 //Equation tropo_C1_Eq() returns double (tropo_c1 of some Air {degF}) : return 59.0 .
@@ -187,11 +217,11 @@ language Python-NumPy).
 //mphToftpersec has expression (a Script script "s * 5280/3600" language Python).
 
 
-st_temp_eq_tropo is a StaticTemperatureEquation.
-Equation st_temp_eq_tropo(double alt (altitude of some Air and alt < 36152 {ft}) )
-	returns double (staticTemperature of the Air {degF}) : 
-	return 59 - 0.00356 * alt .
-st_temp_eq_tropo has expression (a Script with script "st0 = 59 - 0.00356 * alt" language Python-NumPy).
+//st_temp_eq_tropo is a StaticTemperatureEquation.
+//Equation st_temp_eq_tropo(double alt (altitude of some Air and alt < 36152 {ft}) )
+//	returns double (staticTemperature of the Air {degF}) : 
+//	return 59 - 0.00356 * alt .
+//st_temp_eq_tropo has expression (a Script with script "st0 = 59 - 0.00356 * alt" language Python-NumPy).
 
 //st_temp_eq_lowerStrato is a StaticTemperatureEquation.
 //Equation st_temp_eq_lowerStrato(double alt (altitude of some Air and alt < 82345 and alt >= 36152 {ft}))
