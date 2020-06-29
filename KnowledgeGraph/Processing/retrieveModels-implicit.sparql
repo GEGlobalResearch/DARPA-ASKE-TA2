@@ -1,0 +1,97 @@
+prefix hyper:<http://aske.ge.com/hypersonicsV2#>
+prefix imp:<http://sadl.org/sadlimplicitmodel#>
+prefix sci:<http://aske.ge.com/sciknow#> 
+prefix owl:<http://www.w3.org/2002/07/owl#> 
+prefix cg:<http://aske.ge.com/compgraphmodel#>
+prefix rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+prefix rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix list:<http://sadl.org/sadllistmodel#>
+
+select distinct ?Model ?Input (str(?InLabel) as ?InputLabel) ?UniqueInputLabel 
+?Output ?OutputLabel
+(str(?expr) as ?ModelForm) (str(?Fun) as ?Function) 
+(str(?ImpIn) as ?ImpInput) ?ImpInputAugType (str(?InpD) as ?InpDeclaration)
+(str(?ImpOut) as ?ImpOutput) ?ImpOutputAugType (str(?OutpD) as?OutpDeclaration)
+?Initializer ?Dependency
+where { 
+
+  {?Model a imp:ExternalEquation.
+         filter (?Model in ( <http://aske.ge.com/turbo#Turbo.Solver.getFreeStream0> )) #EQNSLIST
+  } union 
+  {select distinct ?Model ?Initializer ?Dependency
+      where {
+        {select ?Model ?Initializer where {
+           ?Model imp:initializes ?Class.
+           filter (?Class in ( <http://aske.ge.com/hypersonicsV2#CF6> )). #CONTEXCLASSES
+           bind(bound(?Model) as ?Initializer).
+        }}union
+        {select ?Model ?Dependency where {
+           ?Eq imp:initializes ?Class.
+           filter (?Class in ( <http://aske.ge.com/hypersonicsV2#CF6> )). #CONTEXCLASSES
+	   ?Eq imp:dependsOn ?Model.
+           bind(bound(?Model) as ?Dependency).
+        }}union
+        {select ?Model ?Dependency  where {
+          ?Eq imp:dependsOn ?Model.
+          filter (?Eq in ( <http://aske.ge.com/turbo#Turbo.Solver.getFreeStream0> )). #EQNSLIST
+          #bind("" as ?Initializer)
+	  bind(bound(?Model) as ?Dependency)
+       }}union
+        {select distinct ?Model where {
+         ?EqCh cg:parent ?Model.
+         filter (?EqCh in (<http://aske.ge.com/turbo#Turbo.Solver.getFreeStream0>)) #EQNSLIST
+         ?Model imp:genericOutput ?Out.
+         ?EqCh imp:genericInput ?Out.
+         filter not exists {?Out rdfs:subClassOf* imp:UnittedQuantity}
+      }}}
+  }
+  
+  optional{ #Explicit outputs. ?Output is a UQ or a label
+   ?Model imp:genericOutput ?Output.
+   optional{?Model rdfs:label ?OutputLabel}
+   filter not exists {?Model imp:implicitOutput/imp:localDescriptorName ?Output}
+   filter not exists {?Model imp:implicitOutput/imp:augmentedType/imp:semType ?Output.}}
+
+  optional{ #Explicit inputs. ?Input is a UQ or a label
+   ?Model imp:genericInput ?Input. #For explicit inputs w/o sem type, this is the label
+   filter not exists {?Model imp:implicitInput/imp:localDescriptorName ?Input.}
+   filter not exists {?Model imp:implicitInput/imp:augmentedType/imp:semType ?Input.}
+
+   #optional {?Input imp:localDescriptorName ?InLabel.} #only applies to SemanticInputs
+   #optional {?Input imp:descriptorVariable ?UniqueInputLabel.} 
+   # Get the uniquelabel if available
+   optional {?Model imp:arguments ?AL2.
+            ?AL2 list:rest*/list:first ?AO2.
+            ?AO2 imp:localDescriptorName ?InLabel.
+            ?AO2 imp:descriptorVariable  ?UniqueInputLabel.} #are we using these?
+   }
+  
+  optional{
+    ?Model imp:expression ?Scr.
+    ?Scr imp:script ?expr.
+    ?Scr imp:language ?lang.
+      filter ( ?lang = <http://sadl.org/sadlimplicitmodel#Python> )
+  }
+  optional {
+    ?Model imp:externalURI ?Fun.
+  }
+
+  #Get implicit IOs that have augmentedTypes
+  optional{
+   ?Model imp:implicitInput ?II.
+   ?II imp:localDescriptorName ?ImpIn.
+   #optional{?II imp:descriptorVariable  ?UniqueImpInputLabel.} #These are not being added to the extracted models
+   optional{?II imp:augmentedType ?IT. ?IT imp:semType ?ImpInputAugType.}
+   optional{?II imp:declaration ?ID. ?ID imp:language imp:Python. ?ID imp:script ?InpD}}
+
+  optional{
+   ?Model imp:implicitOutput ?IO.
+   ?IO imp:localDescriptorName ?ImpOut.
+   optional{?IO imp:augmentedType ?OT. ?OT imp:semType ?ImpOutputAugType.}
+   optional{?IO imp:declaration ?OD. ?OD imp:language imp:Python. ?OD imp:script ?OutpD}}
+  
+}
+order by ?Model
+
+
+

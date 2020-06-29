@@ -1,0 +1,24 @@
+prefix imp:<http://sadl.org/sadlimplicitmodel#> 
+prefix owl:<http://www.w3.org/2002/07/owl#> 
+prefix cg:<http://aske.ge.com/compgraphmodel#>
+
+select distinct ?Eq ?Initializer 
+where {
+ {select ?Eq ?Initializer where {
+  ?Eq imp:initializes ?Class.
+   filter (?Class in ( <http://aske.ge.com/hypersonicsV2#CF6> )).
+   bind(bound(?Eq) as ?Initializer).
+ }}union
+ {select ?Eq ?Initializer where {
+  ?Model imp:dependsOn ?Eq.
+  filter (?Model in ( <http://aske.ge.com/turbo#Turbo.Solver.getFreeStream0> )).
+  bind("" as ?Initializer)
+ }}union
+ {select distinct ?Eq where {
+  ?EqCh cg:parent ?Eq.
+  filter (?EqCh in (<http://aske.ge.com/turbo#Turbo.Solver.getFreeStream0>))
+  ?Eq imp:genericOutput ?Out.
+  ?EqCh imp:genericInput ?Out.
+  filter not exists {?Out rdfs:subClassOf* imp:UnittedQuantity}
+ }}
+}

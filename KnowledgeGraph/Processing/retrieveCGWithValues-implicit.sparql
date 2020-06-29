@@ -1,0 +1,106 @@
+prefix imp:<http://sadl.org/sadlimplicitmodel#>
+prefix sci:<http://aske.ge.com/sciknow#>
+prefix mm:<http://aske.ge.com/metamodel#>
+prefix cg:<http://aske.ge.com/compgraphmodel#>
+prefix rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+prefix list:<http://sadl.org/sadllistmodel#>
+
+select distinct (strafter(str(?CCG),'#') as ?Model) ?X ?Y ?Z ?X_style ?X_color ?Z_shape ?Z_tooltip
+where {
+{select ?CCG (?Input as ?X) (?EQ as ?Y) (?Output as ?Z) ?X_style ?X_color ('box' as ?Z_shape) ?Z_tooltip
+where {
+    ?CCG a mm:CCG.
+    filter (?CCG in (<http://aske.ge.com/Model_Q_1581536154978#CG_1581536158992>)).
+    ?CCG mm:subgraph ?SG.
+    ?SG mm:cgraph ?CG.
+    ?CG cg:hasEquation ?EQ.
+
+  optional{ 
+   ?EQ imp:genericInput ?Input. 
+   filter not exists {?EQ imp:implicitInput/imp:localDescriptorName ?Input.}
+   filter not exists {?EQ imp:implicitInput/imp:augmentedType/imp:semType ?Input.} }
+  optional{?EQ imp:implicitInput/imp:augmentedType/imp:semType ?Input.}
+
+  optional{ 
+   ?EQ imp:genericOutput ?Output.
+   filter not exists {?EQ imp:implicitOutput/imp:localDescriptorName ?Output}
+   filter not exists {?EQ imp:implicitOutput/imp:augmentedType/imp:semType ?Output.}}
+
+   optional{?Model imp:implicitOutput/imp:augmentedType/imp:semType ?Output.}
+
+
+# There's an eqn that outputs EQ's input (a parent Eqn)
+    ?CCG mm:subgraph ?SG1.
+    ?SG1 mm:cgraph ?CG1.
+    ?CG1 cg:hasEquation ?EQ1.
+    ?EQ1 imp:genericOutput ?Input.
+
+    optional{ 
+      ?EQ a imp:Equation. #only get the script if not an ExternalEquation
+      ?EQ imp:expression ?Scr.
+      ?Scr imp:script ?Expr.
+      ?Scr imp:language ?lang.
+         filter ( ?lang = <http://sadl.org/sadlimplicitmodel#Python> )
+      bind(str(?Expr) as ?Z_tooltip)
+    }
+     bind('solid' as ?X_style)
+    bind('black' as ?X_color)
+}}union
+{select ?CCG (?Input as ?X) (?EQ as ?Y) (?Output as ?Z) ?X_style ?X_color ('box' as ?Z_shape) ?Z_tooltip
+where {
+    ?CCG a mm:CCG.
+    filter (?CCG in (<http://aske.ge.com/Model_Q_1581536154978#CG_1581536158992>)).
+    ?CCG mm:subgraph ?SG.
+    ?SG mm:cgraph ?CG.
+    ?CG cg:hasEquation ?EQ.
+
+    ?CCG a mm:CCG.
+    filter (?CCG in (<http://aske.ge.com/Model_Q_1581536154978#CG_1581536158992>)).
+    ?CCG mm:subgraph ?SG.
+    ?SG mm:cgraph ?CG.
+    ?CG cg:hasEquation ?EQ.
+
+  optional{ 
+   ?EQ imp:genericInput ?Input. 
+   filter not exists {?EQ imp:implicitInput/imp:localDescriptorName ?Input.}
+   filter not exists {?EQ imp:implicitInput/imp:augmentedType/imp:semType ?Input.} 
+  }
+  optional{?EQ imp:implicitInput/imp:augmentedType/imp:semType ?Input.}
+
+ optional{ 
+   ?EQ imp:genericOutput ?Output.
+   filter not exists {?EQ imp:implicitOutput/imp:localDescriptorName ?Output}
+   filter not exists {?EQ imp:implicitOutput/imp:augmentedType/imp:semType ?Output.}}
+
+   optional{?Model imp:implicitOutput/imp:augmentedType/imp:semType ?Output.}
+
+  filter not exists { # EQ does not have a parent EQn
+    ?CCG mm:subgraph ?SG1.
+    ?SG1 mm:cgraph ?CG1.
+    ?CG1 cg:hasEquation ?EQ1.
+    ?EQ1 imp:genericOutput ?Input.}
+
+  optional{
+    ?EQ a imp:Equation. 
+    ?EQ imp:expression ?Scr.
+    ?Scr imp:script ?Expr.
+    ?Scr imp:language ?lang.
+       filter ( ?lang = <http://sadl.org/sadlimplicitmodel#Python> )
+     bind(str(?Expr) as ?Z_tooltip) }
+     
+    bind('filled' as ?X_style)
+    bind('yellow' as ?X_color)
+}}union
+ {select ?CCG (?Output as ?X) ?Y (concat(concat(strbefore(?Value,'.'),'.'),substr(strafter(?Value,'.'),1,4)) as ?Z) ?X_style ?X_color ('oval' as ?Z_shape) ('output value' as ?Z_tooltip)
+  where {
+    ?CCG mm:subgraph ?SG.
+    filter (?CCG in (<http://aske.ge.com/Model_Q_1581536154978#CG_1581536158992>)).
+    ?SG mm:output ?Oinst.
+    ?Oinst a ?Output.
+    ?Oinst imp:value ?Value.
+    bind("value" as ?Y).
+    bind('solid' as ?X_style)
+    bind('black' as ?X_color)
+  }}
+}

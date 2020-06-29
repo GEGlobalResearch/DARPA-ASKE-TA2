@@ -1,0 +1,120 @@
+prefix hyper:<http://aske.ge.com/hypersonicsV2#>
+prefix imp:<http://sadl.org/sadlimplicitmodel#>
+prefix sci:<http://aske.ge.com/sciknow#>
+prefix mm:<http://aske.ge.com/metamodel#>
+prefix cg:<http://aske.ge.com/compgraphmodel#>
+prefix owl:<http://www.w3.org/2002/07/owl#>
+prefix rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+prefix rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix list:<http://sadl.org/sadllistmodel#>
+
+select distinct ?Node (str(?NUnits) as ?NodeOutputUnits) ?Child (str(?CUnits) as ?ChildInputUnits) ?Eq #?Distribution ?Lower ?Upper  ?Value
+where {
+{select distinct ?Node ?Child ?CUnits ?Eq 
+where { 
+   {?Eq imp:genericInput ?Node.
+     filter not exists {?Model imp:implicitInput/imp:localDescriptorName ?Node.}
+     filter not exists {?Model imp:implicitInput/imp:augmentedType/imp:semType ?Node.}
+     optional{
+      ?Eq imp:arguments ?EI1.
+      ?EI1 rdf:rest*/rdf:first ?EI2.
+      ?EI2 imp:specifiedUnits/rdf:first ?CUnits.}
+   }union {
+    ?Eq imp:implicitInput ?II. 
+    ?II imp:augmentedType/imp:semType ?Node.
+    optional {?II imp:specifiedUnits/list:first ?CUnits.}
+    
+   }
+     
+     # This is an input node, it's units come from the query
+     # Get NUnits from current model via the property (?Node)
+    #?Q mm:execution/mm:compGraph ?CG. 
+    #filter (?CG in (COMPGRAPH)).
+    #optional{
+    #   ?Q mm:input ?UQNode.
+    #   ?Var ?Node ?UQNode.
+    #   ?UQNode imp:unit ?InputUnitsQuery.
+    #}
+
+
+   {?Eq imp:genericOutput ?Child.
+     filter not exists {?Eq imp:implicitOutput/imp:localDescriptorName ?Child.}
+     filter not exists {?Eq imp:implicitOutput/imp:augmentedType/imp:semType ?Child.}
+   }union {
+    ?Eq imp:implicitOutput ?IO. 
+    ?IO imp:augmentedType/imp:semType ?Child.
+   }
+
+ filter (?Eq in (<http://aske.ge.com/turbo#Turbo.Solver.getFreeStream0> )) . #EQNSLIST
+
+  }} 
+  union {
+  select distinct ?Node  ?Child ?CUnits ?Eq #?NUnits
+where { 
+   {?Eq imp:genericInput ?Node.
+     filter not exists {?Model imp:implicitInput/imp:localDescriptorName ?Node.}
+     filter not exists {?Model imp:implicitInput/imp:augmentedType/imp:semType ?Node.}
+     optional{
+      ?Eq imp:arguments ?EI1.
+      ?EI1 rdf:rest*/rdf:first ?EI2.
+      ?EI2 imp:specifiedUnits/rdf:first ?CUnits.}
+   }union {
+    ?Eq imp:implicitInput ?II. 
+    ?II imp:augmentedType/imp:semType ?Node.
+    optional {?II imp:specifiedUnits/list:first ?CUnits.}
+   }
+     
+   
+   {?Eq imp:genericOutput ?Child.
+     filter not exists {?Model imp:implicitOutput/imp:localDescriptorName ?Child.}
+     filter not exists {?Model imp:implicitOutput/imp:augmentedType/imp:semType ?Child.}
+   }union {
+    ?Eq imp:implicitOutput ?IO. 
+    ?IO imp:augmentedType/imp:semType ?Child.
+   }
+
+  #TODO: get the NUnits
+
+
+ filter (?Eq in (<http://aske.ge.com/turbo#Turbo.Solver.getFreeStream0> )) . #EQNSLIST
+   
+ }} 
+  union {
+  select distinct ?Eq ?Node ?NUnits #?CUnits
+where { 
+   
+   {?Eq imp:genericOutput ?Node.
+     filter not exists {?Eq imp:implicitOutput/imp:localDescriptorName ?Node.}
+     filter not exists {?Eq imp:implicitOutput/imp:augmentedType/imp:semType ?Node.}
+     optional{
+      ?Eq imp:arguments ?EI1.
+      ?EI1 rdf:rest*/rdf:first ?EI2.
+      ?EI2 imp:specifiedUnits/rdf:first ?NUnits.}
+   }union {
+    ?Eq imp:implicitOutput ?IO. 
+    ?IO imp:augmentedType/imp:semType ?Node.
+    optional {?IO imp:specifiedUnits/list:first ?NUnits.}
+   }
+
+  filter not exists {
+    {?Eq1 imp:genericInput ?Node.}
+    union {?Eq imp:implicitInput/imp:augmentedType/imp:semType ?Node.  }
+    filter (?Eq1 in (<http://aske.ge.com/turbo#Turbo.Solver.getFreeStream0> )) #EQNSLIST
+  }
+
+  #TODO: get the CUnits
+
+
+ filter (?Eq in (<http://aske.ge.com/turbo#Turbo.Solver.getFreeStream0> )) . #EQNSLIST
+ 
+}}
+   ?Q mm:execution/mm:compGraph ?CG.
+   filter (?CG in (COMPGRAPH)).
+  optional{
+    ?Q mm:input ?Inp.
+    ?Inp a ?IType.
+    ?Node rdfs:range ?IType.
+    ?Inp imp:value ?Value.}  
+} order by ?Node
+
+

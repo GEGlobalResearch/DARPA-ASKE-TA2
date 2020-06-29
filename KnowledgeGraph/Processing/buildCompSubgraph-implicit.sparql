@@ -1,0 +1,114 @@
+/**********************************************************************
+* Note: This license has also been called the "New BSD License" or
+* "Modified BSD License". See also the 2-clause BSD License.
+*
+* Copyright © 2018-2019 - General Electric Company, All Rights Reserved
+*
+* Project: KApEESH, developed with the support of the Defense Advanced
+* Research Projects Agency (DARPA) under Agreement  No.  HR00111990007.
+*
+* Redistribution and use in source and binary forms, with or without
+* modification, are permitted provided that the following conditions are met:
+* 1. Redistributions of source code must retain the above copyright notice,
+*    this list of conditions and the following disclaimer.
+*
+* 2. Redistributions in binary form must reproduce the above copyright notice,
+*    this list of conditions and the following disclaimer in the documentation
+*    and/or other materials provided with the distribution.
+*
+* 3. Neither the name of the copyright holder nor the names of its
+*    contributors may be used to endorse or promote products derived
+*    from this software without specific prior written permission.
+*
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+* ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+* LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+* SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+* CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+* ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+* THE POSSIBILITY OF SUCH DAMAGE.
+*
+***********************************************************************/
+
+prefix imp:<http://sadl.org/sadlimplicitmodel#> 
+prefix owl:<http://www.w3.org/2002/07/owl#> 
+prefix cg:<http://aske.ge.com/compgraphmodel#>
+
+select distinct ?Eq ?Out where {
+{select distinct ?EqOut ?EqIn ?Eq
+where {
+  ?EqOut imp:genericOutput ?Op.
+     filter (?Op in ( <http://aske.ge.com/hypersonicsV2#EngineTemperatureRatio> )).
+
+   ?EqIn imp:genericInput ?In.
+   filter (?In in ( <http://aske.ge.com/hypersonicsV2#Speed> )).
+
+    ?EqOut cg:parent* ?Eq. 
+    ?Eq cg:parent* ?EqIn. 
+}}
+  ?Eq imp:genericOutput ?Out. #Get explicit outputs. we may want to get implicit outputs with AT later.
+  filter not exists {?Eq imp:implicitOutput/imp:localDescriptorName ?Out} 
+}
+
+
+prefix hyper:<http://aske.ge.com/hypersonicsV2#>
+prefix imp:<http://sadl.org/sadlimplicitmodel#> 
+prefix owl:<http://www.w3.org/2002/07/owl#> 
+prefix rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+prefix rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>prefix sci:<http://aske.ge.com/sciknow#>
+prefix cg:<http://aske.ge.com/compgraphmodel#>
+prefix list:<http://sadl.org/sadllistmodel#>
+
+select distinct ?Eq ?Out ?EqOut ?EqIn where { 
+  {select distinct ?EqOut ?EqIn ?Eq where { 
+
+   {select ?EqOut where {
+     {?EqOut imp:returnTypes ?EO1. 
+     ?EO1 list:rest*/list:first ?EO2.
+     ?EO2 imp:augmentedType ?EO3. 
+     ?EO3 imp:constraints ?EO4.
+     ?EO4 rdf:rest*/rdf:first ?EO5.
+     ?EO5 imp:gpObject ?Op.}
+     union { ?EqOut imp:implicitOutput/imp:augmentedType/imp:semType ?Op. }
+     filter (?Op in ( <http://aske.ge.com/hypersonicsV2#TotalTemperature> )).}}
+
+    {select ?EqIn where {
+     {?EqIn imp:arguments ?EI1.
+     ?EI1 list:rest*/list:first ?EI2.
+     ?EI2 imp:augmentedType ?EI3. 
+     ?EI3 imp:constraints ?EI4.
+     ?EI4 rdf:rest*/rdf:first ?EI5.
+     ?EI5 imp:gpPredicate ?Ip.
+     ?Ip rdfs:range ?It}
+     union { ?EqIn imp:implicitInput/imp:augmentedType/imp:semType ?It. }
+     filter (?It in ( <http://aske.ge.com/hypersonicsV2#Altitude> )).}}
+
+     ?EqOut cg:parent* ?Eq. 
+     ?Eq cg:parent* ?EqIn. 
+  }} 
+
+  {?Eq imp:returnTypes ?O1. 
+  ?O1 list:rest*/list:first ?O2.
+  ?O2 imp:augmentedType ?O3. 
+  ?O3 imp:constraints ?O4.
+  ?O4 rdf:rest*/rdf:first ?O5.
+  ?O5 imp:gpObject ?Out.
+  ?Out rdfs:subClassOf* imp:UnittedQuantity.}
+  union { ?Eq imp:implicitOutput/imp:augmentedType/imp:semType ?Out } 
+
+#  ?Eq a ?EqT.
+#  filter not exists {?C rdfs:subClassOf ?EqT. ?Eq a ?C.}
+#  filter (?EqT != imp:ExternalEquation).
+
+# Get the eqn's DBN
+#  ?DBN rdfs:subClassOf ?EQR. 
+#  ?EQR owl:onProperty cg:hasEquation.
+#  ?EQR owl:allValuesFrom ?EqClass.
+#  ?Eq a ?EqClass. 
+}
+
+

@@ -1,0 +1,51 @@
+prefix hyper:<http://aske.ge.com/hypersonicsV2#>
+prefix imp:<http://sadl.org/sadlimplicitmodel#>
+prefix sci:<http://aske.ge.com/sciknow#> 
+prefix owl:<http://www.w3.org/2002/07/owl#> 
+prefix cg:<http://aske.ge.com/compgraphmodel#>
+prefix rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+prefix rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix list:<http://sadl.org/sadllistmodel#>
+
+select distinct ?Model 
+(str(?expr) as ?ModelForm) (str(?Fun) as ?Function) 
+?Initializer ?Dependency
+where { 
+
+  {?Model a imp:ExternalEquation.
+         filter (?Model in ( <http://aske.ge.com/turbo#Turbo.Solver.getFreeStream0> )) #EQNSLIST
+  } union 
+  {select distinct ?Model ?Initializer ?Dependency
+      where {
+        {select ?Model ?Initializer where {
+           ?Model imp:initializes ?Class.
+           filter (?Class in ( <http://aske.ge.com/hypersonicsV2#CF6> )). #CONTEXCLASSES
+           bind(bound(?Model) as ?Initializer).
+        }}union
+        {select ?Model ?Dependency  where {
+          ?Eq imp:dependsOn ?Model.
+          filter (?Eq in ( <http://aske.ge.com/turbo#Turbo.Solver.getFreeStream0> )). #EQNSLIST
+          #bind("" as ?Initializer)
+	  bind(bound(?Model) as ?Dependency)
+       }}union
+        {select distinct ?Model where {
+         ?EqCh cg:parent ?Model.
+         filter (?EqCh in (<http://aske.ge.com/turbo#Turbo.Solver.getFreeStream0>)) #EQNSLIST
+         ?Model imp:genericOutput ?Out.
+         ?EqCh imp:genericInput ?Out.
+         filter not exists {?Out rdfs:subClassOf* imp:UnittedQuantity}
+      }}}
+  }
+  
+  optional{
+    ?Model imp:expression ?Scr.
+    ?Scr imp:script ?expr.
+    ?Scr imp:language ?lang.
+      filter ( ?lang = <http://sadl.org/sadlimplicitmodel#Python> )
+  }
+  optional {
+    ?Model imp:externalURI ?Fun.
+  }
+
+}
+order by ?Model

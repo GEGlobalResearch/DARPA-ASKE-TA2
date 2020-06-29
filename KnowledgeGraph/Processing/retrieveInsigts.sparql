@@ -1,0 +1,17 @@
+prefix mm:<http://aske.ge.com/metamodel#>
+
+select distinct (strafter(str(?C),'#') as ?Class) (strafter(str(?SIn),'#') as ?Input) (strafter(str(?Trnd),'#') as ?Trend) (strafter(str(?SOut),'#') as ?Output)
+where {
+  filter (?CCG in (<http://aske.ge.com/Model_Q_1583352078126#CG_1583352078156>)).
+  ?CCG mm:sensitivity ?SS.
+  ?SS mm:trendEffect ?TE.
+  ?TE mm:cgInput ?SIn.
+  ?TE mm:trend ?Trnd.
+  ?SS mm:output ?SOut.
+
+  ?CGQ mm:execution/mm:compGraph ?CCG.
+  ?CGQ mm:cgInput ?IVar.
+  ?Obj ?prop ?IVar.
+  filter (?prop not in (mm:cgInput))
+  ?Obj rdf:type ?C.
+} order by ?Input
