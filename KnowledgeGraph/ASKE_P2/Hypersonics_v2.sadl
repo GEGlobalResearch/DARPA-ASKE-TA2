@@ -110,6 +110,7 @@ MachSpeed (alias "mach number") is a type of Speed.
 Gamma (alias "specific heats ratio") is a type of UnittedQuantity.
 GasConstant (alias "Gas constant R") is a type of UnittedQuantity.
 Flow is a type of UnittedQuantity.
+Theta is a type of UnittedQuantity. //Added for Mach.java extraction only.
 
 CP is a type of UnittedQuantity.
 Thrust (alias "thrust") is a type of UnittedQuantity.

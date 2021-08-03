@@ -2,16 +2,16 @@ version: '3'
 
 services:
 
-# ASKE DBN Service
-  aske-gedbn:
-    image: geresearch/aske-ta2-dbnservice:latest
-    environment:
-      - DBN_PORT=$DBN_PORT
-    volumes:
-      - $FS_PATH:/hostfiles
-    ports:
-      - $DBN_PORT:$DBN_PORT
-# ASKE KG JSON Generation service
+## ASKE DBN Service
+#  aske-gedbn:
+#    image: geresearch/aske-ta2-dbnservice:latest
+#    environment:
+#      - DBN_PORT=$DBN_PORT
+#    volumes:
+#      - $FS_PATH:/hostfiles
+#    ports:
+#      - $DBN_PORT:$DBN_PORT
+## ASKE KG JSON Generation service
   aske-json-gen:
     image: geresearch/aske-ta2-json-generator-service:latest      
     environment:
