@@ -476,7 +476,8 @@ public class Table {
 			ArrayList<String> row = new ArrayList<String>();
 			JSONArray rowJson = (JSONArray) rowsJson.get(i);
 			for(int j = 0; j < rowJson.size(); j++){
-				s = (String) rowJson.get(j);
+//				s = (String) rowJson.get(j);
+				s = rowJson.get(j).toString();
 				if(s != null){
 					row.add(s);
 				}else{
