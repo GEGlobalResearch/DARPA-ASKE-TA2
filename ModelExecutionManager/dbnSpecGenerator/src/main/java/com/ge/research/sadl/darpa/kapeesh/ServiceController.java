@@ -36,8 +36,9 @@
 package com.ge.research.sadl.darpa.kapeesh;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -55,7 +56,7 @@ import org.json.simple.JSONObject;
 import com.ge.research.sadl.darpa.kapeesh.DbnJsonGenerator;
 import com.ge.research.sadl.darpa.kapeesh.utility.Utility;
 
-@CrossOrigin
+//@CrossOrigin
 @RestController
 @RequestMapping("/dbn")
 public class ServiceController {
@@ -63,10 +64,10 @@ public class ServiceController {
 	@Autowired
 	ServiceProperties prop;
 
-	@CrossOrigin
+//	@CrossOrigin
 	@RequestMapping(value="/SADLResultSetToJson", method=RequestMethod.POST)
 	public JSONObject convertCSVStrToJson (@RequestParam(name="nodes") String nodes,
-					       @RequestParam(name="models") String models,
+					       	@RequestParam(name="models") String models,
 					       @RequestParam(name="mode") String executionMode,
 					       @RequestParam(name="data") String data) throws Exception {
 		
@@ -91,79 +92,79 @@ public class ServiceController {
 		return resultSetJSON;
 	}
 
-        @CrossOrigin
-        @RequestMapping(value="/SADLResultSetJsonToTable", method=RequestMethod.POST)
-        public JSONObject convertCSVStrToJson (@RequestBody ArrayList<JSONObject> sadlResultSetJson) throws Exception {
+//    @CrossOrigin
+    @RequestMapping(value="/SADLResultSetJsonToTable", method=RequestMethod.POST)
+    public JSONObject convertCSVStrToJson (@RequestBody ArrayList<JSONObject> sadlResultSetJson) throws Exception {
 
 		JSONObject resultSetJSON = new JSONObject();
 		resultSetJSON.put("models", Utility.createTable(Utility.decipherValueList(sadlResultSetJson)).toJson());
 		resultSetJSON.put("computeLayer", "kchain");
-
+	
 		return resultSetJSON;
-        }
+    }
 
-        @CrossOrigin
-        @RequestMapping(value="/SADLResultSetJsonToTableJson", method=RequestMethod.POST)
-        public JSONObject convertCSVStrToJson (@RequestBody JSONObject sadlResultSetJson) throws Exception {
+//    @CrossOrigin
+    @RequestMapping(value="/SADLResultSetJsonToTableJson", method=RequestMethod.POST)
+    public JSONObject convertCSVStrToJson (@RequestBody JSONObject sadlResultSetJson) throws Exception {
 
 		JSONObject resultSetJSON = new JSONObject();
-
+	
 		JSONObject models = Utility.getJsonFromMap((LinkedHashMap)sadlResultSetJson.get("models"));
 		JSONArray cols = (JSONArray)((JSONObject)models.get("head")).get("vars");
 		JSONArray bindings = (JSONArray)((JSONObject)models.get("results")).get("bindings");
 		resultSetJSON.put("models", Utility.createTable(Utility.decipherValueList(Utility.expandBindings(bindings, cols))).toJson());
-
+	
 		JSONObject nodes = Utility.getJsonFromMap((LinkedHashMap)sadlResultSetJson.get("nodes"));
 		cols = (JSONArray)((JSONObject)nodes.get("head")).get("vars");
 		bindings = (JSONArray)((JSONObject)nodes.get("results")).get("bindings");
 		resultSetJSON.put("nodes", Utility.createTable(Utility.decipherValueList(Utility.expandBindings(bindings, cols))).toJson());
-
+	
 		JSONObject expressions = Utility.getJsonFromMap((LinkedHashMap)sadlResultSetJson.get("expressions"));
 		cols = (JSONArray)((JSONObject)expressions.get("head")).get("vars");
 		bindings = (JSONArray)((JSONObject)expressions.get("results")).get("bindings");
 		resultSetJSON.put("expressions", Utility.createTable(Utility.decipherValueList(Utility.expandBindings(bindings, cols))).toJson());
-
+	
 		resultSetJSON.put("context", sadlResultSetJson.get("context"));
 		resultSetJSON.put("numOfModels", sadlResultSetJson.get("numOfModels"));
 		resultSetJSON.put("modelIndex", sadlResultSetJson.get("modelNum"));
 		resultSetJSON.put("computeLayer", "kchain");
-
+	
 		return resultSetJSON;
-        }
+    }
 
-	@CrossOrigin
+//	@GetMapping("/jsonGenerator")
+
+//	@CrossOrigin
 	@RequestMapping(value="/jsonGenerator", method=RequestMethod.POST)
 	public JSONObject generateJSON (@RequestBody JSONObject sadlResultSet) throws Exception {
 
-	        String computeLayer = (String)sadlResultSet.get("computeLayer");
-		JSONObject payload = new JSONObject();
+        String computeLayer = (String)sadlResultSet.get("computeLayer");
+        JSONObject payload = new JSONObject();
 
-	        if (computeLayer.equals("dbn")) {
-	        	DbnJsonGenerator generator = new DbnJsonGenerator();
-
-                	generator.setExecutionMode((String)sadlResultSet.get("mode"));
-
-                	generator.initializeJSON(prop);
+        if (computeLayer.equals("dbn")) {
+        	DbnJsonGenerator generator = new DbnJsonGenerator();
+           	generator.setExecutionMode((String)sadlResultSet.get("mode"));
+           	generator.initializeJSON(prop);
 
 			generator.createModelObject(Utility.getJsonFromMap((LinkedHashMap)sadlResultSet.get("models")));
-
+	
 			generator.updateObservationData(Utility.getJsonFromMap((LinkedHashMap)sadlResultSet.get("data")));
-
+	
 			generator.createNodeObject(Utility.getJsonFromMap((LinkedHashMap)sadlResultSet.get("nodes")),
 					   	   Utility.getJsonFromMap((LinkedHashMap)sadlResultSet.get("models")));
-
+	
 			generator.createMapObject();
-
-                	generator.printDbnJSON();
-
+	
+	       	generator.printDbnJSON();
+	
 			payload = generator.dbn_all;
-	    
-	    	} else if (computeLayer.equals("kchain")) {
+    
+    	} else if (computeLayer.equals("kchain")) {
 
 			KchainJsonGenerator generator = new KchainJsonGenerator();
-
-                	generator.initializeJSON(prop);
-
+	
+           	generator.initializeJSON(prop);
+	
 			generator.createInputVariablesObject(Utility.getJsonFromMap((LinkedHashMap)sadlResultSet.get("models")),
 							     Utility.getJsonFromMap((LinkedHashMap)sadlResultSet.get("nodes")));
 			generator.createOutputVariablesObject(Utility.getJsonFromMap((LinkedHashMap)sadlResultSet.get("models")),
@@ -172,13 +173,13 @@ public class ServiceController {
 							    Utility.getJsonFromMap((LinkedHashMap)sadlResultSet.get("nodes")),
 							    Utility.getJsonFromMap((LinkedHashMap)sadlResultSet.get("expressions")),
 							    (String)sadlResultSet.get("context"));
-
+	
 			payload.put("build", generator.createArtifact("build", (String)sadlResultSet.get("context"), "", ""));
 			payload.put("eval", generator.createArtifact("eval", (String)sadlResultSet.get("context"), "", ""));
 			payload.put("visualize", generator.createArtifact("visualize", (String)sadlResultSet.get("context"),
 									  (String)sadlResultSet.get("numOfModels"), (String)sadlResultSet.get("modelIndex")));
-		}
+    	}
 
-		return payload;
+        return payload;
 	}
 }
